@@ -1,0 +1,37 @@
+# Node modules - prevent Docker from copying the node_modules folder
+node_modules
+npm-debug.log
+yarn-error.log
+yarn-debug.log
+
+# Build output - prevent copying build directories
+build
+dist
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+
+# IDE/editor files
+.vscode
+.idea
+*.swp
+*.swo
+
+# Git files
+.git
+.gitignore
+
+# Docker files
+Dockerfile
+docker-compose.yml
+
+# Environment files
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+
+# Logs
+*.log
