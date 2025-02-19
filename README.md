@@ -1,50 +1,85 @@
-# React + TypeScript + Vite
+# NCCT Project - Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+This directory contains the **React frontend** for the NCCT Project. It uses Docker and Docker Compose to containerize the application, making it easy to set up and run in any environment.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## Table of Contents
+1. [Project Structure](#project-structure)
+2. [Prerequisites](#prerequisites)
+3. [Setup and Running the Frontend](#setup-and-running-the-frontend)
+4. [Development Workflow](#development-workflow)
+5. [Technologies Used](#technologies-used)
+6. [License](#license)
+7. [Contributing](#contributing)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+## Project Structure
+```angular2html
+frontend/
+├── Dockerfile
+├── entrypoint.sh
+├── package.json # Base package.json
+├── node_modules/ # Created automatically
+├── public/
+├── src/
+└── tsconfig.json
 
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
 ```
+---
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+## Prerequisites
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+Before running the frontend, ensure you have the following installed:
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
-```
+- **Docker**: [Install Docker](https://docs.docker.com/get-docker/)
+- **Docker Compose**: [Install Docker Compose](https://docs.docker.com/compose/install/)
+
+---
+
+## Setup and Running the Frontend
+
+1. **Navigate to the frontend directory**:
+   ```bash
+   cd frontend
+    ```
+2. **Start the frontend**: 
+    Run the following command to build and start the Docker containers:  
+    ```bash
+    docker-compose build
+    docker-compose up
+    ```
+    This will:  
+      - Initialize the React frontend.
+3. **Access the React Frontend**: 
+      - React Frontend: http://localhost:3000
+      - React Frontend (with hot-reloading): http://localhost:3000
+- **Stop the frontend**: To stop the containers, run:  
+    ```bash
+    docker-compose down
+    ```
+    This will stop the containers and remove the containers, networks, volumes, and images created by `docker-compose up`.
+
+## Development Workflow**: 
+- The React project is automatically created in the src directory.
+- You can make changes to the React project and see the changes reflected in real-time in the browser.
+---
+## Technologies Used
+- **React**: A JavaScript library for building user interfaces.
+- **TypeScript**: A superset of JavaScript that adds optional types to the language.
+- **Docker**: A platform for developing, shipping, and running applications in containers.
+- **Docker Compose**: A tool for defining and running multi-container Docker applications.
+- **Node.js**: A JavaScript runtime built on Chrome's V8 JavaScript engine.
+- **npm**: A package manager for Node.js packages.
+- **React Router**: A collection of navigational components for React applications.
+
+---
+## License
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+---
+## Contributing
+Contributions are welcome! Please see the [Contributing Guidelines](CONTRIBUTING.md).
+``` 
+[]: # (END)
