@@ -1,12 +1,14 @@
-// src/layouts/AuthLayout.tsx
+// ncct_backend/components/layouts/AuthLayout.tsx
 import React from 'react';
+import Footer from '@components/commons/Footer';
 
 const AuthLayout: React.FC = ({ children }) => {
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-100">
-            <div className="w-full max-w-md p-8 space-y-8 bg-white shadow-md rounded-lg">
+        <div className="min-h-screen flex flex-col">
+            <main className="flex-1 p-4">
                 {children}
-            </div>
+            </main>
+            <Footer />
         </div>
     );
 };
