@@ -1,7 +1,17 @@
 import React from 'react';
-import AdminLayout from '@/components/layouts/AdminLayout';
+import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import AdminLayout from './../../../components/layouts/AdminLayout';
 
 const AdminPage: React.FC = () => {
+    const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
+    const navigate = useNavigate();
+
+    if (!isAuthenticated) {
+        navigate('/login');
+        return null;
+    }
+
     return (
         <AdminLayout>
             <div className="text-center">
