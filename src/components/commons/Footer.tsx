@@ -1,4 +1,3 @@
-// ncct_backend/components/commons/Footer.tsx
 import React from 'react';
 import { useSelector } from 'react-redux';
 

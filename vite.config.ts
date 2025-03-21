@@ -15,34 +15,16 @@ export default defineConfig({
       "top-level-await": true,
     },
   },
-  plugins: [react()],
+  plugins: [react(), tsconfigPaths()],
   base: "./",
   resolve: {
     alias: [
-      {
-        find: "@store",
-        replacement: "/ncct_backend/store",
-      },
-      {
-        find: "@components",
-        replacement: "/ncct_backend/components",
-      },
-      {
-        find: "@features",
-        replacement: "/ncct_backend/features",
-      },
-      {
-        find: "@pages",
-        replacement: "/ncct_backend/pages",
-      },
-      {
-        find: "@interfaces",
-        replacement: "/ncct_backend/interfaces",
-      },
-      {
-        find: "@services",
-        replacement: "/ncct_backend/services",
-      },
+      { find: "@store", replacement: "/src/store" },
+      { find: "@components", replacement: "/src/components" },
+      { find: "@features", replacement: "/src/features" },
+      { find: "@pages", replacement: "/src/pages" },
+      { find: "@interfaces", replacement: "/src/interfaces" },
+      { find: "@services", replacement: "/src/services" },
     ],
   },
 });

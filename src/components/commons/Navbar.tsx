@@ -1,8 +1,7 @@
-// ncct_backend/components/commons/Navbar.tsx
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { logout } from '@store/thunks/authThunks';
+import { logout } from '../../store/thunks/authThunks';
 
 const Navbar: React.FC = () => {
     const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);

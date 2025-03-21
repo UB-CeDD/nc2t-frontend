@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import AuthLayout from '@components/layouts/AuthLayout';
-import { login } from '@/store/thunks/authThunks.ts';
+import AuthLayout from '../../components/layouts/AuthLayout';
+import { login } from '../../store/thunks/authThunks';
 
 const LoginPage: React.FC = () => {
     const [email, setEmail] = useState('');
@@ -21,10 +21,10 @@ const LoginPage: React.FC = () => {
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
         dispatch(login(email, password)).then(() => {
-                if (!isAuthenticated) {
-                    setError('Invalid email or password');
-                }
-            })
+            if (!isAuthenticated) {
+                setError('Invalid email or password');
+            }
+        })
             .catch(() => {
                 setError('An error occurred during login');
             });

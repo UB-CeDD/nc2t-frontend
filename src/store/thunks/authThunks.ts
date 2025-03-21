@@ -1,4 +1,3 @@
-// ncct_backend/store/thunks/authThunks.ts
 import { loginSuccess, logoutSuccess } from '../actions/authActions';
 
 export const login = (email: string, password: string) => {

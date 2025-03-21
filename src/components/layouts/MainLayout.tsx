@@ -1,7 +1,6 @@
-// ncct_backend/components/layouts/MainLayout.tsx
 import React from 'react';
-import Navbar from '@components/commons/Navbar';
-import Footer from '@components/commons/Footer';
+import Navbar from '../commons/Navbar';
+import Footer from '../commons/Footer';
 
 const MainLayout: React.FC = ({ children }) => {
     return (

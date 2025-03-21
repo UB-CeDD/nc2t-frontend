@@ -1,6 +1,5 @@
-// ncct_backend/components/layouts/AuthLayout.tsx
 import React from 'react';
-import Footer from '@components/commons/Footer';
+import Footer from '../commons/Footer';
 
 const AuthLayout: React.FC = ({ children }) => {
     return (

@@ -1,6 +1,5 @@
-// ncct_backend/components/layouts/AdminLayout.tsx
 import React from 'react';
-import Footer from '@components/commons/Footer';
+import Footer from '../commons/Footer';
 
 const AdminLayout: React.FC = ({ children }) => {
     return (

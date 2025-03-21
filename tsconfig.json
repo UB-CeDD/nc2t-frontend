@@ -7,29 +7,22 @@
     "module": "ESNext",
     "skipLibCheck": true,
     "noImplicitAny": false,
-
-    /* Bundler mode */
     "moduleResolution": "bundler",
     "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-
-    /* Linting */
     "strict": false,
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "noFallthroughCasesInSwitch": true,
-
     "allowSyntheticDefaultImports": true,
-
-    /* Path Aliases */
     "baseUrl": "./src",
     "paths": {
       "@components/*": ["components/*"],
-      "@Helpers/*": ["Helpers/*"],
-      "@Data/*": ["Data/*"],
+      "@interfaces/*": ["interfaces/*"],
+      "@store/*": ["store/*"],
       "@/*": ["*"]
     }
   },

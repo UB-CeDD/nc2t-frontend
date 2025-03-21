@@ -4,6 +4,7 @@ import HomePage from './pages/HomePage';
 import LoginPage from './pages/auth/LoginPage';
 import AdminPage from './pages/dashboard/admin/AdminPage';
 import RouteService from './services/RouteService';
+import NotFoundPage from '@/pages/NotFoundPage';
 
 const App: React.FC = () => {
     return (
@@ -15,6 +16,7 @@ const App: React.FC = () => {
                     <AdminPage />
                 </RouteService>
             } />
+            <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );
 };
