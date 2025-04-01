@@ -1,0 +1,10 @@
+{
+  "auth": {
+    "login": "Connexion",
+    "signup": "S'inscrire",
+    "username": "Nom d'utilisateur",
+    "password": "Mot de passe",
+    "logout": "Déconnexion",
+    "welcome": "Bienvenue, {{username}}!"
+  }
+}

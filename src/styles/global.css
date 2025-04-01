@@ -1,0 +1,53 @@
+/* Custom button styles */
+.btn-primary {
+    @apply bg-primaryLight text-white;
+}
+
+.btn-primary:hover {
+    @apply bg-primaryDark;
+}
+
+/* Custom link styles */
+.link {
+    @apply text-blue-500 hover:underline;
+}
+
+/* Custom heading styles */
+.heading {
+    @apply text-2xl font-bold text-textPrimary;
+}
+
+.heading-lg {
+    @apply text-4xl font-bold text-textPrimary;
+}
+
+.heading-xl {
+    @apply text-6xl font-bold text-textPrimary;
+}
+
+/* Custom text styles */
+.text-primary {
+    @apply text-textPrimary;
+}
+
+.text-secondary {
+    @apply text-textSecondary;
+}
+
+/* Custom CTA styles */
+.cta {
+    @apply bg-accent text-white p-4 rounded;
+}
+
+.cta:hover {
+    @apply bg-primaryDark;
+}
+
+/* Custom menu styles */
+.menu {
+    @apply bg-secondary text-textPrimary p-4 rounded;
+}
+
+.menu-item {
+    @apply p-2 hover:bg-primaryLight hover:text-white;
+}

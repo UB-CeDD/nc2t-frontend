@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react-swc';
 import tsconfigPaths from 'vite-tsconfig-paths';
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   server: {
@@ -15,7 +16,7 @@ export default defineConfig({
       "top-level-await": true,
     },
   },
-  plugins: [react(), tsconfigPaths()],
+  plugins: [react(), tsconfigPaths(), tailwindcss()],
   base: "./",
   resolve: {
     alias: [

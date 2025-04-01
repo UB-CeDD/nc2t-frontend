@@ -1,17 +1,19 @@
 import React from 'react';
-import Navbar from '../commons/Navbar';
-import Footer from '../commons/Footer';
+import Navbar from '@components/commons/Navbar';
+import Footer from '@components/commons/Footer';
 
-const MainLayout: React.FC = ({ children }) => {
+const MainLayout: React.FC = ({children}) => {
     return (
         <div className="min-h-screen flex flex-col">
-            <header>
-                <Navbar />
+            <header className="bg-blue-600 text-white p-4">
+                <Navbar/>
             </header>
-            <main className="flex-1 p-4">
+            <main className="flex-grow p-4">
                 {children}
             </main>
-            <Footer />
+            <footer className="bg-gray-800 text-white p-4 text-center">
+                <Footer/>
+            </footer>
         </div>
     );
 };
