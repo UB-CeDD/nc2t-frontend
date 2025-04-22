@@ -3,14 +3,14 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import AuthLayout from '@components/layouts/AuthLayout';
-import {login} from '../../store/thunks/authThunks';
+import {login, validateToken} from '../../store/thunks/authThunks';
 import {RootState} from '../../store/reducers';
 import Spinner from '@components/commons/Spinner';
-import '../../i18n'; // Import the i18n configuration
+import '../../i18n';
 
 const LoginPage: React.FC = () => {
     const {t} = useTranslation();
-    const [email, setEmail] = useState('');
+    const [username, setUserName] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
@@ -18,12 +18,17 @@ const LoginPage: React.FC = () => {
     const dispatch = useDispatch();
     const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
     const loginError = useSelector((state: RootState) => state.auth.error);
+    const {user} = useSelector((state: RootState) => state.auth);
 
     useEffect(() => {
-        if (isAuthenticated) {
-            navigate('/admin');
+        dispatch(validateToken());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (isAuthenticated && user) {
+            navigate('/dashboard/admin');
         }
-    }, [isAuthenticated, navigate]);
+    }, [isAuthenticated, user, navigate]);
 
     useEffect(() => {
         if (loginError) {
@@ -35,7 +40,8 @@ const LoginPage: React.FC = () => {
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
-        dispatch(login(email, password));
+        dispatch(login(username, password));
+        setLoading(false);
     };
 
     return (
@@ -46,12 +52,12 @@ const LoginPage: React.FC = () => {
                     {error && <p className="text-red-500 mb-4">{error}</p>}
                     <form onSubmit={handleLogin}>
                         <div className="mb-4">
-                            <label className="block text-gray-700">{t('auth.email')}</label>
+                            <label className="block text-gray-700">{t('auth.username')}</label>
                             <input
-                                type="email"
+                                type="text"
                                 className="w-full p-2 border border-gray-300 rounded mt-1"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
+                                value={username}
+                                onChange={(e) => setUserName(e.target.value)}
                             />
                         </div>
                         <div className="mb-4">
@@ -65,8 +71,7 @@ const LoginPage: React.FC = () => {
                         </div>
                         <button type="submit" className="w-full bg-blue-500 text-white p-2 rounded btn btn-primary"
                                 disabled={loading}>
-                            {/*{loading ? <Spinner size={1} color="1D8C84" /> : t('auth.loginButton')}*/}
-                            {t('auth.loginButton')}
+                            {loading ? <Spinner size={1} color="1D8C84"/> : t('auth.loginButton')}
                         </button>
                     </form>
                 </div>

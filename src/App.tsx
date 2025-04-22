@@ -5,17 +5,25 @@ import LoginPage from './pages/auth/LoginPage';
 import AdminPage from './pages/dashboard/admin/AdminPage';
 import RouteService from './services/RouteService';
 import NotFoundPage from '@/pages/NotFoundPage';
+import CompoundPage from "@/pages/dashboard/CompoundPage.tsx";
 
 const App: React.FC = () => {
     return (
         <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<LoginPage />} />
-            <Route path="/admin" element={
-                <RouteService redirectTo="/login">
-                    <AdminPage />
-                </RouteService>
-            } />
+            <Route
+                path="/dashboard/*"
+                element={
+                    <RouteService redirectTo="/login">
+                        <Routes>
+                            <Route path="admin" element={<AdminPage />} />
+                            <Route path="compounds" element={<CompoundPage />} />
+                        </Routes>
+                    </RouteService>
+                }
+            />
+
             <Route path="*" element={<NotFoundPage />} />
         </Routes>
     );

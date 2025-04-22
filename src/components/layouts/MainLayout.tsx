@@ -1,8 +1,12 @@
-import React from 'react';
+import React, {ReactNode} from 'react';
 import Navbar from '@components/commons/Navbar';
 import Footer from '@components/commons/Footer';
 
-const MainLayout: React.FC = ({children}) => {
+interface HomeLayoutProps {
+    children: ReactNode;
+}
+
+const MainLayout: React.FC<HomeLayoutProps> = ({children}) => {
     return (
         <div className="min-h-screen flex flex-col">
             <header className="bg-blue-600 text-white p-4">
