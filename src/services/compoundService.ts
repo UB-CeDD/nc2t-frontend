@@ -1,4 +1,6 @@
 import axios from 'axios';
+import { Compound } from '@/helpers/types';
+
 
 const API_URL = 'http://localhost:8000/api/compounds';
 const getHeaders = () => ({
@@ -6,7 +8,7 @@ const getHeaders = () => ({
     'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
 });
 
-export const createCompound = async (compoundData: { subclass: string; compound_class: string; smiles: string }) => {
+export const createCompound = async (compoundData: Compound ) => {
     try {
         const response = await axios.post(`${API_URL}/`, compoundData, {headers: getHeaders()});
         return response.data;

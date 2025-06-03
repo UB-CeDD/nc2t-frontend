@@ -1,20 +1,21 @@
-import React, {useState} from 'react';
-import {useDispatch} from 'react-redux';
-import {createCompoundThunk, updateCompoundThunk} from '@store/thunks/compoundThunk.ts';
-import {useTranslation} from "react-i18next";
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { createCompoundThunk, updateCompoundThunk } from '@store/thunks/compoundThunk.ts';
+import { useTranslation } from "react-i18next";
+import { Compound } from '@/helpers/types';
 
-const CompoundForm: React.FC<{ compoundToEdit?: any }> = ({compoundToEdit}) => {
-    const {t} = useTranslation();
+const CompoundForm: React.FC<{ compoundToEdit?: Compound }> = ({ compoundToEdit }) => {
+    const { t } = useTranslation();
     const dispatch = useDispatch();
-    const [formData, setFormData] = useState({
+    const [formData, setFormData] = useState<Compound>({
         subclass: compoundToEdit?.subclass || '',
         compound_class: compoundToEdit?.compound_class || '',
         smiles: compoundToEdit?.smiles || '',
     });
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const {name, value} = e.target;
-        setFormData({...formData, [name]: value});
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
     };
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -33,7 +34,7 @@ const CompoundForm: React.FC<{ compoundToEdit?: any }> = ({compoundToEdit}) => {
             <div className="bg-white p-8 rounded shadow-md w-full ">
                 <h1 className="text-2xl flex justify-center font-bold mb-8">{compoundToEdit?.id ? t('compound.add') : t('compound.edit')}</h1>
                 <form onSubmit={handleSubmit} className="p-4">
-                   <div className="mb-6">
+                    <div className="mb-6">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('compound.form_fields.sub_class')}</label>
                         <input
                             required

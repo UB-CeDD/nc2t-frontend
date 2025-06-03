@@ -1,11 +1,11 @@
 // Base Django model interface
 interface EntityModel {
-    id: number;
+    id?: number;
 }
 
 // Compound model
 export interface Compound extends EntityModel {
-    name?: string;
+    // name?: string;
     subclass: string;
     compound_class: string;
     smiles: string
@@ -33,7 +33,9 @@ export interface Location extends EntityModel {
     country: string;
     region_state: string;
     city_town: string;
+    name: string;
     place: string;
+    zipCode: string;
     gps_latitude: number;
     gps_longitude: number;
 }

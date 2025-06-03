@@ -17,6 +17,7 @@ import {
     deleteCompoundSuccess,
     deleteCompoundFailure,
 } from '../actions/compoundActions';
+import { Compound } from '@/helpers/types';
 
 export const fetchCompounds = (queryParams: Record<string, string> = {}) => async (dispatch: any) => {
     try {
@@ -27,7 +28,7 @@ export const fetchCompounds = (queryParams: Record<string, string> = {}) => asyn
     }
 };
 
-export const createCompoundThunk = (compoundData: { subclass: string; compound_class: string; smiles: string }) => async (dispatch: any) => {
+export const createCompoundThunk = (compoundData: Compound) => async (dispatch) => {
     try {
         const newCompound = await createCompound(compoundData);
         dispatch(createCompoundSuccess(newCompound));
