@@ -36,7 +36,7 @@ export const createCompoundThunk = (compoundData: { subclass: string; compound_c
     }
 };
 
-export const retrieveCompoundThunk = (id: string) => async (dispatch: any) => {
+export const retrieveCompoundThunk = (id: string) => async (dispatch) => {
     try {
         const compound = await retrieveCompound(id);
         dispatch(retrieveCompoundSuccess(compound));
@@ -54,7 +54,7 @@ export const updateCompoundThunk = (id: string, compoundData: { compound_class?:
     }
 };
 
-export const deleteCompoundThunk = (id: string) => async (dispatch: any) => {
+export const deleteCompoundThunk = (id: string) => async (dispatch) => {
     try {
         await deleteCompound(id);
         dispatch(deleteCompoundSuccess(id));

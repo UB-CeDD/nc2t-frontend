@@ -1,4 +1,13 @@
 {
+  "common": {
+    "submit": "Submit",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "update": "Update",
+    "view": "View",
+    "save": "Save"
+  },
   "auth": {
     "login": "Login",
     "signup": "Sign Up",
@@ -29,6 +38,65 @@
     "account_deactivated": "Account deactivated successfully.",
     "account_deactivation_failed": "Account deactivation failed. Please try again.",
     "loginButton": "Sign In"
+  },
+  "location": {
+    "location": "Location",
+    "location_required": "Location is required.",
+    "location_invalid": "Invalid location.",
+    "location_not_found": "Location not found.",
+    "location_added": "Location added successfully.",
+    "location_add_failed": "Failed to add location. Please try again.",
+    "location_updated": "Location updated successfully.",
+    "location_update_failed": "Failed to update location. Please try again.",
+    "location_deleted": "Location deleted successfully.",
+    "location_delete_failed": "Failed to delete location. Please try again.",
+    "form_fields": {
+      "name": "Name",
+      "address": "Address",
+      "city": "City",
+      "state": "State",
+      "country": "Country",
+      "zip_code": "Zip Code",
+      "gps": "GPS Co-ordinates"
+    }
+  },
+  "compound": {
+    "compound": "Compound",
+    "add": "Add Compound",
+    "edit": "Edit Compound",
+    "compound_required": "Compound is required.",
+    "compound_invalid": "Invalid compound.",
+    "compound_not_found": "Compound not found.",
+    "compound_added": "Compound added successfully.",
+    "compound_add_failed": "Failed to add compound. Please try again.",
+    "compound_updated": "Compound updated successfully.",
+    "compound_update_failed": "Failed to update compound. Please try again.",
+    "compound_deleted": "Compound deleted successfully.",
+    "compound_delete_failed": "Failed to delete compound. Please try again.",
+    "form_fields": {
+      "name": "Name",
+      "class": "Class",
+      "sub_class": "Sub Class",
+      "smile": "Smile",
+      "formula": "Formula",
+      "molecular_weight": "Molecular Weight",
+      "density": "Density",
+      "melting_point": "Melting Point",
+      "boiling_point": "Boiling Point"
+    }
+  },
+  "map": {
+    "map": "Map",
+    "map_required": "Map is required.",
+    "map_invalid": "Invalid map.",
+    "map_not_found": "Map not found.",
+    "map_added": "Map added successfully.",
+    "map_add_failed": "Failed to add map. Please try again.",
+    "map_updated": "Map updated successfully.",
+    "map_update_failed": "Failed to update map. Please try again.",
+    "map_deleted": "Map deleted successfully.",
+    "map_delete_failed": "Failed to delete map. Please try again."
   }
 }
+
 

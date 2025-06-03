@@ -25,8 +25,9 @@ export const validateRefreshToken = async (refreshToken: string) => {
             },
         });
 
+        console.log(response.data)
         const { access } = response.data;
-        localStorage.setItem('access_token', access);
+        // localStorage.setItem('access_token', access);
         return { status: response.status };
     } catch (error) {
         throw new Error('Token validation failed.');

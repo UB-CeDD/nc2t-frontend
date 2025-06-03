@@ -35,6 +35,16 @@ const Sidebar: React.FC = () => {
                         Compounds
                     </NavLink>
                 </li>
+                <li>
+                    <NavLink
+                        to="/dashboard/locations"
+                        className={({isActive}) =>
+                            isActive ? 'text-blue-400' : 'text-white'
+                        }
+                    >
+                        Locations
+                    </NavLink>
+                </li>
             </ul>
         </div>
     );
