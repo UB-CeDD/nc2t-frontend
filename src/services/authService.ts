@@ -25,7 +25,6 @@ export const validateRefreshToken = async (refreshToken: string) => {
             },
         });
 
-        console.log(response.data)
         const { access } = response.data;
         // localStorage.setItem('access_token', access);
         return { status: response.status };
@@ -35,7 +34,7 @@ export const validateRefreshToken = async (refreshToken: string) => {
 };
 
 export const logout = async () => {
-    return await axios.post(`${API_URL}/admin/logout/`, {}, {
+    return await axios.post(`${API_URL}/logout/`, {}, {
         headers: {
             'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
         },

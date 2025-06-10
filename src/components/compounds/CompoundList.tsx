@@ -1,14 +1,30 @@
-import React, {useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
-import {fetchCompounds} from '@store/thunks/compoundThunk.ts';
-import {RootState} from '@store/store';
-import {ThunkDispatch} from 'redux-thunk';
-import {AnyAction} from 'redux';
-import {Compound} from "@/helpers/types.ts";
+import React, { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { fetchCompounds } from '@store/thunks/compoundThunk.ts';
+import { RootState } from '@store/store';
+import { Compound } from "@/helpers/types.ts";
+import { useTranslation } from "react-i18next";
+import Table from '@components/commons/Table';
 
 const CompoundList: React.FC = () => {
-    const dispatch: ThunkDispatch<RootState, void, AnyAction> = useDispatch();
-    const { compounds, error} = useSelector((state: RootState) => state.getCompounds );
+    const { t } = useTranslation();
+    const dispatch = useDispatch();
+    const { compounds, error } = useSelector((state: RootState) => state.getCompounds);
+
+
+    const columns = [
+            { key: 'name', label: t('compound.form_fields.name') },
+            { key: 'class', label: t('compound.form_fields.class') },
+            { key: 'sub_class', label: t('compound.form_fields.sub_class') },
+        ];
+    
+        const renderActions = (row: Compound) => (
+            <div className="flex justify-center items-center gap-2">
+                <a className="text-blue-500 cursor-pointer" onClick={() => handleEdit(row)} >Edit</a>
+                <a className="text-red-500 cursor-pointer" onClick={() => handleDelete(row)} >Delete</a>
+            </div>
+        );
+    
 
     useEffect(() => {
         dispatch(fetchCompounds());
@@ -17,15 +33,11 @@ const CompoundList: React.FC = () => {
     if (error) return <p>Error: {error}</p>;
     console.log(compounds)
     return (
-        <div>
-            <h1>Compounds</h1>
-            <ul>
-                {Array.isArray(compounds) && compounds.map((compound: Compound) => (
-                    <li key={compound.id}>
-                        {compound.subclass} - {compound.compound_class} - {compound.smiles}
-                    </li>
-                ))}
-            </ul>
+        <div className="flex items-center justify-center">
+            <div className="bg-white p-8 rounded shadow-md w-full">
+                <h1 className="text-2xl flex justify-center font-bold mb-8">{t('compound.all')}</h1>
+                <Table columns={columns} renderActions={renderActions} data={compounds} />
+            </div>
         </div>
     );
 };

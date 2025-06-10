@@ -3,6 +3,22 @@ interface EntityModel {
     id?: number;
 }
 
+export interface UserModel extends EntityModel {
+    username: string;
+    first_name?: string;
+    last_name?: string;
+    email: string;
+    department?: string;
+    is_active?: boolean;
+    is_staff?: boolean;
+    is_superuser?: boolean;
+    date_joined?: string;
+    last_login?: string;
+    password: string; // Password field
+    groups?: number[]; // Array of group IDs        
+    user_permissions?: number[]; // Array of permission IDs
+}
+
 // Compound model
 export interface Compound extends EntityModel {
     // name?: string;
@@ -13,9 +29,11 @@ export interface Compound extends EntityModel {
 
 // Reference model
 export interface Reference extends EntityModel {
+    year: number;
     type: string;
     title: string;
     author: string;
+    doi?: string;
     thesis_level?: string;
 }
 

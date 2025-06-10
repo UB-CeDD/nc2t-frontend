@@ -6,7 +6,10 @@ import AdminPage from './pages/dashboard/admin/AdminPage';
 import RouteService from './services/RouteService';
 import NotFoundPage from '@/pages/NotFoundPage';
 import CompoundPage from "@/pages/dashboard/CompoundPage.tsx";
-import LocationManagerPage from "@/pages/dashboard/LocationManagerPage.tsx";
+import LocationPage from "@/pages/dashboard/LocationPage";
+import ReferencePage from './pages/dashboard/ReferencePage';
+import UsersPage from './pages/dashboard/admin/UsersPage';
+import AddEditUser from '@components/users/AddEditUser';
 
 const App: React.FC = () => {
     return (
@@ -18,9 +21,21 @@ const App: React.FC = () => {
                 element={
                     <RouteService redirectTo="/login">
                         <Routes>
-                            <Route path="admin" element={<AdminPage />} />
                             <Route path="compounds" element={<CompoundPage />} />
-                            <Route path="locations" element={<LocationManagerPage />} />
+                            <Route path="references" element={<ReferencePage />} />
+                            <Route path="locations" element={<LocationPage />} />
+                        </Routes>
+                    </RouteService>
+                }
+            />
+            <Route
+                path="/admin/*"
+                element={
+                    <RouteService redirectTo="/login">
+                        <Routes>
+                            <Route path="dashboard" element={<AdminPage />} />
+                            <Route path="users" element={<UsersPage />} />
+                            <Route path="users/add" element={<AddEditUser />} />
                         </Routes>
                     </RouteService>
                 }

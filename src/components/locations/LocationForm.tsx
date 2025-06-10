@@ -7,28 +7,28 @@ import { useDispatch } from "react-redux";
 import { Location } from "helpers/types.ts";
 
 interface LocationFormProps {
-    location: Location;
-    onSave: (location: Location) => void;
-    onCancel: () => void;
+    location?: Location;
+    onSave?: (location: Location) => void;
+    onCancel?: () => void;
 }
 
 const LocationForm: React.FC<LocationFormProps> = ({ location}) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [formData, setFormData] = useState({
-        name: location.name || '',
-        place: location.place || '',
-        city_town: location.city_town || '',
-        region_state: location.region_state || '',
-        country: location.country || '',
-        zipCode: location.zipCode || '',
-        continent: location.continent || '',
+        name: location?.name || '',
+        place: location?.place || '',
+        city_town: location?.city_town || '',
+        region_state: location?.region_state || '',
+        country: location?.country || '',
+        zipCode: location?.zipCode || '',
+        continent: location?.continent || '',
     });
 
     const [loading, setLoading] = useState(false);
-    const [selectedCountry,  setSelectedCountry] = useState<string>(location.country || '');
+    const [selectedCountry,  setSelectedCountry] = useState<string>(location?.country || '');
     const [gpsCoordinates,  setGpsCoordinates] = useState<string>(
-        location.id ? `${location.gps_latitude || ''}, ${location.gps_longitude || ''}`.trim() : '');
+        location?.id ? `${location?.gps_latitude || ''}, ${location?.gps_longitude || ''}`.trim() : '');
 
     const handleCountryChange = (country: string[]) => {
         console.log(country);
@@ -59,13 +59,6 @@ const LocationForm: React.FC<LocationFormProps> = ({ location}) => {
         return "12.9716, 77.5946"; // Example coordinates
     };
 
-    // const handleSaveLocation = (e) => {
-    //     e.preventDefault();
-    //     console.log(e.target);
-    //     setLoading(true);
-    //     setLoading(false);
-    // };
-
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value, country: selectedCountry, continent: "Africa" }); // Assuming continent is fixed for now
@@ -75,7 +68,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ location}) => {
 
     const handleSubmit = (e: React.FormEvent) => {        
         e.preventDefault();
-        if (location.id) {
+        if (location?.id) {
             // Update existing compound
             dispatch(updateLocationThunk(formData.id, formData));
         } else {           
@@ -87,7 +80,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ location}) => {
     return (
         <div className="flex items-center justify-center">
             <div className="bg-white p-8 rounded shadow-md w-full">
-                <h1 className="text-2xl flex justify-center font-bold mb-8">{location.id === undefined ? "Add Location" : "Edit Location"}</h1>
+                <h1 className="text-2xl flex justify-center font-bold mb-8">{location?.id === undefined ? "Add Location" : "Edit Location"}</h1>
                 <form onSubmit={handleSubmit}>
                     <div className="grid gap-6 mb-6 md:grid-cols-2">
                         <div>

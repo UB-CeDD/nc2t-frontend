@@ -4,13 +4,16 @@ import logger from './middleware/logger';
 import compoundReducer from './reducers/compoundReducer';
 import authReducer from './reducers/authReducer';
 import locationReducer from './reducers/locationReducer';
+import referenceReducer from './reducers/referenceReducer';
+import userReducer from './reducers/userReducer';
 
 // Combine all reducers
 const rootReducer = combineReducers({
     getCompounds: compoundReducer,
     getLocations: locationReducer,
+    getReferences: referenceReducer,
+    getusers: userReducer,
     auth: authReducer,
-    // Add other reducers here as needed
 });
 
 const store = configureStore({

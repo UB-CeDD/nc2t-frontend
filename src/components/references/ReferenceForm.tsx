@@ -1,0 +1,149 @@
+import React, { useState } from 'react';
+import { useDispatch } from 'react-redux';
+import { useTranslation } from "react-i18next";
+import { createReferenceThunk, updateReferenceThunk } from '@store/thunks/referenceThunk';
+import { Reference } from '@/helpers/types';
+// import { toast } from 'react-toastify';
+
+interface ReferenceFormProps {
+    reference?: Reference;
+    onSave?: () => void;
+    onCancel?: () => void;
+}
+
+const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCancel }) => {
+    const { t } = useTranslation();
+    const dispatch = useDispatch();
+    const [formData, setFormData] = useState<Reference>({
+        type: reference?.type || '',
+        title: reference?.title || '',
+        author: reference?.author || '',
+        doi: reference?.doi || '',
+        year: reference?.year || new Date().getFullYear(),
+        thesis_level: reference?.thesis_level || '',
+    });
+
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+        const { name, value } = e.target;
+        setFormData({ ...formData, [name]: value });
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault();
+        try {
+            if (reference?.id) {
+                await dispatch(updateReferenceThunk(reference.id, formData));
+                // toast.success(t('reference.update_success'));
+            } else {
+                await dispatch(createReferenceThunk(formData));
+                // toast.success(t('reference.create_success'));
+            }
+            if (onSave) onSave();
+        } catch {
+            // toast.error(t('reference.action_failed'));
+        }
+    };
+
+    return (
+        <div className="flex items-center justify-center">
+            <div className="bg-white p-8 rounded shadow-md w-full">
+                <h1 className="text-2xl flex justify-center font-bold mb-8">{location?.id === undefined ? t('reference.add') : t('reference.edit')}</h1>
+
+                <form onSubmit={handleSubmit} className="p-4">
+                    <div className="mb-6">
+                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('reference.form_fields.type')}</label>
+                        <select
+                            name="type"
+                            value={formData.type}
+                            onChange={handleChange}
+                            required
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        >
+                            <option value="" disabled>{t('reference.form_fields.type_placeholder')}</option>
+                            <option value="Article">Article</option>
+                            <option value="Journal">Journal</option>
+                            <option value="Manuscript">Manuscript</option>
+                            <option value="Thesis">Thesis</option>
+                        </select>
+                    </div>
+                    <div className="mb-6">
+                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('reference.form_fields.title')}</label>
+                        <input
+                            required
+                            type="text"
+                            name="title"
+                            value={formData.title}
+                            onChange={handleChange}
+                            placeholder={t('reference.form_fields.title')}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        />
+                    </div>
+                    <div className="mb-6">
+                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('reference.form_fields.author')}</label>
+                        <input
+                            required
+                            type="text"
+                            name="author"
+                            value={formData.author}
+                            onChange={handleChange}
+                            placeholder={t('reference.form_fields.author')}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        />
+                    </div>
+                    {formData.type === 'Thesis' && (
+                        <div className="mb-6">
+                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('reference.form_fields.thesis_level')}</label>
+                            <input
+                                required
+                                type="text"
+                                name="thesis_level"
+                                value={formData.thesis_level}
+                                onChange={handleChange}
+                                placeholder={t('reference.form_fields.thesis_level')}
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            />
+                        </div>
+                    )}
+                    {formData.type !== 'Thesis' && formData.type && (
+                        <div className="mb-6">
+                            <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('reference.form_fields.doi')}</label>
+                            <input
+                                required
+                                type="text"
+                                name="doi"
+                                value={formData.doi}
+                                onChange={handleChange}
+                                placeholder={t('reference.form_fields.doi')}
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            />
+                        </div>
+                    )}
+                    <div className="mb-6">
+                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('reference.form_fields.year')}</label>
+                        <select
+                            required
+                            name="year"
+                            value={formData.year}
+                            onChange={handleChange}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        >
+                            {Array.from({ length: 50 }, (_, i) => new Date().getFullYear() - i).map((year) => (
+                                <option key={year} value={year}>
+                                    {year}
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+                    <button
+                        type="submit"
+                        className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                    >
+                        {reference ? t('reference.edit') : t('reference.add')}
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+};
+
+export default ReferenceForm;
