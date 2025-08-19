@@ -1,3 +1,4 @@
+import { Reference } from "@/helpers/types.ts";
 import {
     FETCH_REFERENCES_SUCCESS,
     FETCH_REFERENCES_FAILURE,
@@ -13,10 +14,16 @@ import {
 
 const initialState = {
     references: [],
+    searchResults: [],
     error: null,
 };
 
-const referenceReducer = (state = initialState, action: any) => {
+interface Action {
+    type: string;
+    payload?: Reference[] | Reference | string;
+}
+
+const referenceReducer = (state = initialState, action: Action) => {
     switch (action.type) {
         case FETCH_REFERENCES_SUCCESS:
             return { ...state, references: action.payload, error: null };

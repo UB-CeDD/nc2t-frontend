@@ -24,7 +24,7 @@ const CompoundForm: React.FC<{ compoundToEdit?: Compound }> = ({ compoundToEdit 
             // Update existing compound
             dispatch(updateCompoundThunk(compoundToEdit.id, formData));
         } else {
-            // Create new compound
+            // Create new compound           
             dispatch(createCompoundThunk(formData));
         }
     };

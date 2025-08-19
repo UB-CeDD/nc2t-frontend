@@ -2,8 +2,9 @@ import { loginSuccess, loginFailure, logoutSuccess } from '../actions/authAction
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import * as authService from '../../services/authService';
+import { RootState } from '../store';
 
-export const login = (username: string, password: string): ThunkAction<void, {}, {}, AnyAction> => {
+export const login = (username: string, password: string): ThunkAction<void, RootState, unknown, AnyAction> => {
     return async (dispatch) => {
         try {
             const response = await authService.login(username, password);
@@ -13,13 +14,13 @@ export const login = (username: string, password: string): ThunkAction<void, {},
             } else {
                 dispatch(loginFailure('Invalid username or password'));
             }
-        } catch (error) {
+        } catch {
             dispatch(loginFailure('An error occurred during login'));
         }
     };
 };
 
-export const validateToken = (): ThunkAction<void, {}, {}, AnyAction> => {
+export const validateToken = (): ThunkAction<void, RootState, unknown, AnyAction> => {
     return async (dispatch) => {
         try {
             const refreshToken = localStorage.getItem('refresh_token');
@@ -32,17 +33,17 @@ export const validateToken = (): ThunkAction<void, {}, {}, AnyAction> => {
                     dispatch(loginFailure('Session expired. Please log in again.'));
                 }
             }
-        } catch (error) {
+        } catch {
             dispatch(loginFailure('An error occurred during token validation'));
         }
     };
 };
-export const logout = (): ThunkAction<void, {}, {}, AnyAction> => {
+export const logout = (): ThunkAction<void, RootState, unknown, AnyAction> => {
     return async (dispatch) => {
         try {
             await authService.logout();
             dispatch(logoutSuccess());
-        } catch (error) {
+        } catch {
             dispatch(loginFailure('An error occurred during logout'));
         }
     };

@@ -1,65 +1,38 @@
+import { listReferences, createReference, updateReference } from '@/services/referenceService.ts';
 import {
     fetchReferencesSuccess,
     fetchReferencesFailure,
     createReferenceSuccess,
     createReferenceFailure,
-    retrieveReferenceSuccess,
-    retrieveReferenceFailure,
     updateReferenceSuccess,
-    updateReferenceFailure,
-    deleteReferenceSuccess,
-    deleteReferenceFailure,
+    updateReferenceFailure
 } from '../actions/referenceActions';
-import {
-    listReferences,
-    createReference,
-    retrieveReference,
-    updateReference,
-    deleteReference,
-} from '../../services/referenceService';
 import { Reference } from '@/helpers/types';
 
-export const fetchReferencesThunk = (queryParams) => async (dispatch) => {
+
+export const fetchReferencesThunk = () => async (dispatch: any) => {
     try {
-        const references = await listReferences(queryParams);
+        const references = await listReferences();
         dispatch(fetchReferencesSuccess(references));
     } catch (error) {
-        dispatch(fetchReferencesFailure(error.message));
+        dispatch(fetchReferencesFailure('Failed to fetch references.'));
     }
 };
 
-export const createReferenceThunk = (referenceData: Reference) => async (dispatch) => {
+export const createReferenceThunk = (referenceData: Reference) => async (dispatch: any) => {
     try {
-        const reference = await createReference(referenceData);
-        dispatch(createReferenceSuccess(reference));
+        const newReference = await createReference(referenceData);
+        dispatch(createReferenceSuccess(newReference));
     } catch (error) {
-        dispatch(createReferenceFailure(error.message));
+        dispatch(createReferenceFailure('Failed to create reference.'));
     }
 };
 
-export const retrieveReferenceThunk = (id: string) => async (dispatch) => {
+export const updateReferenceThunk = (id: string, referenceData: Partial<Reference>) => async (dispatch: any) => {
     try {
-        const reference = await retrieveReference(id);
-        dispatch(retrieveReferenceSuccess(reference));
+        const updatedReference = await updateReference(id, referenceData);
+        dispatch(updateReferenceSuccess(updatedReference));
     } catch (error) {
-        dispatch(retrieveReferenceFailure(error.message));
-    }
-};
-
-export const updateReferenceThunk = (id: string, referenceData: Reference ) => async (dispatch) => {
-    try {
-        const reference = await updateReference(id, referenceData);
-        dispatch(updateReferenceSuccess(reference));
-    } catch (error) {
-        dispatch(updateReferenceFailure(error.message));
-    }
-};
-
-export const deleteReferenceThunk = (id: string) => async ( dispatch ) => {
-    try {
-        await deleteReference(id);
-        dispatch(deleteReferenceSuccess(id));
-    } catch (error) {
-        dispatch(deleteReferenceFailure(error.message));
+        dispatch(updateReferenceFailure('Failed to update reference.'));
     }
 };

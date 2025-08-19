@@ -12,7 +12,7 @@ const UserList: React.FC = () => {
     const navigate = useNavigate();
     const { users } = useSelector((state) => state.getusers);
     const [searchText, setSearchText] = useState('');
-    
+
     const filteredUsers = users.filter((user) => {
         return (
             user.username.toLowerCase().includes(searchText.toLowerCase()) ||
@@ -28,9 +28,11 @@ const UserList: React.FC = () => {
         { key: 'email', label: t('user.email') },
         { key: 'username', label: t('user.username') },
     ];
+    
     const handleView = (row: UserModel) => {
         navigate(`/admin/users/${row.id}`);
     };
+
     const renderActions = (row: UserModel) => (
         <div className="flex justify-center items-center gap-2">
             <a className="text-blue-500 cursor-pointer" onClick={() => handleView(row)}>{t('user.view')}</a>

@@ -135,6 +135,13 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
                         </select>
                     </div>
                     <button
+                        type="button"
+                        onClick={onCancel}
+                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mr-2"
+                    >
+                        {t('cancel')}
+                    </button>
+                    <button
                         type="submit"
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
                     >

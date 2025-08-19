@@ -10,6 +10,7 @@ import LocationPage from "@/pages/dashboard/LocationPage";
 import ReferencePage from './pages/dashboard/ReferencePage';
 import UsersPage from './pages/dashboard/admin/UsersPage';
 import AddEditUser from '@components/users/AddEditUser';
+import SpeciesPage from './pages/dashboard/SpeciesPage';
 
 const App: React.FC = () => {
     return (
@@ -24,6 +25,7 @@ const App: React.FC = () => {
                             <Route path="compounds" element={<CompoundPage />} />
                             <Route path="references" element={<ReferencePage />} />
                             <Route path="locations" element={<LocationPage />} />
+                            <Route path="species" element={<SpeciesPage />} />
                         </Routes>
                     </RouteService>
                 }

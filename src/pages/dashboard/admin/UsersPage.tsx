@@ -4,19 +4,12 @@ import UserList from '@/components/users/UserList';
 import AddEditUser from '@/components/users/AddEditUser';
 import UserDetails from '@/components/users/UserDetails';
 import { useTranslation } from "react-i18next";
-import { useNavigate } from 'react-router-dom';
 
 const UsersPage: React.FC = () => {
     const { t } = useTranslation();
-    const navigate = useNavigate();
     const [showAddEditUser, setShowAddEditUser] = useState(false);
     const [showUserDetails, setShowUserDetails] = useState(false);
     const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-
-    const handleAddUserClick = () => {
-        setShowAddEditUser(true);
-        setShowUserDetails(false);
-    };
 
     const handleViewUser = (userId: string) => {
         setSelectedUserId(userId);
@@ -42,7 +35,7 @@ const UsersPage: React.FC = () => {
             
                 {showAddEditUser && <AddEditUser onCancel={handleCancel} />}
                 {showUserDetails && selectedUserId && (
-                    <UserDetails userId={selectedUserId} onCancel={handleCancel} />
+                    <UserDetails userId={selectedUserId} />
                 )}
                 {!showAddEditUser && !showUserDetails && (
                     <UserList onViewUser={handleViewUser} />

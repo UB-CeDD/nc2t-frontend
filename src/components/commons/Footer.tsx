@@ -1,8 +1,9 @@
 import React from 'react';
 import {useSelector} from 'react-redux';
+import { RootState } from '@store/store';
 
 const Footer: React.FC = () => {
-    const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
+    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
 
     return (
         <footer className="bg-gray-800 text-white p-4 text-center">

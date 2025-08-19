@@ -67,6 +67,18 @@ const Sidebar: React.FC = () => {
                 </li>
                 <li>
                     <NavLink
+                        to="/dashboard/species"
+                        className={({ isActive }) =>
+                            isActive
+                                ? 'bg-white text-sky-500 p-2 rounded block'
+                                : 'text-white p-2 block hover:bg-gray-700 hover:text-sky-400'
+                        }
+                    >
+                        Species
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink
                         to="/dashboard/references"
                         className={({ isActive }) =>
                             isActive

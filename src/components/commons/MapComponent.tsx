@@ -5,12 +5,10 @@ import React from "react";
 
 interface MapComponentProps {
     service: "google" | "mapbox" | "openstreetmap";
-    center: { lat: number; lng: number };
-    zoom: number;
     className?: string;
 }
 
-const MapComponent: React.FC<MapComponentProps> = ({service, center, zoom, className}) => {
+const MapComponent: React.FC<MapComponentProps> = ({service, className}) => {
     // const googleApiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
     const mapboxApiKey = process.env.REACT_APP_MAPBOX_API_KEY;
 

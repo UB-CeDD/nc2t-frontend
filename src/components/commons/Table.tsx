@@ -1,5 +1,4 @@
 import React from 'react';
-import { FaEdit, FaTrash } from 'react-icons/fa';
 
 interface TableProps<T> {
     data: T[];

@@ -2,9 +2,10 @@ import React from 'react';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import AdminLayout from './../../../components/layouts/AdminLayout';
+import { RootState } from '@store/store';
 
 const AdminPage: React.FC = () => {
-    const isAuthenticated = useSelector((state: any) => state.auth.isAuthenticated);
+    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
     const navigate = useNavigate();
 
     if (!isAuthenticated) {

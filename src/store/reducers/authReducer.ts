@@ -21,10 +21,22 @@ const authReducer = (state = initialState, action) => {
                 error: null,
             };
         case LOGIN_FAILURE:
+            localStorage.removeItem('current_user');
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
+            localStorage.removeItem('isAuthenticated');
+            return {
+                ...state,
+                isAuthenticated: false,
+                user: null,
+                accessToken: null,
+                error: action.type === LOGIN_FAILURE ? action.payload : null,
+            };
         case LOGOUT_SUCCESS:
             localStorage.removeItem('current_user');
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
+            localStorage.removeItem('isAuthenticated');
             return {
                 ...state,
                 isAuthenticated: false,

@@ -25,7 +25,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ location}) => {
         continent: location?.continent || '',
     });
 
-    const [loading, setLoading] = useState(false);
+    
     const [selectedCountry,  setSelectedCountry] = useState<string>(location?.country || '');
     const [gpsCoordinates,  setGpsCoordinates] = useState<string>(
         location?.id ? `${location?.gps_latitude || ''}, ${location?.gps_longitude || ''}`.trim() : '');

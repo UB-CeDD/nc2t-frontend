@@ -4,19 +4,13 @@ import MapComponent from "@components/commons/MapComponent.tsx";
 
 interface GPSInputProps {
     value?: string;
-    hasLabel?: boolean;
-    label?: string;
-    labelClass?: string;
     inputClass?: string;
     placeholder?: string;
     placeholderClass?: string;
     onChange: (gps: string) => void;
-    onPickFromMap: (value) => Promise<string>; // Simulates picking GPS coordinates from a map
-    buttonClass?: string;
 }
 
-const GPSInput: React.FC<GPSInputProps> = ({value = "", hasLabel = false, label, labelClass, inputClass, placeholder = "Enter GPS coordinates", onChange, onPickFromMap, buttonClass,
-                                           }) => {
+const GPSInput: React.FC<GPSInputProps> = ({value = "", inputClass, placeholder = "Enter GPS coordinates", onChange}) => {
 
     const [gps, setGps] = useState(value);
     const [showMap, setShowMap] = useState(false);

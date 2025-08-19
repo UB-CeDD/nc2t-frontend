@@ -43,13 +43,13 @@ const LocationList: React.FC = () => {
         // Add your delete logic here
     };
 
-    if (error) {
-        return <div>Error: {error}</div>;
-    }
-
     useEffect(() => {
         dispatch(fetchLocationsThunk());
     }, [dispatch]);
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
 
     return (
         <div className="flex items-center justify-center">

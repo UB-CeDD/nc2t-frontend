@@ -1,3 +1,4 @@
+import { Compound } from "@/helpers/types.ts";
 import {
     FETCH_COMPOUNDS_SUCCESS,
     FETCH_COMPOUNDS_FAILURE,
@@ -16,10 +17,14 @@ const initialState = {
     error: null,
 };
 
-const compoundReducer = (state = initialState, action: any) => {
+interface Action {
+    type: string;
+    payload?: Compound[] | Compound | string;
+}
+
+const compoundReducer = (state = initialState, action: Action) => {
     switch (action.type) {
         case FETCH_COMPOUNDS_SUCCESS:
-            console.log('Reducer received compounds:', action.payload);
             return {...state, compounds: action.payload, error: null};
         case FETCH_COMPOUNDS_FAILURE:
             return {...state, error: action.payload};

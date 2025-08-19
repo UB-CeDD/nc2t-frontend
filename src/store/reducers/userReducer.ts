@@ -1,3 +1,4 @@
+import { UserModel } from "@/helpers/types.ts";
 import {
     ADD_USER,
     EDIT_USER,
@@ -14,7 +15,12 @@ const initialState = {
     error: null,
 };
 
-const userReducer = (state = initialState, action: any) => {
+interface Action {
+    type: string;
+    payload?: UserModel[] | UserModel | string | any;
+}
+
+const userReducer = (state = initialState, action: Action) => {
     switch (action.type) {
         case LIST_USERS:
             return { ...state, users: action.payload, error: null };

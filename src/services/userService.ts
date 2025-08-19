@@ -1,34 +1,30 @@
-import axios from 'axios';
+import api from './api';
 
-const API_URL = 'http://localhost:8000/api/users';
-const getHeaders = () => ({
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-});
+const API_URL = '/users';
+
 export const addUser = async (userData) => {
-    const response = await axios.post(`${API_URL}/create`, userData, { headers: getHeaders()});
+    const response = await api.post(`${API_URL}/create`, userData);
     return response.data;
 };
 
 export const editUser = async (id, userData) => {
-    const response = await axios.put(`${API_URL}/${id}/`, userData, {headers: getHeaders()});
+    const response = await api.put(`${API_URL}/${id}/`, userData);
     return response.data;
 };
 
 export const listUsers = async (filters = {}) => {
-    const response = await axios.get(`${API_URL}/`, {
+    const response = await api.get(`${API_URL}/`, {
         params: filters,
-        headers: getHeaders(),
     });
     return response.data;
 };
 
 export const getUserDetails = async (id) => {
-    const response = await axios.get(`${API_URL}/${id}/`, {headers: getHeaders()});
+    const response = await api.get(`${API_URL}/${id}/`);
     return response.data;
 };
 
 export const deleteUser = async (id) => {
-    const response = await axios.delete(`${API_URL}/${id}/`, {headers: getHeaders()});
+    const response = await api.delete(`${API_URL}/${id}/`);
     return response.data;
 };

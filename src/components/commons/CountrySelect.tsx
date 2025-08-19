@@ -21,7 +21,7 @@ const CountrySelect: React.FC<CountrySelectProps> = ({ hasLabel, label, labelCla
             try {
                 const response = await fetch("https://restcountries.com/v3.1/all");
                 const data = await response.json();
-                const countryNames = data.map((country: any) => country.name.common);
+                const countryNames = data.map((country: { name: { common: string } }) => country.name.common);
                 setCountries(countryNames.sort());
             } catch (error) {
                 console.error("Error fetching countries:", error);

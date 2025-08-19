@@ -1,17 +1,13 @@
 import { Reference } from "@/helpers/types";
-import axios from "axios";
+import api from './api';
 
-const API_URL = 'http://localhost:8000/api/references';
-const getHeaders = () => ({
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-});
+const API_URL = '/references';
 
 export const createReference = async (referenceData: Reference) => {
     try {
-        const response = await axios.post(`${API_URL}/`, referenceData, { headers: getHeaders() });
+        const response = await api.post(`${API_URL}/`, referenceData);
         return response.data;
-    } catch (error) {
+    } catch {
         throw new Error('Failed to create reference.');
     }
 };
@@ -19,36 +15,45 @@ export const createReference = async (referenceData: Reference) => {
 export const listReferences = async (queryParams: Record<string, string> = {}) => {
     try {
         const queryString = new URLSearchParams(queryParams).toString();
-        const response = await axios.get(`${API_URL}?${queryString}`, { headers: getHeaders() });
+        const response = await api.get(`${API_URL}?${queryString}`);
         return response.data;
-    } catch (error) {
+    } catch {
         throw new Error('Failed to fetch references.');
     }
 };
 
 export const retrieveReference = async (id: string) => {
     try {
-        const response = await axios.get(`${API_URL}/${id}/`, { headers: getHeaders() });
+        const response = await api.get(`${API_URL}/${id}/`);
         return response.data;
-    } catch (error) {
+    } catch {
         throw new Error('Failed to retrieve reference.');
     }
 };
 
 export const updateReference = async (id: string, referenceData: { title?: string; author?: string; year?: number }) => {
     try {
-        const response = await axios.put(`${API_URL}/${id}/`, referenceData, { headers: getHeaders() });
+        const response = await api.put(`${API_URL}/${id}/`, referenceData);
         return response.data;
-    } catch (error) {
+    } catch {
         throw new Error('Failed to update reference.');
     }
 };
 
 export const deleteReference = async (id: string) => {
     try {
-        const response = await axios.delete(`${API_URL}/${id}/`, { headers: getHeaders() });
+        const response = await api.delete(`${API_URL}/${id}/`);
         return response.data;
-    } catch (error) {
+    } catch {
         throw new Error('Failed to delete reference.');
     }
 };
+
+export const searchReferences = async (query: string) => {
+    try {        
+        const response = await api.get(`${API_URL}/search/?q=${query}`);
+        return response.data;
+    } catch {
+        throw new Error('Failed to search references.');
+    }
+}

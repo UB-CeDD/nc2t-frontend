@@ -1,18 +1,22 @@
-import axios from 'axios';
 import { Compound } from '@/helpers/types';
+import api from './api';
 
-
-const API_URL = 'http://localhost:8000/api/compounds';
-const getHeaders = () => ({
-    'Content-Type': 'application/json',
-    'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
-});
+const API_URL = '/compounds/';
 
 export const createCompound = async (compoundData: Compound ) => {
-    try {
-        const response = await axios.post(`${API_URL}/`, compoundData, {headers: getHeaders()});
-        return response.data;
-    } catch (error) {
+    try {        
+        if (!compoundData || !compoundData.smiles) {
+            throw new Error('Compound data is incomplete. SMILES is required.');
+        }
+        if (!compoundData.compound_class) {
+            throw new Error('Compound class is required.');
+        }
+        // Make the API call to create the compound
+        const response = await api.post(API_URL, compoundData);
+        console.log('Compound created successfully:', response);
+        
+        return response;
+    } catch {
         throw new Error('Failed to create compound.');
     }
 };
@@ -20,36 +24,39 @@ export const createCompound = async (compoundData: Compound ) => {
 export const listCompounds = async (queryParams: Record<string, string> = {}) => {
     try {
         const queryString = new URLSearchParams(queryParams).toString();
-        const response = await axios.get(`${API_URL}?${queryString}`, {headers: getHeaders()});
-        return response.data;
-    } catch (error) {
+        const response = await api.get(`${API_URL}?${queryString}`);
+        return response;
+    } catch {
         throw new Error('Failed to fetch compounds.');
     }
 };
 
 export const retrieveCompound = async (id: string) => {
     try {
-        const response = await axios.get(`${API_URL}/${id}/`, {headers: getHeaders()});
-        return response.data;
-    } catch (error) {
+        console.log(id);
+        // const response = await makeApiCall('get', `${API_URL}/${id}/`);
+        // return response;
+    } catch {
         throw new Error('Failed to retrieve compound.');
     }
 };
 
 export const updateCompound = async (id: string, compoundData: { compound_class?: string; smiles?: string }) => {
     try {
-        const response = await axios.put(`${API_URL}/${id}/`, compoundData, {headers: getHeaders()});
-        return response.data;
-    } catch (error) {
+        console.log(id, compoundData);
+        // const response = await makeApiCall('put', `${API_URL}/${id}/`, compoundData);
+        // return response;
+    } catch {
         throw new Error('Failed to update compound.');
     }
 };
 
 export const deleteCompound = async (id: string) => {
     try {
-        const response = await axios.delete(`${API_URL}/${id}/`, {headers: getHeaders()});
-        return response.data;
-    } catch (error) {
+        console.log(id);
+        // const response = await makeApiCall('delete', `${API_URL}/${id}/`);
+        // return response;
+    } catch {
         throw new Error('Failed to delete compound.');
     }
 };

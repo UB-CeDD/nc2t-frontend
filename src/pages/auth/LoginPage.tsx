@@ -26,7 +26,7 @@ const LoginPage: React.FC = () => {
 
     useEffect(() => {
         if (isAuthenticated && user) {
-            navigate('/dashboard/admin');
+            navigate('/admin/dashboard');
         }
     }, [isAuthenticated, user, navigate]);
 

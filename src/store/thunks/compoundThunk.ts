@@ -29,7 +29,7 @@ export const fetchCompounds = (queryParams: Record<string, string> = {}) => asyn
 };
 
 export const createCompoundThunk = (compoundData: Compound) => async (dispatch) => {
-    try {
+    try {       
         const newCompound = await createCompound(compoundData);
         dispatch(createCompoundSuccess(newCompound));
     } catch (error) {

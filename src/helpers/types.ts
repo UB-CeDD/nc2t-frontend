@@ -27,6 +27,24 @@ export interface Compound extends EntityModel {
     smiles: string
 }
 
+// Specie model
+export interface Specie extends EntityModel {
+    name: string;
+    subclass: string;
+    species_class: string;
+}
+
+export interface SearchedSpecie extends Specie {
+    title: string;
+    author?: string;
+    year: number;
+    doi?: string;
+    thesis_level?: string;
+    compounds?: Compound[];
+    link?: string;
+    brief_text?: string;
+}
+
 // Reference model
 export interface Reference extends EntityModel {
     year: number;
@@ -37,13 +55,7 @@ export interface Reference extends EntityModel {
     thesis_level?: string;
 }
 
-// Species model
-export interface Species extends EntityModel {
-    compound_code: number;
-    ref: number | Reference;
-    collection_data: string;
-    compounds: number[] | Compound[];
-}
+
 
 // Location model
 export interface Location extends EntityModel {

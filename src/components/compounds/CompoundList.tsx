@@ -11,11 +11,10 @@ const CompoundList: React.FC = () => {
     const dispatch = useDispatch();
     const { compounds, error } = useSelector((state: RootState) => state.getCompounds);
 
-
     const columns = [
-            { key: 'name', label: t('compound.form_fields.name') },
-            { key: 'class', label: t('compound.form_fields.class') },
-            { key: 'sub_class', label: t('compound.form_fields.sub_class') },
+            { key: 'compound_class', label: t('compound.form_fields.class') },
+            { key: 'subclass', label: t('compound.form_fields.sub_class') },
+            { key: 'smiles', label: t('compound.form_fields.smiles') },
         ];
     
         const renderActions = (row: Compound) => (
@@ -31,12 +30,12 @@ const CompoundList: React.FC = () => {
     }, [dispatch]);
 
     if (error) return <p>Error: {error}</p>;
-    console.log(compounds)
+
     return (
         <div className="flex items-center justify-center">
             <div className="bg-white p-8 rounded shadow-md w-full">
                 <h1 className="text-2xl flex justify-center font-bold mb-8">{t('compound.all')}</h1>
-                <Table columns={columns} renderActions={renderActions} data={compounds} />
+                <Table columns={columns} renderActions={renderActions} data={compounds.data} />
             </div>
         </div>
     );

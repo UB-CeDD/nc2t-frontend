@@ -1,3 +1,4 @@
+import { Location } from "@/helpers/types.ts";
 import {
     FETCH_LOCATIONS_SUCCESS,
     FETCH_LOCATIONS_FAILURE,
@@ -16,7 +17,12 @@ const initialState = {
     error: null,
 };
 
-const locationReducer = (state = initialState, action: any) => {
+interface Action {
+    type: string;
+    payload?: Location[] | Location | string;
+}
+
+const locationReducer = (state = initialState, action: Action) => {
     switch (action.type) {
         case FETCH_LOCATIONS_SUCCESS:
             return { ...state, locations: action.payload, error: null };
