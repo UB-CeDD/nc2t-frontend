@@ -9,7 +9,6 @@ export const login = (username: string, password: string): ThunkAction<void, Roo
         try {
             const response = await authService.login(username, password);
             if (response.status === 200) {
-                console.log(response)
                 dispatch(loginSuccess(response)); // Pass user data
             } else {
                 dispatch(loginFailure('Invalid username or password'));

@@ -1,5 +1,6 @@
 import { Specie } from "@/helpers/types.ts";
 import {
+    FETCH_SPECIES_REQUEST,
     FETCH_SPECIES_SUCCESS,
     FETCH_SPECIES_FAILURE,
     CREATE_SPECIES_SUCCESS,
@@ -16,7 +17,8 @@ import {
 
 const initialState = {
     species: [],
-    searchResults: {},
+    searchResults: [],
+    loading: false,
     error: null,
 };
 
@@ -27,10 +29,12 @@ interface Action {
 
 const speciesReducer = (state = initialState, action: Action) => {
     switch (action.type) {
+        case FETCH_SPECIES_REQUEST:
+            return {...state, loading: true, error: null};
         case FETCH_SPECIES_SUCCESS:
-            return {...state, species: Array.isArray(action.payload) ? action.payload : [], error: null};
+            return {...state, loading: false, species: Array.isArray(action.payload) ? action.payload : [], error: null};
         case FETCH_SPECIES_FAILURE:
-            return {...state, error: action.payload};
+            return {...state, loading: false, error: action.payload};
         case CREATE_SPECIES_SUCCESS:
             return {...state, species: [...state.species, action.payload], error: null};
         case CREATE_SPECIES_FAILURE:
@@ -60,7 +64,7 @@ const speciesReducer = (state = initialState, action: Action) => {
         case SEARCH_SPECIES_SUCCESS:
             return { ...state, searchResults: action.payload, error: null };
         case SEARCH_SPECIES_FAILURE:
-            return { ...state, searchResults: [], error: action.payload };
+            return { ...state, searchResults: null, error: action.payload };
         default:
             return state;
     }

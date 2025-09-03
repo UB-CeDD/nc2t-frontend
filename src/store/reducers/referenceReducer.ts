@@ -1,5 +1,6 @@
 import { Reference } from "@/helpers/types.ts";
 import {
+    FETCH_REFERENCES_REQUEST,
     FETCH_REFERENCES_SUCCESS,
     FETCH_REFERENCES_FAILURE,
     CREATE_REFERENCE_SUCCESS,
@@ -15,6 +16,7 @@ import {
 const initialState = {
     references: [],
     searchResults: [],
+    loading: false,
     error: null,
 };
 
@@ -25,10 +27,12 @@ interface Action {
 
 const referenceReducer = (state = initialState, action: Action) => {
     switch (action.type) {
+        case FETCH_REFERENCES_REQUEST:
+            return { ...state, loading: true, error: null };
         case FETCH_REFERENCES_SUCCESS:
-            return { ...state, references: action.payload, error: null };
+            return { ...state, loading: false, references: action.payload, error: null };
         case FETCH_REFERENCES_FAILURE:
-            return { ...state, error: action.payload };
+            return { ...state, loading: false, error: action.payload };
         case CREATE_REFERENCE_SUCCESS:
             return { ...state, references: [...state.references, action.payload], error: null };
         case CREATE_REFERENCE_FAILURE:

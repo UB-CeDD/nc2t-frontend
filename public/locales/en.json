@@ -195,6 +195,32 @@
       "date_of_joining": "Date of Joining",
       "status": "Status"
     }
+  },
+  "species": {
+    "species": "Species",
+    "all": "All Species",
+    "search": "Search Species",
+    "search_placeholder": "Search by name or classification",
+    "no_results": "No species found.",
+    "add": "Add Species",
+    "edit": "Edit Species",
+    "species_required": "Species is required.",
+    "species_invalid": "Invalid species.",
+    "species_not_found": "Species not found.",
+    "species_added": "Species added successfully.",
+    "species_add_failed": "Failed to add species. Please try again.",
+    "species_updated": "Species updated successfully.",
+    "species_update_failed": "Failed to update species. Please try again.",
+    "species_deleted": "Species deleted successfully.",
+    "species_delete_failed": "Failed to delete species. Please try again.",
+    "form_fields": {
+      "name": "Name",
+      "recent_name": "Recent Name",
+      "kingdom": "Kingdom",
+      "family": "Family",
+      "ref": "References",
+      "compound_codes": "Compounds"
+    }
   }
 }
 

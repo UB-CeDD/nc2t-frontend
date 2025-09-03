@@ -1,5 +1,6 @@
 import { Compound } from "@/helpers/types.ts";
 import {
+    FETCH_COMPOUNDS_REQUEST,
     FETCH_COMPOUNDS_SUCCESS,
     FETCH_COMPOUNDS_FAILURE,
     CREATE_COMPOUND_SUCCESS,
@@ -14,6 +15,7 @@ import {
 
 const initialState = {
     compounds: [],
+    loading: false,
     error: null,
 };
 
@@ -24,10 +26,12 @@ interface Action {
 
 const compoundReducer = (state = initialState, action: Action) => {
     switch (action.type) {
+        case FETCH_COMPOUNDS_REQUEST:
+            return {...state, loading: true, error: null};
         case FETCH_COMPOUNDS_SUCCESS:
-            return {...state, compounds: action.payload, error: null};
+            return {...state, loading: false, compounds: action.payload, error: null};
         case FETCH_COMPOUNDS_FAILURE:
-            return {...state, error: action.payload};
+            return {...state, loading: false, error: action.payload};
         case CREATE_COMPOUND_SUCCESS:
             return {...state, compounds: [...state.compounds, action.payload], error: null};
         case CREATE_COMPOUND_FAILURE:

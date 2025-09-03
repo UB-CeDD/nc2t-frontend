@@ -1,6 +1,7 @@
 import { Reference } from "@/helpers/types.ts";
 
 // Action Types
+export const FETCH_REFERENCES_REQUEST = 'FETCH_REFERENCES_REQUEST';
 export const FETCH_REFERENCES_SUCCESS = 'FETCH_REFERENCES_SUCCESS';
 export const FETCH_REFERENCES_FAILURE = 'FETCH_REFERENCES_FAILURE';
 export const CREATE_REFERENCE_SUCCESS = 'CREATE_REFERENCE_SUCCESS';
@@ -13,6 +14,10 @@ export const DELETE_REFERENCE_SUCCESS = 'DELETE_REFERENCE_SUCCESS';
 export const DELETE_REFERENCE_FAILURE = 'DELETE_REFERENCE_FAILURE';
 
 // Action Creators
+export const fetchReferencesRequest = () => ({
+    type: FETCH_REFERENCES_REQUEST,
+});
+
 export const fetchReferencesSuccess = (references: Reference[]) => ({
     type: FETCH_REFERENCES_SUCCESS,
     payload: references,

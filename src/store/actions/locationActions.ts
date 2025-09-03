@@ -1,6 +1,7 @@
 import { Location } from "@/helpers/types.ts";
 
 // Action Types
+export const FETCH_LOCATIONS_REQUEST = 'FETCH_LOCATIONS_REQUEST';
 export const FETCH_LOCATIONS_SUCCESS = 'FETCH_LOCATIONS_SUCCESS';
 export const FETCH_LOCATIONS_FAILURE = 'FETCH_LOCATIONS_FAILURE';
 export const CREATE_LOCATION_SUCCESS = 'CREATE_LOCATION_SUCCESS';
@@ -13,6 +14,10 @@ export const DELETE_LOCATION_SUCCESS = 'DELETE_LOCATION_SUCCESS';
 export const DELETE_LOCATION_FAILURE = 'DELETE_LOCATION_FAILURE';
 
 // Action Creators
+export const fetchLocationsRequest = () => ({
+    type: FETCH_LOCATIONS_REQUEST,
+});
+
 export const fetchLocationsSuccess = (locations: Location[]) => ({
     type: FETCH_LOCATIONS_SUCCESS,
     payload: locations,

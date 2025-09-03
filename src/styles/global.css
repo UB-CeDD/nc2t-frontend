@@ -51,3 +51,8 @@
 .menu-item {
     @apply p-2 hover:bg-primaryLight hover:text-white;
 }
+
+/* Global cursor styles */
+a, button, [type='button'], [type='reset'], [type='submit'] {
+    cursor: pointer;
+}

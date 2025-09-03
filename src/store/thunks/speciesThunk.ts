@@ -6,6 +6,7 @@ import {
     deleteSpecies,
 } from '@/services/speciesService.ts';
 import {
+    fetchSpeciesRequest,
     fetchSpeciesSuccess,
     fetchSpeciesFailure,
     createSpeciesSuccess,
@@ -24,6 +25,7 @@ import { Specie } from '@/helpers/types';
 import { searchReferences } from '@/services/referenceService';
 
 export const fetchSpecies = (queryParams: Record<string, string> = {}) => async (dispatch: any) => {
+    dispatch(fetchSpeciesRequest());
     try {
         const species = await listSpecies(queryParams);
         dispatch(fetchSpeciesSuccess(species));

@@ -5,21 +5,21 @@ import { RootState } from '@store/store';
 import { Specie, Reference, SearchedSpecie } from "@/helpers/types.ts";
 import { useTranslation } from "react-i18next";
 import Table from '@components/commons/Table';
-import { useNavigate } from 'react-router-dom';
 import { searchSpeciesByReference } from '@store/thunks/speciesThunk.ts';
 import SpeciesCard from './SpeciesCard';
 import { getSpeciesByReference } from '@/services/speciesService';
+import Spinner from "@components/commons/Spinner.tsx";
 
-const SpeciesList: React.FC = () => {
+interface SpeciesListProps {
+    onEditSpecies: (species: any) => void;
+}
+
+const SpeciesList: React.FC<SpeciesListProps> = ({ onEditSpecies }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const { species, error: speciesError, searchResults} = useSelector((state: RootState) => state.getSpecies);
-    const { references, error: referencesError } = useSelector((state: RootState) => state.getReferences);
+    const { species, error: speciesError, searchResults, loading} = useSelector((state: RootState) => state.getSpecies);
+    const { error: referencesError } = useSelector((state: RootState) => state.getReferences);
     const [searchText, setSearchText] = useState('');
-
-    console.log('species', species);
-    console.log('searchResults', searchResults);
 
     const handleSearch = async () => {
         if (searchText.trim() !== '') {
@@ -29,21 +29,22 @@ const SpeciesList: React.FC = () => {
 
     const columns = [
         { key: 'name', label: t('specie.form_fields.name') },
-        { key: 'class', label: t('specie.form_fields.class') },
-        { key: 'sub_class', label: t('specie.form_fields.sub_class') },
+        { key: 'recent_name', label: t('specie.form_fields.recent_name') },
+        { key: 'kingdom', label: t('specie.form_fields.kingdom') },
+        { key: 'family', label: t('specie.form_fields.family') },
+        { key: 'references', label: t('specie.form_fields.references') },
+        { key: 'compound_codes', label: t('specie.form_fields.compound_codes') },
     ];
 
-    const handleEdit = async (row: Specie | Reference) => {
-        if ('title' in row) {
+    const handleEdit = async (row: Specie | SearchedSpecie | Reference) => {
+        if ('kingdom' in row) { // It's a Specie or SearchedSpecie
+            onEditSpecies(row);
+        } else { // It's a Reference that might not have a specie yet
             const existingSpecies = await getSpeciesByReference(row.id);
             if (existingSpecies) {
-                navigate(`/species/${existingSpecies.id}`);
+                onEditSpecies(existingSpecies);
             } else {
-                navigate('/species/new', { state: { reference: row } });
-            }
-        } else {
-            if (row.id) {
-                navigate(`/species/${row.id}`);
+                onEditSpecies({ reference: row });
             }
         }
     };
@@ -64,6 +65,7 @@ const SpeciesList: React.FC = () => {
         dispatch(fetchSpecies());
     }, [dispatch]);
 
+    if (loading) return <Spinner />;
     if (speciesError || referencesError) return <p>Error: {speciesError || referencesError}</p>;
 
     return (

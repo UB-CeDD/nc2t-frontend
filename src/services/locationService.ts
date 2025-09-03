@@ -22,6 +22,16 @@ export const listLocations = async (queryParams: Record<string, string> = {}) =>
     }
 };
 
+export const searchLocations = async (query: string) => {
+    try {
+        const response = await api.get(`${API_URL}/?search=${query}`);
+        return response.data;
+    } catch (error) {
+        console.error('Failed to search locations:', error);
+        throw new Error('Failed to search locations.');
+    }
+};
+
 export const retrieveLocation = async (id: string) => {
     try {
         const response = await api.get(`${API_URL}/${id}/`);

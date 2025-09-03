@@ -5,7 +5,7 @@ const API_URL = '/references';
 
 export const createReference = async (referenceData: Reference) => {
     try {
-        const response = await api.post(`${API_URL}/`, referenceData);
+        const response = await api.post(`${API_URL}/`, {...referenceData});
         return response.data;
     } catch {
         throw new Error('Failed to create reference.');

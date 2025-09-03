@@ -9,9 +9,10 @@ interface ReferenceFormProps {
     reference?: Reference;
     onSave?: () => void;
     onCancel?: () => void;
+    onReferenceCreated?: (reference: Reference) => void;
 }
 
-const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCancel }) => {
+const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCancel, onReferenceCreated }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [formData, setFormData] = useState<Reference>({
@@ -35,12 +36,16 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
                 await dispatch(updateReferenceThunk(reference.id, formData));
                 // toast.success(t('reference.update_success'));
             } else {
-                await dispatch(createReferenceThunk(formData));
+                const newReference = await dispatch(createReferenceThunk(formData));
+                if (newReference) {
+                    onReferenceCreated?.(newReference);
+                }
                 // toast.success(t('reference.create_success'));
             }
             if (onSave) onSave();
-        } catch {
+        } catch (error) {
             // toast.error(t('reference.action_failed'));
+            console.error('Failed to save reference:', error);
         }
     };
 

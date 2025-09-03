@@ -1,6 +1,7 @@
 import { Specie } from "@/helpers/types.ts";
 
 // Action Types
+export const FETCH_SPECIES_REQUEST = 'FETCH_SPECIES_REQUEST';
 export const FETCH_SPECIES_SUCCESS = 'FETCH_SPECIES_SUCCESS';
 export const FETCH_SPECIES_FAILURE = 'FETCH_SPECIES_FAILURE';
 export const CREATE_SPECIES_SUCCESS = 'CREATE_SPECIES_SUCCESS';
@@ -15,6 +16,10 @@ export const SEARCH_SPECIES_SUCCESS = 'SEARCH_SPECIES_SUCCESS';
 export const SEARCH_SPECIES_FAILURE = 'SEARCH_SPECIES_FAILURE';
 
 // Action Creators
+export const fetchSpeciesRequest = () => ({
+    type: FETCH_SPECIES_REQUEST,
+});
+
 export const fetchSpeciesSuccess = (species: Specie[]) => ({
     type: FETCH_SPECIES_SUCCESS,
     payload: species,

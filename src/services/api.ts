@@ -37,7 +37,7 @@ api.interceptors.request.use(
         const token = localStorage.getItem('access_token');
         const expiresIn = localStorage.getItem('expires_in'); // should be a timestamp (seconds)
 
-        if (token) {
+        if (token) {            
             const currentTime = Math.floor(Date.now() / 1000); // seconds
             if (expiresIn && Number(expiresIn) < currentTime) {
                 // Token is expired, attempt to refresh

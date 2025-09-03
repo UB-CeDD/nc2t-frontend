@@ -1,6 +1,7 @@
 import { Compound } from "@/helpers/types.ts";
 
 // Action Types
+export const FETCH_COMPOUNDS_REQUEST = 'FETCH_COMPOUNDS_REQUEST';
 export const FETCH_COMPOUNDS_SUCCESS = 'FETCH_COMPOUNDS_SUCCESS';
 export const FETCH_COMPOUNDS_FAILURE = 'FETCH_COMPOUNDS_FAILURE';
 export const CREATE_COMPOUND_SUCCESS = 'CREATE_COMPOUND_SUCCESS';
@@ -13,6 +14,10 @@ export const DELETE_COMPOUND_SUCCESS = 'DELETE_COMPOUND_SUCCESS';
 export const DELETE_COMPOUND_FAILURE = 'DELETE_COMPOUND_FAILURE';
 
 // Action Creators
+export const fetchCompoundsRequest = () => ({
+    type: FETCH_COMPOUNDS_REQUEST,
+});
+
 export const fetchCompoundsSuccess = (compounds: Compound[]) => ({
     type: FETCH_COMPOUNDS_SUCCESS,
     payload: compounds,

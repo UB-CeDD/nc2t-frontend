@@ -21,17 +21,25 @@ export interface UserModel extends EntityModel {
 
 // Compound model
 export interface Compound extends EntityModel {
-    // name?: string;
+    name: string;
     subclass: string;
     compound_class: string;
-    smiles: string
+    smiles: string;
 }
 
 // Specie model
-export interface Specie extends EntityModel {
+export interface Species extends EntityModel {
+    id?: number;
     name: string;
-    subclass: string;
-    species_class: string;
+    recent_name: string;
+    kingdom: string;
+    family: string;
+    references: number[] | Reference[];
+    compound_codes: string[];
+    compounds: number[] | Compound[];
+    sites?: number[] | Site[];
+    herbariums?: number[] | Herbarium[];
+    collection_data?: string[];
 }
 
 export interface SearchedSpecie extends Specie {
