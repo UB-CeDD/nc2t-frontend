@@ -1,4 +1,4 @@
-import { Specie } from "@/helpers/types.ts";
+import { Species } from "@/helpers/types.ts";
 
 // Action Types
 export const FETCH_SPECIES_REQUEST = 'FETCH_SPECIES_REQUEST';
@@ -20,7 +20,7 @@ export const fetchSpeciesRequest = () => ({
     type: FETCH_SPECIES_REQUEST,
 });
 
-export const fetchSpeciesSuccess = (species: Specie[]) => ({
+export const fetchSpeciesSuccess = (species: Species[]) => ({
     type: FETCH_SPECIES_SUCCESS,
     payload: species,
 });
@@ -30,7 +30,7 @@ export const fetchSpeciesFailure = (error: string) => ({
     payload: error,
 });
 
-export const createSpeciesSuccess = (specie: Specie) => ({
+export const createSpeciesSuccess = (specie: Species) => ({
     type: CREATE_SPECIES_SUCCESS,
     payload: specie,
 });
@@ -40,9 +40,9 @@ export const createSpeciesFailure = (error: string) => ({
     payload: error,
 });
 
-export const retrieveSpeciesSuccess = (specie: Specie) => ({
+export const retrieveSpeciesSuccess = (species: Species) => ({
     type: RETRIEVE_SPECIES_SUCCESS,
-    payload: specie,
+    payload: species,
 });
 
 export const retrieveSpeciesFailure = (error: string) => ({
@@ -50,9 +50,9 @@ export const retrieveSpeciesFailure = (error: string) => ({
     payload: error,
 });
 
-export const updateSpeciesSuccess = (specie: Specie) => ({
+export const updateSpeciesSuccess = (species: Species) => ({
     type: UPDATE_SPECIES_SUCCESS,
-    payload: specie,
+    payload: species,
 });
 
 export const updateSpeciesFailure = (error: string) => ({
@@ -70,7 +70,7 @@ export const deleteSpeciesFailure = (error: string) => ({
     payload: error,
 });
 
-export const searchSpeciesSuccess = (species: Specie[]) => ({
+export const searchSpeciesSuccess = (species: Species[]) => ({
     type: SEARCH_SPECIES_SUCCESS,
     payload: species,
 });

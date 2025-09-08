@@ -1,9 +1,9 @@
 import {
     createSpecies,
     listSpecies,
-    retrieveSpecies,
     updateSpecies,
     deleteSpecies,
+    retrieveSingleSpecies,
 } from '@/services/speciesService.ts';
 import {
     fetchSpeciesRequest,
@@ -21,52 +21,60 @@ import {
     searchSpeciesSuccess,
 } from '../actions/speciesActions';
 
-import { Specie } from '@/helpers/types';
+import { Species } from '@/helpers/types';
 import { searchReferences } from '@/services/referenceService';
 
-export const fetchSpecies = (queryParams: Record<string, string> = {}) => async (dispatch: any) => {
+import { Dispatch } from 'redux';
+
+export const fetchSpecies = (queryParams: Record<string, string> = {}) => async (dispatch: Dispatch) => {
     dispatch(fetchSpeciesRequest());
     try {
         const species = await listSpecies(queryParams);
         dispatch(fetchSpeciesSuccess(species));
-    } catch (error) {
-        dispatch(fetchSpeciesFailure('Failed to fetch species.'));
+    } catch (error: unknown) {
+        dispatch(fetchSpeciesFailure((error as Error).message || 'Failed to fetch species.'));
     }
 };
 
-export const createSpeciesThunk = (speciesData: Specie) => async (dispatch) => {
+export const createSpeciesThunk = (speciesData: Species, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch) => {
     try {
         const newSpecies = await createSpecies(speciesData);
         dispatch(createSpeciesSuccess(newSpecies));
-    } catch (error) {
-        dispatch(createSpeciesFailure('Failed to create species.'));
+        addNotification('Species created successfully!', 'success');
+    } catch (error: any) {
+        dispatch(createSpeciesFailure(error.message || 'Failed to create species.'));
+        addNotification(error.message || 'Failed to create species.', 'error');
     }
 };
 
-export const retrieveSpeciesThunk = (id: string) => async (dispatch) => {
+export const retrieveSingleSpeciesThunk = (id: string) => async (dispatch) => {
     try {
-        const specie = await retrieveSpecies(id);
+        const specie = await retrieveSingleSpecies(id);
         dispatch(retrieveSpeciesSuccess(specie));
     } catch (error) {
         dispatch(retrieveSpeciesFailure('Failed to retrieve species.'));
     }
 };
 
-export const updateSpeciesThunk = (id: string, speciesData: { species_class?: string; name?: string }) => async (dispatch: any) => {
+export const updateSpeciesThunk = (id: string, speciesData: { species_class?: string; name?: string }, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: any) => {
     try {
         const updatedSpecies = await updateSpecies(id, speciesData);
         dispatch(updateSpeciesSuccess(updatedSpecies));
-    } catch (error) {
-        dispatch(updateSpeciesFailure('Failed to update species.'));
+        addNotification('Species updated successfully!', 'success');
+    } catch (error: any) {
+        dispatch(updateSpeciesFailure(error.message || 'Failed to update species.'));
+        addNotification(error.message || 'Failed to update species.', 'error');
     }
 };
 
-export const deleteSpeciesThunk = (id: string) => async (dispatch) => {
+export const deleteSpeciesThunk = (id: string, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch) => {
     try {
         await deleteSpecies(id);
         dispatch(deleteSpeciesSuccess(id));
-    } catch (error) {
-        dispatch(deleteSpeciesFailure('Failed to delete species.'));
+        addNotification('Species deleted successfully!', 'success');
+    } catch (error: any) {
+        dispatch(deleteSpeciesFailure(error.message || 'Failed to delete species.'));
+        addNotification(error.message || 'Failed to delete species.', 'error');
     }
 };
 

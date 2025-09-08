@@ -10,7 +10,7 @@ const AddEditUser: React.FC = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const { id } = useParams<{ id: string }>();
-    const { userDetails } = useSelector((state) => state.getusers);
+    const { userDetails } = useSelector((state) => state.getUsers);
 
     const [formData, setFormData] = useState<UserModel>({
         email: '',

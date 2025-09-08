@@ -1,7 +1,4 @@
 import React, { useState } from 'react';
-// import ReferenceList from '@/components/references/ReferenceList';
-// import ReferenceForm from '@/components/references/ReferenceForm';
-// import ReferenceDetails from '@/components/references/ReferenceDetails';
 import { useTranslation } from "react-i18next";
 import AdminLayout from '@components/layouts/AdminLayout';
 import LocationList from '@components/locations/LocationList';
@@ -9,8 +6,7 @@ import LocationForm from '@components/locations/LocationForm';
 
 const LocationPage: React.FC = () => {
     const { t } = useTranslation();
-    // const [selectedReferenceId, setSelectedReferenceId] = useState<string | null>(null);
-    // const [isEditing, setIsEditing] = useState(false);
+
     const [view, setView] = useState<'list' | 'form'>('list');
 
     // const handleSelectReference = (id: string) => {

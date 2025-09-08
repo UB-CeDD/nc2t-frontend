@@ -11,6 +11,9 @@ import ReferencePage from './pages/dashboard/ReferencePage';
 import UsersPage from './pages/dashboard/admin/UsersPage';
 import AddEditUser from '@components/users/AddEditUser';
 import SpeciesPage from './pages/dashboard/SpeciesPage';
+import UserDetails from '@components/users/UserDetails';
+// import SpeciesDetails from '@components/species/SpeciesDetails';
+import SpeciesDetailsPage from './pages/dashboard/SpeciesDetailsPage';
 
 const App: React.FC = () => {
     return (
@@ -26,6 +29,7 @@ const App: React.FC = () => {
                             <Route path="references" element={<ReferencePage />} />
                             <Route path="locations" element={<LocationPage />} />
                             <Route path="species" element={<SpeciesPage />} />
+                            <Route path="species/:id" element={<SpeciesDetailsPage />} />
                         </Routes>
                     </RouteService>
                 }
@@ -38,6 +42,7 @@ const App: React.FC = () => {
                             <Route path="dashboard" element={<AdminPage />} />
                             <Route path="users" element={<UsersPage />} />
                             <Route path="users/add" element={<AddEditUser />} />
+                            <Route path="users/:id" element={<UserDetails />} />
                         </Routes>
                     </RouteService>
                 }

@@ -2,7 +2,11 @@ import React from 'react';
 
 interface TableProps<T> {
     data: T[];
-    columns: { key: keyof T; label: string }[];
+    columns: {
+        key: keyof T;
+        label: string;
+        render?: (row: T) => React.ReactNode;
+    }[];
     onRowSelect?: (selectedRows: T[]) => void;
     renderActions?: (row: T) => React.ReactNode;
 }
@@ -85,7 +89,7 @@ const Table = <T extends { id: string }>({ data, columns, onRowSelect, renderAct
                             </td>
                             {columns.map((column) => (
                                 <td key={column.key as string} className="border border-gray-300 p-2">
-                                    {row[column.key]}
+                                    {column.render ? column.render(row) : row[column.key]}
                                 </td>
                             ))}
                             {renderActions && (

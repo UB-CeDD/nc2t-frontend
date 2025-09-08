@@ -16,8 +16,8 @@ export const fetchReferencesThunk = () => async (dispatch: any) => {
     try {
         const references = await listReferences();
         dispatch(fetchReferencesSuccess(references));
-    } catch (error) {
-        dispatch(fetchReferencesFailure('Failed to fetch references.'));
+    } catch (error: any) {
+        dispatch(fetchReferencesFailure(error.message || 'Failed to fetch references.'));
     }
 };
 

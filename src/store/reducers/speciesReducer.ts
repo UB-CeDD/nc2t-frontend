@@ -1,4 +1,4 @@
-import { Specie } from "@/helpers/types.ts";
+import { Species } from "@/helpers/types.ts";
 import {
     FETCH_SPECIES_REQUEST,
     FETCH_SPECIES_SUCCESS,
@@ -16,15 +16,16 @@ import {
 } from '../actions/speciesActions';
 
 const initialState = {
-    species: [],
-    searchResults: [],
+    species: [] as Species[],
+    specie: null as Species | null,
+    searchResults: null,
     loading: false,
     error: null,
 };
 
 interface Action {
     type: string;
-    payload?: Specie[] | Specie | string;
+    payload?: unknown;
 }
 
 const speciesReducer = (state = initialState, action: Action) => {
@@ -32,27 +33,30 @@ const speciesReducer = (state = initialState, action: Action) => {
         case FETCH_SPECIES_REQUEST:
             return {...state, loading: true, error: null};
         case FETCH_SPECIES_SUCCESS:
-            return {...state, loading: false, species: Array.isArray(action.payload) ? action.payload : [], error: null};
+            return {...state, loading: false, species: action.payload, error: null};
         case FETCH_SPECIES_FAILURE:
-            return {...state, loading: false, error: action.payload};
+            return {...state, loading: false, error: action.payload as string};
         case CREATE_SPECIES_SUCCESS:
             return {...state, species: [...state.species, action.payload], error: null};
         case CREATE_SPECIES_FAILURE:
-            return {...state, error: action.payload};
+            return {...state, error: action.payload as string};
         case RETRIEVE_SPECIES_SUCCESS:
-            return {...state, error: null}; // Handle as needed
+            return {...state, species: action.payload, error: null};
         case RETRIEVE_SPECIES_FAILURE:
-            return {...state, error: action.payload};
+            return {...state, error: action.payload as string};
         case UPDATE_SPECIES_SUCCESS:
-            return {
-                ...state,
-                species: state.species.map((specie) =>
-                    specie.id === action.payload.id ? action.payload : specie
-                ),
-                error: null,
-            };
+            if (action.payload && typeof action.payload === 'object' && 'id' in action.payload) {
+                return {
+                    ...state,
+                    species: state.species.map((specie) =>
+                        specie.id === action.payload.id ? action.payload : specie
+                    ),
+                    error: null,
+                };
+            }
+            return state;
         case UPDATE_SPECIES_FAILURE:
-            return {...state, error: action.payload};
+            return {...state, error: action.payload as string};
         case DELETE_SPECIES_SUCCESS:
             return {
                 ...state,
@@ -60,11 +64,11 @@ const speciesReducer = (state = initialState, action: Action) => {
                 error: null,
             };
         case DELETE_SPECIES_FAILURE:
-            return {...state, error: action.payload};
+            return {...state, error: action.payload as string};
         case SEARCH_SPECIES_SUCCESS:
             return { ...state, searchResults: action.payload, error: null };
         case SEARCH_SPECIES_FAILURE:
-            return { ...state, searchResults: null, error: action.payload };
+            return { ...state, searchResults: null, error: action.payload as string };
         default:
             return state;
     }

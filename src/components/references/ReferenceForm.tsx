@@ -39,6 +39,14 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
                 const newReference = await dispatch(createReferenceThunk(formData));
                 if (newReference) {
                     onReferenceCreated?.(newReference);
+                    setFormData({
+                        type: '',
+                        title: '',
+                        author: '',
+                        doi: '',
+                        year: new Date().getFullYear(),
+                        thesis_level: '',
+                    });
                 }
                 // toast.success(t('reference.create_success'));
             }
@@ -66,7 +74,6 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
                         >
                             <option value="" disabled>{t('reference.form_fields.type_placeholder')}</option>
                             <option value="Article">Article</option>
-                            <option value="Journal">Journal</option>
                             <option value="Manuscript">Manuscript</option>
                             <option value="Thesis">Thesis</option>
                         </select>
@@ -98,18 +105,21 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
                     {formData.type === 'Thesis' && (
                         <div className="mb-6">
                             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('reference.form_fields.thesis_level')}</label>
-                            <input
+                            <select
                                 required
-                                type="text"
                                 name="thesis_level"
                                 value={formData.thesis_level}
                                 onChange={handleChange}
-                                placeholder={t('reference.form_fields.thesis_level')}
+                                // placeholder={t('reference.form_fields.thesis_level')}
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            />
+                            >
+                                <option className='placeholder' value="" disabled>{t('reference.form_fields.thesis_level')}</option>
+                                <option value="masters">Masters</option>
+                                <option value="phd">PhD</option>
+                            </select>
                         </div>
                     )}
-                    {formData.type !== 'Thesis' && formData.type && (
+                    {(formData.type !== 'Thesis' && formData.type !== 'Manuscript' && formData.type) && (
                         <div className="mb-6">
                             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('reference.form_fields.doi')}</label>
                             <input

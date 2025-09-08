@@ -2,25 +2,11 @@ import React, { useState } from 'react';
 import AdminLayout from '@/components/layouts/AdminLayout';
 import UserList from '@/components/users/UserList';
 import AddEditUser from '@/components/users/AddEditUser';
-import UserDetails from '@/components/users/UserDetails';
 import { useTranslation } from "react-i18next";
 
 const UsersPage: React.FC = () => {
     const { t } = useTranslation();
     const [showAddEditUser, setShowAddEditUser] = useState(false);
-    const [showUserDetails, setShowUserDetails] = useState(false);
-    const [selectedUserId, setSelectedUserId] = useState<string | null>(null);
-
-    const handleViewUser = (userId: string) => {
-        setSelectedUserId(userId);
-        setShowUserDetails(true);
-        setShowAddEditUser(false);
-    };
-
-    const handleCancel = () => {
-        setShowAddEditUser(false);
-        setShowUserDetails(false);
-    };
 
     return (
         <AdminLayout>
@@ -33,13 +19,8 @@ const UsersPage: React.FC = () => {
                     </button>
                 </div>
             
-                {showAddEditUser && <AddEditUser onCancel={handleCancel} />}
-                {showUserDetails && selectedUserId && (
-                    <UserDetails userId={selectedUserId} />
-                )}
-                {!showAddEditUser && !showUserDetails && (
-                    <UserList onViewUser={handleViewUser} />
-                )}
+                {showAddEditUser && <AddEditUser />}
+                {!showAddEditUser && <UserList />}
             </div>
         </AdminLayout>
     );

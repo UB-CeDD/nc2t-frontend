@@ -5,6 +5,8 @@ import compoundReducer from './compoundReducer';
 import speciesReducer from './speciesReducer';
 import locationReducer from './locationReducer';
 import referenceReducer from './referenceReducer';
+import herbariumReducer from './herbariumReducer';
+import speciesUserRoleReducer from './speciesUserRoleReducer'; // New import
 
 const rootReducer = combineReducers({
     auth: authReducer,
@@ -12,7 +14,9 @@ const rootReducer = combineReducers({
     getCompounds: compoundReducer,
     getSpecies: speciesReducer,
     getLocations: locationReducer,
-    getReferences: referenceReducer
+    getReferences: referenceReducer,
+    getHerbariums: herbariumReducer,
+    speciesUserRoles: speciesUserRoleReducer // New reducer
 });
 
 export default rootReducer;

@@ -1,9 +1,9 @@
 import api from './api';
-import { Specie } from '@/helpers/types';
+import { Species } from '@/helpers/types';
 
 const API_URL = '/species';
 
-export const createSpecies = async (speciesData: Specie ) => {
+export const createSpecies = async (speciesData: Species ) => {
     try {
         const response = await api.post(`${API_URL}/`, speciesData);
         return response.data;
@@ -22,9 +22,11 @@ export const listSpecies = async (queryParams: Record<string, string> = {}) => {
     }
 };
 
-export const retrieveSpecies = async (id: string) => {
+export const retrieveSingleSpecies = async (id: string) => {
     try {
         const response = await api.get(`${API_URL}/${id}/`);
+        console.log('retrieveSingleSpecies response:', response);
+
         return response.data;
     } catch {
         throw new Error('Failed to retrieve species.');

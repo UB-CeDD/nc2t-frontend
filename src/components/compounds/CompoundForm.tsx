@@ -38,6 +38,12 @@ const CompoundForm: React.FC<CompoundProps> = ({ compound, onSave, onCancel, onC
         
             if (resultAction) {
                     onCompoundCreated?.(resultAction);
+                    setFormData({
+                        name: '',
+                        subclass: '',
+                        compound_class: '',
+                        smiles: '',
+                    });
             }
         }
         if (onSave) onSave();
@@ -65,15 +71,14 @@ const CompoundForm: React.FC<CompoundProps> = ({ compound, onSave, onCancel, onC
                         />
                     </div>
                     <div className="mb-6">
-                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('compound.form_fields.sub_class')}</label>
+                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('compound.form_fields.other_name')}</label>
                         <input
-                            required
-                            id="compound_subclass"
+                            id="other_name"
                             type="text"
-                            name="subclass"
-                            value={formData.subclass}
+                            name="other_name"
+                            value={formData.other_name}
                             onChange={handleChange}
-                            placeholder={t('compound.form_fields.sub_class')}
+                            placeholder={t('compound.form_fields.other_name')}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         />
                     </div>
@@ -89,6 +94,20 @@ const CompoundForm: React.FC<CompoundProps> = ({ compound, onSave, onCancel, onC
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         />
                     </div>
+                    <div className="mb-6">
+                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('compound.form_fields.sub_class')}</label>
+                        <input
+                            required
+                            id="compound_subclass"
+                            type="text"
+                            name="subclass"
+                            value={formData.subclass}
+                            onChange={handleChange}
+                            placeholder={t('compound.form_fields.sub_class')}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        />
+                    </div>
+                  
                     <div className="mb-6">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('compound.form_fields.smile')}</label>
                         <input

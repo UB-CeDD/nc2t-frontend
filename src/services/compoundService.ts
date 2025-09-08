@@ -1,7 +1,7 @@
 import { Compound } from '@/helpers/types';
 import api from './api';
 
-const API_URL = '/compounds/';
+const API_URL = '/compounds';
 
 export const createCompound = async (compoundData: Compound ) => {
     try {        
@@ -12,7 +12,7 @@ export const createCompound = async (compoundData: Compound ) => {
             throw new Error('Compound class is required.');
         }
         // Make the API call to create the compound
-        const response = await api.post(API_URL, compoundData);
+        const response = await api.post(`${API_URL}/`, compoundData);
         console.log('Compound created successfully:', response.data);
         
         return response.data;

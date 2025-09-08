@@ -3,7 +3,7 @@ import api from './api';
 const API_URL = '/users';
 
 export const addUser = async (userData) => {
-    const response = await api.post(`${API_URL}/create`, userData);
+    const response = await api.post(`${API_URL}/create/`, userData);
     return response.data;
 };
 

@@ -32,15 +32,15 @@ const referenceReducer = (state = initialState, action: Action) => {
         case FETCH_REFERENCES_SUCCESS:
             return { ...state, loading: false, references: action.payload, error: null };
         case FETCH_REFERENCES_FAILURE:
-            return { ...state, loading: false, error: action.payload };
+            return { ...state, loading: false, error: action.payload as string };
         case CREATE_REFERENCE_SUCCESS:
             return { ...state, references: [...state.references, action.payload], error: null };
         case CREATE_REFERENCE_FAILURE:
-            return { ...state, error: action.payload };
+            return { ...state, error: action.payload as string };
         case RETRIEVE_REFERENCE_SUCCESS:
             return { ...state, error: null }; // Handle as needed
-        case RETRIEVE_REFERENCE_FAILURE:
-            return { ...state, error: action.payload };
+                case RETRIEVE_REFERENCE_FAILURE:
+            return { ...state, error: action.payload as string }; // Handle as needed
         case UPDATE_REFERENCE_SUCCESS:
             return {
                 ...state,
@@ -50,7 +50,7 @@ const referenceReducer = (state = initialState, action: Action) => {
                 error: null,
             };
         case UPDATE_REFERENCE_FAILURE:
-            return { ...state, error: action.payload };
+            return { ...state, error: action.payload as string };
         case DELETE_REFERENCE_SUCCESS:
             return {
                 ...state,
@@ -58,7 +58,7 @@ const referenceReducer = (state = initialState, action: Action) => {
                 error: null,
             };
         case DELETE_REFERENCE_FAILURE:
-            return { ...state, error: action.payload };
+            return { ...state, error: action.payload as string };
         default:
             return state;
     }

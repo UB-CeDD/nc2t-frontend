@@ -10,7 +10,7 @@ const UserList: React.FC = () => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { users } = useSelector((state) => state.getusers);
+    const { users } = useSelector((state) => state.getUsers);
     const [searchText, setSearchText] = useState('');
 
     const filteredUsers = users.filter((user) => {
@@ -43,8 +43,7 @@ const UserList: React.FC = () => {
     useEffect(() => {
         // Dispatch any necessary actions to fetch users if needed
         dispatch(fetchUsersThunk());
-    }
-        , [dispatch]);
+    }, [dispatch]);
 
     return (
         <div className="flex items-center justify-center">

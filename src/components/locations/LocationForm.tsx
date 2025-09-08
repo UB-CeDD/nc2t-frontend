@@ -13,17 +13,17 @@ interface LocationFormProps {
     onLocationCreated?: (location: Location) => void;
 }
 
-const LocationForm: React.FC<LocationFormProps> = ({ location, onLocationCreated }) => {
+const LocationForm: React.FC<LocationFormProps> = ({ location, onSave, onLocationCreated }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [formData, setFormData] = useState<Location>({
         id: location?.id || undefined,
         name: location?.name || '',
-        place: location?.place || '',
+        // place: location?.place || '',
         city_town: location?.city_town || '',
-        region_state: location?.region_state || '',
+        // region_state: location?.region_state || '',
         country: location?.country || '',
-        zipCode: location?.zipCode || '',
+        // zipCode: location?.zipCode || '',
         continent: location?.continent || '',
         gps_latitude: location?.gps_latitude || 0,
         gps_longitude: location?.gps_longitude || 0,
@@ -64,6 +64,18 @@ const LocationForm: React.FC<LocationFormProps> = ({ location, onLocationCreated
                 const newLocation = await dispatch(createLocationThunk(formData));
                 if (newLocation) {
                     onLocationCreated?.(newLocation);
+                    setFormData({
+                        id: undefined,
+                        name: '',
+                        // place: '',
+                        city_town: '',
+                        // region_state: '',
+                        country: '',
+                        // zipCode: '',
+                        continent: '',
+                        gps_latitude: 0,
+                        gps_longitude: 0,
+                    });
                 }
             }
         } catch (error) {
@@ -76,7 +88,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ location, onLocationCreated
             <div className="bg-white p-8 rounded shadow-md w-full">
                 <h1 className="text-2xl flex justify-center font-bold mb-8">{location?.id ? "Edit Location" : "Add Location"}</h1>
                 <form onSubmit={handleSubmit}>
-                    <div className="grid gap-6 mb-6 md:grid-cols-2">
+                    <div className="grid gap-6 mb-4 md:grid-cols-1">
                         <div>
                             <label
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('location.form_fields.name')}</label>
@@ -88,7 +100,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ location, onLocationCreated
                                 onChange={handleChange}
                                 required />
                         </div>
-                        <div>
+                        {/* <div>
                             <label
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('location.form_fields.address')}</label>
                             <input type="text" id="location_place"
@@ -98,7 +110,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ location, onLocationCreated
                                 value={formData.place}
                                 onChange={handleChange}
                                 required />
-                        </div>
+                        </div> */}
                         <div>
                             <label
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('location.form_fields.city')}</label>
@@ -110,7 +122,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ location, onLocationCreated
                                 onChange={handleChange}
                                 required />
                         </div>
-                        <div>
+                        {/* <div>
                             <label
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('location.form_fields.state')}</label>
                             <input type="text" id="location_state"
@@ -120,7 +132,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ location, onLocationCreated
                                 value={formData.region_state}
                                 onChange={handleChange}
                                 required />
-                        </div>
+                        </div> */}
                         <div>
                             <label
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('location.form_fields.country')}</label>
@@ -132,7 +144,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ location, onLocationCreated
                                 placeholderClass='dark:placeholder-gray-400' 
                             />
                         </div>
-                        <div>
+                        {/* <div>
                             <label
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('location.form_fields.zip_code')}</label>
                             <input type="text" id="location_zip"
@@ -142,9 +154,8 @@ const LocationForm: React.FC<LocationFormProps> = ({ location, onLocationCreated
                                 value={formData.zipCode}
                                 onChange={handleChange}
                                 required />
-                        </div>
-                    </div>
-                    <div className="mb-6">
+                        </div> */}
+                        <div className="mb-6">
                         <label
                             className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('location.form_fields.gps')}</label>
                         <GPSInput placeholder={t('location.form_fields.gps')}
@@ -152,6 +163,8 @@ const LocationForm: React.FC<LocationFormProps> = ({ location, onLocationCreated
                             onChange={handleGpsChange}
                             onPickFromMap={simulatePickFromMap} />
                     </div>
+                    </div>
+                    
                     <button type="submit"
                         className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800">Submit
                     </button>

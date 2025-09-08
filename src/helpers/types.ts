@@ -22,6 +22,9 @@ export interface UserModel extends EntityModel {
 // Compound model
 export interface Compound extends EntityModel {
     name: string;
+    pubchem_id?: number;
+    bio_activity?: string;
+    other_names?: string;
     subclass: string;
     compound_class: string;
     smiles: string;
@@ -34,15 +37,21 @@ export interface Species extends EntityModel {
     recent_name: string;
     kingdom: string;
     family: string;
+    trad_uses?: string;
+    part_used?: string;
+    administration?: string;
+    effects?: string;
+    notes?: string;
     references: number[] | Reference[];
     compound_codes: string[];
-    compounds: number[] | Compound[];
+    compounds?: number[] | Compound[];
     sites?: number[] | Site[];
+    collection_date?: Date;
     herbariums?: number[] | Herbarium[];
     collection_data?: string[];
 }
 
-export interface SearchedSpecie extends Specie {
+export interface SearchedSpecies extends Species {
     title: string;
     author?: string;
     year: number;
@@ -63,17 +72,15 @@ export interface Reference extends EntityModel {
     thesis_level?: string;
 }
 
-
-
 // Location model
 export interface Location extends EntityModel {
     continent: string;
     country: string;
-    region_state: string;
+    region_state?: string;
     city_town: string;
     name: string;
-    place: string;
-    zipCode: string;
+    place?: string;
+    zipCode?: string;
     gps_latitude: number;
     gps_longitude: number;
 }
