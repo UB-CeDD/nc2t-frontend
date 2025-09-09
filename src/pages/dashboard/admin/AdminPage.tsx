@@ -21,20 +21,13 @@ const AdminPage: React.FC = () => {
     // const { locations, loading: locationsLoading } = useSelector((state: RootState) => state.locations);
     // const { references, loading: referencesLoading } = useSelector((state: RootState) => state.references);
     // const { herbariums, loading: herbariumsLoading } = useSelector((state: RootState) => state.herbariums);
-    const [species, setSpecies] = React.useState<Species[] | null>([]);
-    // const [speciesLoading, setSpeciesLoading] = React.useState<boolean>(true);
-    const [compounds, setCompounds] = React.useState<Compound[] | null>([]);
-    // const [compoundsLoading, setCompoundsLoading] = React.useState<boolean>(true);
-    const [users, setUsers] = React.useState<UserModel[] | null>([]);
-    // const [usersLoading, setUsersLoading] = React.useState<boolean>(true);
-    const [locations, setLocations] = React.useState<LocationModel[] | null>([]);
-    // const [locationsLoading, setLocationsLoading] = React.useState<boolean>(true);
-    const [references, setReferences] = React.useState<Reference[] | null>([]);
-    // const [referencesLoading, setReferencesLoading] = React.useState<boolean>(true);
-    const [herbariums, setHerbariums] = React.useState<Herbarium[] | null>([]);
-    // const [herbariumsLoading, setHerbariumsLoading] = React.useState<boolean>(true);
 
-    // const { species: speciesData, loading: speciesLoading } = useSelector((state: RootState) => state.species);
+    const [species, setSpecies] = React.useState<Species[] | null>([]);
+    const [compounds, setCompounds] = React.useState<Compound[] | null>([]);
+    const [users, setUsers] = React.useState<UserModel[] | null>(null);
+    const [locations, setLocations] = React.useState<LocationModel[] | null>([]);
+    const [references, setReferences] = React.useState<Reference[] | null>([]);
+    const [herbariums, setHerbariums] = React.useState<Herbarium[] | null>([]);
 
     useEffect(() => {
         dispatch(fetchSpecies());
@@ -47,8 +40,7 @@ const AdminPage: React.FC = () => {
 
     // const allLoading = speciesLoading || compoundsLoading || usersLoading || locationsLoading || referencesLoading || herbariumsLoading;
 
-    const allLoading: any = false;
-
+    const allLoading : any = false;
     // --- Statistics Calculations ---
 
     const getSpeciesByKingdom = () => {
@@ -129,12 +121,12 @@ const AdminPage: React.FC = () => {
                 <>
                     {/* Overview Cards */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
-                        <StatCard title="Species" count={species?.length || 0} icon={<FaLeaf className="text-green-500" />} />
-                        <StatCard title="Compounds" count={compounds?.length || 0} icon={<FaFlask className="text-blue-500" />} />
-                        <StatCard title="Users" count={users?.length || 0} icon={<FaUsers className="text-purple-500" />} />
-                        <StatCard title="Locations" count={locations?.length || 0} icon={<FaMapMarkerAlt className="text-red-500" />} />
-                        <StatCard title="References" count={references?.length || 0} icon={<FaBook className="text-yellow-500" />} />
-                        <StatCard title="Herbariums" count={herbariums?.length || 0} icon={<FaBuilding className="text-teal-500" />} />
+                        <StatCard title="Total Species" count={species?.length || 0} icon={<FaLeaf className="text-green-500" />} />
+                        <StatCard title="Total Compounds" count={compounds?.length || 0} icon={<FaFlask className="text-blue-500" />} />
+                        <StatCard title="Total Users" count={users?.length || 0} icon={<FaUsers className="text-purple-500" />} />
+                        <StatCard title="Total Locations" count={locations?.length || 0} icon={<FaMapMarkerAlt className="text-red-500" />} />
+                        <StatCard title="Total References" count={references?.length || 0} icon={<FaBook className="text-yellow-500" />} />
+                        <StatCard title="Total Herbariums" count={herbariums?.length || 0} icon={<FaBuilding className="text-teal-500" />} />
                     </div>
 
                     {/* Charts Section */}
