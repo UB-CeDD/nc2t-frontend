@@ -3,10 +3,12 @@ import {
     FETCH_SPECIES_REQUEST,
     FETCH_SPECIES_SUCCESS,
     FETCH_SPECIES_FAILURE,
+    CREATE_SPECIES_REQUEST,
     CREATE_SPECIES_SUCCESS,
     CREATE_SPECIES_FAILURE,
     RETRIEVE_SPECIES_SUCCESS,
     RETRIEVE_SPECIES_FAILURE,
+    UPDATE_SPECIES_REQUEST,
     UPDATE_SPECIES_SUCCESS,
     UPDATE_SPECIES_FAILURE,
     DELETE_SPECIES_SUCCESS,
@@ -31,15 +33,17 @@ interface Action {
 const speciesReducer = (state = initialState, action: Action) => {
     switch (action.type) {
         case FETCH_SPECIES_REQUEST:
+        case CREATE_SPECIES_REQUEST:
+        case UPDATE_SPECIES_REQUEST:
             return {...state, loading: true, error: null};
         case FETCH_SPECIES_SUCCESS:
             return {...state, loading: false, species: action.payload, error: null};
         case FETCH_SPECIES_FAILURE:
             return {...state, loading: false, error: action.payload as string};
         case CREATE_SPECIES_SUCCESS:
-            return {...state, species: [...state.species, action.payload], error: null};
+            return {...state, loading: false, species: [...state.species, action.payload], error: null};
         case CREATE_SPECIES_FAILURE:
-            return {...state, error: action.payload as string};
+            return {...state, loading: false, error: action.payload as string};
         case RETRIEVE_SPECIES_SUCCESS:
             return {...state, species: action.payload, error: null};
         case RETRIEVE_SPECIES_FAILURE:
@@ -48,6 +52,7 @@ const speciesReducer = (state = initialState, action: Action) => {
             if (action.payload && typeof action.payload === 'object' && 'id' in action.payload) {
                 return {
                     ...state,
+                    loading: false,
                     species: state.species.map((specie) =>
                         specie.id === action.payload.id ? action.payload : specie
                     ),
@@ -56,7 +61,7 @@ const speciesReducer = (state = initialState, action: Action) => {
             }
             return state;
         case UPDATE_SPECIES_FAILURE:
-            return {...state, error: action.payload as string};
+            return {...state, loading: false, error: action.payload as string};
         case DELETE_SPECIES_SUCCESS:
             return {
                 ...state,

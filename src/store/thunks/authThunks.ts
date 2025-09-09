@@ -1,4 +1,4 @@
-import { loginSuccess, loginFailure, logoutSuccess } from '../actions/authActions';
+import { loginRequest, loginSuccess, loginFailure, logoutSuccess } from '../actions/authActions';
 import { ThunkAction } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import * as authService from '../../services/authService';
@@ -6,6 +6,7 @@ import { RootState } from '../store';
 
 export const login = (username: string, password: string): ThunkAction<void, RootState, unknown, AnyAction> => {
     return async (dispatch) => {
+        dispatch(loginRequest());
         try {
             const response = await authService.login(username, password);
             if (response.status === 200) {

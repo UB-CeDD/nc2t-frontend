@@ -9,9 +9,10 @@ import { fetchLocationsThunk } from "@store/thunks/locationThunk.ts";
 
 interface LocationListProps {
     locations?: Location[];
+    onEditLocation: (location: Location) => void; // Add this prop
 }
 
-const LocationList: React.FC<LocationListProps> = ({ locations: propLocations }) => {
+const LocationList: React.FC<LocationListProps> = ({ locations: propLocations, onEditLocation }) => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const { locations, error, loading } = useSelector((state) => state.getLocations);
@@ -35,8 +36,7 @@ const LocationList: React.FC<LocationListProps> = ({ locations: propLocations })
     );
 
     const handleEdit = (row: Location) => {
-        alert(`Edit:, ${row}`);
-        // Add your edit logic here
+        onEditLocation(row);
     };
 
     const handleDelete = (row: Location) => {

@@ -47,7 +47,7 @@ const Navbar: React.FC = () => {
                     onClick={() => toggleDropdown()}
                 >
                     <span className="sr-only">Open user menu</span>
-                    <img className="w-8 h-8 rounded-full" src={user?.profile_picture || 'https://via.placeholder.com/150'} alt="user photo" />
+                    <img className="w-8 h-8 rounded-full" src={user?.profile_picture || 'https://placehold.co/150'} alt="user photo" />
                 </button>
                 {isDropdownOpen && (
                     <div className="z-50 my-4 text-base list-none bg-white divide-y divide-gray-100 rounded-lg shadow-sm dark:bg-gray-700 dark:divide-gray-600" id="user-dropdown">

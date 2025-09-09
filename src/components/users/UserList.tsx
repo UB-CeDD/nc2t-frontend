@@ -6,11 +6,15 @@ import { fetchUsersThunk } from '@store/thunks/userThunks';
 import { UserModel } from '@/helpers/types';
 import { useNavigate } from 'react-router-dom';
 
-const UserList: React.FC = () => {
+interface UserListProps {
+    onEditUser: (user: UserModel) => void; // Add this prop
+}
+
+const UserList: React.FC<UserListProps> = ({ onEditUser }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { users } = useSelector((state) => state.getUsers);
+    const { users } = useSelector((state: RootState) => state.user);
     const [searchText, setSearchText] = useState('');
 
     const filteredUsers = users.filter((user) => {
@@ -36,6 +40,7 @@ const UserList: React.FC = () => {
     const renderActions = (row: UserModel) => (
         <div className="flex justify-center items-center gap-2">
             <a className="text-blue-500 cursor-pointer" onClick={() => handleView(row)}>{t('user.view')}</a>
+            <a className="text-blue-500 cursor-pointer" onClick={() => onEditUser(row)} >{t('user.edit')}</a> {/* Add Edit button */}
             <a className="text-red-500 cursor-pointer" onClick={() => handleDelete(row)}>{t('user.delete')}</a>
         </div>
     );

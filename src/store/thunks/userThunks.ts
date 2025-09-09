@@ -6,36 +6,48 @@ import {
     deleteUser,
 } from '@/services/userService';
 import {
-    addUserAction,
-    editUserAction,
-    listUsersAction,
+    listUsersRequestAction,
+    listUsersSuccessAction,
+    listUsersFailureAction,
+    createUserRequestAction,
+    createUserSuccessAction,
+    createUserFailureAction,
+    updateUserRequestAction,
+    updateUserSuccessAction,
+    updateUserFailureAction,
     viewUserAction,
     deleteUserAction,
 } from '../actions/userActions';
 
 export const createUserThunk = (userData) => async (dispatch) => {
+    dispatch(createUserRequestAction());
     try {
         const user = await addUser(userData);
-        dispatch(addUserAction(user));
+        dispatch(createUserSuccessAction(user));
     } catch (error) {
+        dispatch(createUserFailureAction(error.message));
         console.error('Failed to add user:', error);
     }
 };
 
 export const updateUserThunk = (id, userData) => async (dispatch) => {
+    dispatch(updateUserRequestAction());
     try {
         const user = await editUser(id, userData);
-        dispatch(editUserAction(user));
+        dispatch(updateUserSuccessAction(user));
     } catch (error) {
+        dispatch(updateUserFailureAction(error.message));
         console.error('Failed to edit user:', error);
     }
 };
 
 export const fetchUsersThunk = (filters) => async (dispatch) => {
+    dispatch(listUsersRequestAction());
     try {
         const users = await listUsers(filters);
-        dispatch(listUsersAction(users));
+        dispatch(listUsersSuccessAction(users));
     } catch (error) {
+        dispatch(listUsersFailureAction(error.message));
         console.error('Failed to list users:', error);
     }
 };

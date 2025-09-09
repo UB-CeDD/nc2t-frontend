@@ -3,10 +3,12 @@ import {
     FETCH_COMPOUNDS_REQUEST,
     FETCH_COMPOUNDS_SUCCESS,
     FETCH_COMPOUNDS_FAILURE,
+    CREATE_COMPOUND_REQUEST,
     CREATE_COMPOUND_SUCCESS,
     CREATE_COMPOUND_FAILURE,
     RETRIEVE_COMPOUND_SUCCESS,
     RETRIEVE_COMPOUND_FAILURE,
+    UPDATE_COMPOUND_REQUEST,
     UPDATE_COMPOUND_SUCCESS,
     UPDATE_COMPOUND_FAILURE,
     DELETE_COMPOUND_SUCCESS,
@@ -27,15 +29,17 @@ interface Action {
 const compoundReducer = (state = initialState, action: Action) => {
     switch (action.type) {
         case FETCH_COMPOUNDS_REQUEST:
+        case CREATE_COMPOUND_REQUEST:
+        case UPDATE_COMPOUND_REQUEST:
             return {...state, loading: true, error: null};
         case FETCH_COMPOUNDS_SUCCESS:
             return {...state, loading: false, compounds: action.payload, error: null};
         case FETCH_COMPOUNDS_FAILURE:
             return {...state, loading: false, error: action.payload};
         case CREATE_COMPOUND_SUCCESS:
-            return {...state, compounds: [...state.compounds, action.payload], error: null};
+            return {...state, loading: false, compounds: [...state.compounds, action.payload], error: null};
         case CREATE_COMPOUND_FAILURE:
-            return {...state, error: action.payload};
+            return {...state, loading: false, error: action.payload};
         case RETRIEVE_COMPOUND_SUCCESS:
             return {...state, error: null}; // Handle as needed
         case RETRIEVE_COMPOUND_FAILURE:
@@ -43,13 +47,14 @@ const compoundReducer = (state = initialState, action: Action) => {
         case UPDATE_COMPOUND_SUCCESS:
             return {
                 ...state,
+                loading: false,
                 compounds: state.compounds.map((compound) =>
                     compound.id === action.payload.id ? action.payload : compound
                 ),
                 error: null,
             };
         case UPDATE_COMPOUND_FAILURE:
-            return {...state, error: action.payload};
+            return {...state, loading: false, error: action.payload};
         case DELETE_COMPOUND_SUCCESS:
             return {
                 ...state,

@@ -14,7 +14,7 @@ const Spinner: React.FC<SpinnerProps> = ({size = 2, color = 'blue-600'}) => {
             className={`inline w-${size} h-${size} text-gray-200 animate-spin dark:text-gray-600 fill-${color}`}
             viewBox="0 0 100 101"
             fill="none"
-            width={`${size} px`}
+            width={`${size}px`}
             xmlns="http://www.w3.org/2000/svg"
         >
             <path

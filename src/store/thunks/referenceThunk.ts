@@ -3,8 +3,10 @@ import {
     fetchReferencesRequest,
     fetchReferencesSuccess,
     fetchReferencesFailure,
+    createReferenceRequest,
     createReferenceSuccess,
     createReferenceFailure,
+    updateReferenceRequest,
     updateReferenceSuccess,
     updateReferenceFailure
 } from '../actions/referenceActions';
@@ -21,24 +23,30 @@ export const fetchReferencesThunk = () => async (dispatch: any) => {
     }
 };
 
-export const createReferenceThunk = (referenceData: Reference) => async (dispatch: any) => {
+export const createReferenceThunk = (referenceData: Reference, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: any) => {
+    dispatch(createReferenceRequest());
     try {
         const newReference = await createReference(referenceData);
         dispatch(createReferenceSuccess(newReference));
+        addNotification('Reference created successfully', 'success');
         return newReference;
-    } catch (error) {
-        dispatch(createReferenceFailure('Failed to create reference.'));
+    } catch (error: any) {
+        dispatch(createReferenceFailure(error.message));
+        addNotification(error.message, 'error');
         throw error;
     }
 };
 
-export const updateReferenceThunk = (id: string, referenceData: Partial<Reference>) => async (dispatch: any) => {
+export const updateReferenceThunk = (id: string, referenceData: Partial<Reference>, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: any) => {
+    dispatch(updateReferenceRequest());
     try {
         const updatedReference = await updateReference(id, referenceData);
         dispatch(updateReferenceSuccess(updatedReference));
+        addNotification('Reference updated successfully', 'success');
         return updatedReference;
-    } catch (error) {
-        dispatch(updateReferenceFailure('Failed to update reference.'));
+    } catch (error: any) {
+        dispatch(updateReferenceFailure(error.message));
+        addNotification(error.message, 'error');
         throw error;
     }
 };

@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
 import { createReferenceThunk, updateReferenceThunk } from '@store/thunks/referenceThunk';
 import { Reference } from '@/helpers/types';
-// import { toast } from 'react-toastify';
+import { useNotification } from '@/components/commons/NotificationContext';
+import Spinner from '@/components/commons/Spinner';
+import { RootState } from '@/store/store';
 
 interface ReferenceFormProps {
     reference?: Reference;
@@ -15,6 +17,8 @@ interface ReferenceFormProps {
 const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCancel, onReferenceCreated }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
+    const { addNotification } = useNotification();
+    const { loading } = useSelector((state: RootState) => state.getReferences);
     const [formData, setFormData] = useState<Reference>({
         type: reference?.type || '',
         title: reference?.title || '',
@@ -33,10 +37,9 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
         e.preventDefault();
         try {
             if (reference?.id) {
-                await dispatch(updateReferenceThunk(reference.id, formData));
-                // toast.success(t('reference.update_success'));
+                await dispatch(updateReferenceThunk(reference.id, formData, addNotification));
             } else {
-                const newReference = await dispatch(createReferenceThunk(formData));
+                const newReference = await dispatch(createReferenceThunk(formData, addNotification));
                 if (newReference) {
                     onReferenceCreated?.(newReference);
                     setFormData({
@@ -48,11 +51,9 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
                         thesis_level: '',
                     });
                 }
-                // toast.success(t('reference.create_success'));
             }
             if (onSave) onSave();
         } catch (error) {
-            // toast.error(t('reference.action_failed'));
             console.error('Failed to save reference:', error);
         }
     };
@@ -60,10 +61,11 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
     return (
         <div className="flex items-center justify-center">
             <div className="bg-white p-8 rounded shadow-md w-full">
-                <h1 className="text-2xl flex justify-center font-bold mb-8">{location?.id === undefined ? t('reference.add') : t('reference.edit')}</h1>
+                <h1 className="text-2xl flex justify-center font-bold mb-8">{reference?.id === undefined ? t('reference.add') : t('reference.edit')}</h1>
 
                 <form onSubmit={handleSubmit} className="p-4">
-                    <div className="mb-6">
+                    {/* ... form fields ... */}
+                     <div className="mb-6">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('reference.form_fields.type')}</label>
                         <select
                             name="type"
@@ -153,14 +155,16 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
                         type="button"
                         onClick={onCancel}
                         className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mr-2"
+                        disabled={loading}
                     >
                         {t('cancel')}
                     </button>
                     <button
                         type="submit"
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                        disabled={loading}
                     >
-                        {reference ? t('reference.edit') : t('reference.add')}
+                        {loading ? <Spinner size={5} /> : reference ? t('reference.edit') : t('reference.add')}
                     </button>
                 </form>
             </div>

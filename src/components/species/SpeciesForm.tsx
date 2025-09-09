@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { createSpeciesThunk, updateSpeciesThunk } from '@store/thunks/speciesThunk';
-import { useNotification } from '../commons/NotificationContext'; // New import
+import { useNotification } from '../commons/NotificationContext';
 import { Compound, Reference, Location, SearchedSpecies, Species } from '@/helpers/types';
 import { useTranslation } from 'react-i18next';
 import { useLocation } from 'react-router-dom';
@@ -12,18 +12,24 @@ import CompoundForm from '@components/compounds/CompoundForm';
 import ReferenceForm from '@components/references/ReferenceForm';
 import LocationForm from '@components/locations/LocationForm';
 import Modal from '@components/commons/Modal';
+import Spinner from '@/components/commons/Spinner';
+import { RootState } from '@/store/store';
 
 interface SpeciesFormProps {
     initialData?: Species | SearchedSpecies | { reference: Reference };
+    onSave?: () => void;
+    onCancel?: () => void;
+    onSpeciesCreated?: (species: Species) => void;
     onFormClose: () => void;
 }
 
-const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose }) => {
+const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onCancel, onSave, onSpeciesCreated }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const routeLocation = useLocation();
     const referenceFromState = routeLocation.state?.reference;
-    const { addNotification } = useNotification(); // New hook call
+    const { addNotification } = useNotification();
+    const { loading } = useSelector((state: RootState) => state.getSpecies);
 
     const getInitialFormData = () => {
         if (initialData && 'id' in initialData) {
@@ -56,7 +62,6 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose }) =
     };
 
     const [formData, setFormData] = useState<Partial<Species>>(getInitialFormData());
-
     const [compoundInput, setCompoundInput] = useState('');
     const [showCompoundModal, setShowCompoundModal] = useState(false);
     const [availableCompounds, setAvailableCompounds] = useState<Compound[]>([]);
@@ -77,7 +82,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose }) =
     const [availableHerbaria, setAvailableHerbaria] = useState<Location[]>([]);
     const [selectedHerbaria, setSelectedHerbaria] = useState<Location[]>([]);
 
-    useEffect(() => {
+      useEffect(() => {
         const initial = getInitialFormData();
         setFormData(initial);
 
@@ -122,7 +127,6 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose }) =
         }
 
     }, [initialData, referenceFromState]);
-
 
     const handleSearchCompound = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value;
@@ -323,7 +327,10 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose }) =
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+
+    // ... (the rest of the state declarations)
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         const finalFormData = {
             ...formData,
@@ -332,12 +339,16 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose }) =
             sites: selectedSites.map(s => s.id),
             herbariums: selectedHerbaria.map(h => h.id),
         };
-        if (formData.id) {
-            dispatch(updateSpeciesThunk(formData.id.toString(), finalFormData, addNotification));
-        } else {
-            dispatch(createSpeciesThunk(finalFormData as Species, addNotification));
+        try {
+            if (formData.id) {
+                await dispatch(updateSpeciesThunk(formData.id.toString(), finalFormData, addNotification));
+            } else {
+                await dispatch(createSpeciesThunk(finalFormData as Species, addNotification));
+            }
+            onFormClose();
+        } catch (error) {
+            // Notification is handled in the thunk
         }
-        onFormClose();
     };
 
     return (
@@ -345,7 +356,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose }) =
             <div className="bg-white p-8 rounded shadow-md w-full ">
                 <h1 className="text-2xl flex justify-center font-bold mb-8">{formData.id ? t('species.edit') : t('species.add')}</h1>
                 <form onSubmit={handleSubmit} className="p-4">
-                    <div className="mb-6 flex flex-col">
+                     <div className="mb-6 flex flex-col">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('species.form_fields.kingdom')}</label>
                         <select
                             id="kingdom"
@@ -379,7 +390,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose }) =
                             ))}
                         </select>
                     </div> */}
-                    <div className="mb-6">
+                     <div className="mb-6">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('species.form_fields.family')}</label>
                         <input
                             required
@@ -447,7 +458,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose }) =
                             ))}
                         </select>
                     </div>
-                     <div className="mb-6">
+                    <div className="mb-6">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('species.form_fields.ref')}</label>
                         <div className="flex items-center gap-2">
                             <input
@@ -488,8 +499,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose }) =
                             ))}
                         </div>
                     </div>
-                    
-                     <div className="mb-6">
+                    <div className="mb-6">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('species.form_fields.compound_codes')}</label>
                         <div className="flex items-center gap-2">
                             <input
@@ -571,7 +581,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose }) =
                             ))}
                         </div>
                     </div>
-                     <div className="mb-6">
+                    <div className="mb-6">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('species.form_fields.collection_date')}</label>
                         <input
                             id="collection_date"
@@ -625,15 +635,27 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose }) =
                             ))}
                         </div>
                     </div>
-                    
+                    <div className="flex justify-end mt-4">
+                    <button
+                        type="button"
+                        onClick={onCancel}
+                        className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mr-2"
+                        disabled={loading}
+                    >
+                        {t('cancel')}
+                    </button>
                     <button
                         type="submit"
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                        disabled={loading}
                     >
-                        {formData.id ? 'Update species' : 'Create species'}
+                        {loading ? <Spinner size={5} /> : formData.id ? 'Update species' : 'Create species'}
                     </button>
+                    </div>
                 </form>
             </div>
+
+            {/* ... (modals) ... */}
             <Modal show={showReferenceModal} onClose={() => setShowReferenceModal(false)}>
                 <ReferenceForm onReferenceCreated={handleReferenceCreated} />
             </Modal>

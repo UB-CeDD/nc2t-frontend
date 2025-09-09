@@ -4,13 +4,22 @@ import { UserModel } from '@/helpers/types';
 import { fetchUserThunk, updateUserThunk, createUserThunk } from '@store/thunks/userThunks';
 import { useDispatch, useSelector } from 'react-redux';
 import { useTranslation } from "react-i18next";
+import { useNotification } from '@/components/commons/NotificationContext';
+import Spinner from '@/components/commons/Spinner';
+import { RootState } from '@/store/store';
 
 
-const AddEditUser: React.FC = () => {
+interface AddEditUserProps {
+    user?: UserModel; // The user data for editing
+    onClose: () => void; // Function to call when form is closed/submitted
+}
+
+const AddEditUser: React.FC<AddEditUserProps> = ({ user, onClose }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const { id } = useParams<{ id: string }>();
-    const { userDetails } = useSelector((state) => state.getUsers);
+    const { userDetails, loading } = useSelector((state: RootState) => state.user);
+    const { addNotification } = useNotification();
 
     const [formData, setFormData] = useState<UserModel>({
         email: '',
@@ -20,13 +29,20 @@ const AddEditUser: React.FC = () => {
     });
 
     useEffect(() => {
-        if (id) {
+        if (user) { // If user prop is provided, use it directly
+            setFormData({
+                email: user.email || '',
+                username: user.username || '',
+                password: user.password || '',
+                department: user.department || '',
+            });
+        } else if (id) { // Otherwise, if id is in params, fetch user details
             dispatch(fetchUserThunk(id));
         }
-    }, [id, dispatch]);
+    }, [user, id, dispatch]);
 
     useEffect(() => {
-        if (userDetails && id) {
+        if (userDetails && id && !user) { // Only update from fetched userDetails if no user prop and id exists
             setFormData({
                 email: userDetails.email || '',
                 username: userDetails.username || '',
@@ -34,19 +50,26 @@ const AddEditUser: React.FC = () => {
                 department: userDetails.department || '',
             });
         }
-    }, [userDetails, id]);
+    }, [userDetails, id, user]);
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (id) {
-            dispatch(updateUserThunk(id, formData));
-        } else {
-            dispatch(createUserThunk(formData));
+        try {
+            if (user?.id) { // Use user.id if user prop is present
+                await dispatch(updateUserThunk(user.id, formData));
+                addNotification(t('user.update_success'), 'success');
+            } else {
+                await dispatch(createUserThunk(formData));
+                addNotification(t('user.create_success'), 'success');
+            }
+            onClose(); // Call onClose after successful submission
+        } catch (error) {
+            addNotification(t('user.action_failed'), 'error');
         }
     };
 
@@ -57,7 +80,8 @@ const AddEditUser: React.FC = () => {
                     {id ? t('user.edit') : t('user.add')}
                 </h1>
                 <form onSubmit={handleSubmit}>
-                    <div>
+                    {/* ... form fields ... */}
+                     <div>
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">
                             {t('user.form_fields.username')}
                         </label>
@@ -98,7 +122,7 @@ const AddEditUser: React.FC = () => {
                             onChange={handleChange}
                         />
                     </div>
-                    <div>
+                     <div>
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">
                             {t('user.form_fields.department')}
                         </label>
@@ -112,12 +136,20 @@ const AddEditUser: React.FC = () => {
                             required
                         />
                     </div>
-                    <div className="flex justify-between mt-4">
+                    <div className="flex justify-end mt-4">
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mr-2"
+                        >
+                            {t('cancel')}
+                        </button>
                         <button
                             type="submit"
                             className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
+                            disabled={loading}
                         >
-                            {t('common.save')}
+                            {loading ? <Spinner size={5} /> : t('common.save')}
                         </button>
                     </div>
                 </form>

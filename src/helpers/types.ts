@@ -21,10 +21,11 @@ export interface UserModel extends EntityModel {
 
 // Compound model
 export interface Compound extends EntityModel {
+    other_names_input: string;
     name: string;
     pubchem_id?: number;
     bio_activity?: string;
-    other_names?: string;
+    other_names?: string[];
     subclass: string;
     compound_class: string;
     smiles: string;

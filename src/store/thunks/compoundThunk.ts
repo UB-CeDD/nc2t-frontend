@@ -9,11 +9,11 @@ import {
     fetchCompoundsRequest,
     fetchCompoundsSuccess,
     fetchCompoundsFailure,
-    createCompoundSuccess,
+    createCompoundRequest, createCompoundSuccess,
     createCompoundFailure,
     retrieveCompoundSuccess,
     retrieveCompoundFailure,
-    updateCompoundSuccess,
+    updateCompoundRequest, updateCompoundSuccess,
     updateCompoundFailure,
     deleteCompoundSuccess,
     deleteCompoundFailure,
@@ -32,13 +32,16 @@ export const fetchCompounds = (queryParams: Record<string, string> = {}) => asyn
     }
 };
 
-export const createCompoundThunk = (compoundData: Compound) => async (dispatch: any) => {
+export const createCompoundThunk = (compoundData: Compound, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: any) => {
+    dispatch(createCompoundRequest());
     try {
         const newCompound = await createCompound(compoundData);
         dispatch(createCompoundSuccess(newCompound));
+        addNotification('Compound created successfully', 'success');
         return newCompound;
-    } catch (error) {
-        dispatch(createCompoundFailure('Failed to create compound.'));
+    } catch (error: any) {
+        dispatch(createCompoundFailure(error.message));
+        addNotification(error.message, 'error');
         throw error;
     }
 };
@@ -48,19 +51,22 @@ export const retrieveCompoundThunk = (id: string) => async (dispatch: any) => {
         const compound = await retrieveCompound(id);
         dispatch(retrieveCompoundSuccess(compound));
         return compound;
-    } catch (error) {
-        dispatch(retrieveCompoundFailure('Failed to retrieve compound.'));
+    } catch (error: any) {
+        dispatch(retrieveCompoundFailure(error.message));
         throw error;
     }
 };
 
-export const updateCompoundThunk = (id: string, compoundData: { compound_class?: string; smiles?: string }) => async (dispatch: any) => {
+export const updateCompoundThunk = (id: string, compoundData: { compound_class?: string; smiles?: string }, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: any) => {
+    dispatch(updateCompoundRequest());
     try {
         const updatedCompound = await updateCompound(id, compoundData);
         dispatch(updateCompoundSuccess(updatedCompound));
+        addNotification('Compound updated successfully', 'success');
         return updatedCompound;
-    } catch (error) {
-        dispatch(updateCompoundFailure('Failed to update compound.'));
+    } catch (error: any) {
+        dispatch(updateCompoundFailure(error.message));
+        addNotification(error.message, 'error');
         throw error;
     }
 };

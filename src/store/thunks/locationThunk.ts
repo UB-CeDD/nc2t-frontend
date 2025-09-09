@@ -2,10 +2,12 @@ import {
     fetchLocationsRequest,
     fetchLocationsSuccess,
     fetchLocationsFailure,
+    createLocationRequest,
     createLocationSuccess,
     createLocationFailure,
     retrieveLocationSuccess,
     retrieveLocationFailure,
+    updateLocationRequest,
     updateLocationSuccess,
     updateLocationFailure,
     deleteLocationSuccess,
@@ -33,6 +35,7 @@ export const fetchLocationsThunk = ( queryParams: Record<string, string> = {}) =
 };
 
 export const createLocationThunk = (locationData: Location)  => async (dispatch: any) => {
+    dispatch(createLocationRequest());
     try {
         const location = await createLocation(locationData);
         dispatch(createLocationSuccess(location));
@@ -55,6 +58,7 @@ export const retrieveLocationThunk = ( id: string ) => async ( dispatch: any ) =
 };
 
 export const updateLocationThunk = ( id: string, locationData: Location ) => async (dispatch: any) => {
+    dispatch(updateLocationRequest());
     try {
         const location = await updateLocation(id, locationData);
         dispatch(updateLocationSuccess(location));

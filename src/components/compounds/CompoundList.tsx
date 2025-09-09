@@ -2,16 +2,17 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchCompounds } from '@store/thunks/compoundThunk.ts';
 import { RootState } from '@store/store';
-import { Compound, Reference, SearchedSpecies, Species } from "@/helpers/types.ts";
+import { Compound } from "@/helpers/types.ts";
 import { useTranslation } from "react-i18next";
 import Table from '@components/commons/Table';
 import Spinner from "@components/commons/Spinner.tsx";
 
 interface CompoundListProps {
     compounds?: Compound[];
+    onEditCompound: (compound: Compound) => void; // Add this prop
 }
 
-const CompoundList: React.FC<CompoundListProps> = ({ compounds: propCompounds }) => {
+const CompoundList: React.FC<CompoundListProps> = ({ compounds: propCompounds, onEditCompound }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const { compounds, loading, error } = useSelector((state: RootState) => state.getCompounds);
@@ -24,8 +25,8 @@ const CompoundList: React.FC<CompoundListProps> = ({ compounds: propCompounds })
         ];
 
 
-            const handleEdit = async (row: Species | SearchedSpecies | Reference) => {
-               alert(`Edit: ${row}`);
+            const handleEdit = (row: Compound) => {
+               onEditCompound(row);
             };
 
         const renderActions = (row: Compound) => (

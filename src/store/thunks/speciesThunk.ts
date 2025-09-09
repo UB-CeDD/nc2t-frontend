@@ -9,10 +9,12 @@ import {
     fetchSpeciesRequest,
     fetchSpeciesSuccess,
     fetchSpeciesFailure,
+    createSpeciesRequest,
     createSpeciesSuccess,
     createSpeciesFailure,
     retrieveSpeciesSuccess,
     retrieveSpeciesFailure,
+    updateSpeciesRequest,
     updateSpeciesSuccess,
     updateSpeciesFailure,
     deleteSpeciesSuccess,
@@ -37,6 +39,7 @@ export const fetchSpecies = (queryParams: Record<string, string> = {}) => async 
 };
 
 export const createSpeciesThunk = (speciesData: Species, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch) => {
+    dispatch(createSpeciesRequest());
     try {
         const newSpecies = await createSpecies(speciesData);
         dispatch(createSpeciesSuccess(newSpecies));
@@ -56,7 +59,8 @@ export const retrieveSingleSpeciesThunk = (id: string) => async (dispatch) => {
     }
 };
 
-export const updateSpeciesThunk = (id: string, speciesData: { species_class?: string; name?: string }, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: any) => {
+export const updateSpeciesThunk = (id: string, speciesData: { species_class?: string; name?: string }, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: unknown) => {
+    dispatch(updateSpeciesRequest());
     try {
         const updatedSpecies = await updateSpecies(id, speciesData);
         dispatch(updateSpeciesSuccess(updatedSpecies));

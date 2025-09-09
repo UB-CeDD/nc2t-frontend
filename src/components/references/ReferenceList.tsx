@@ -9,9 +9,10 @@ import Table from '../commons/Table';
 
 interface ReferenceListProps {
     references?: Reference[];
+    onEditReference: (reference: Reference) => void; // Add this prop
 }
 
-const ReferenceList: React.FC<ReferenceListProps> = ({ references: propReferences }) => {
+const ReferenceList: React.FC<ReferenceListProps> = ({ references: propReferences, onEditReference }) => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
     const { references, error, loading } = useSelector((state) => state.getReferences);
@@ -53,8 +54,7 @@ const ReferenceList: React.FC<ReferenceListProps> = ({ references: propReference
     );
 
     const handleEdit = (row: Reference) => {
-        alert(`Edit: ${row}`);
-        // Add your edit logic here
+        onEditReference(row);
     };
 
     const handleDelete = (row: Reference) => {
