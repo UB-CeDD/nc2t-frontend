@@ -42,7 +42,9 @@ const SpeciesDetailsPage: React.FC = () => {
     const [showSiteModal, setShowSiteModal] = useState(false);
     const [showHerbariumModal, setShowHerbariumModal] = useState(false); // New state
     const [selectedCompound, setSelectedCompound] = useState<Compound | null>(null);
-
+    const [selectedReference, setSelectedReference] = useState<Reference | null>(null);
+    const [selectedSite, setSelectedSite] = useState<Location | null>(null);
+    const [selectedHerbarium, setSelectedHerbarium] = useState<Location | null>(null); // New state
     useEffect(() => {
         if (id) {
             dispatch(retrieveSingleSpeciesThunk(id));
@@ -233,21 +235,6 @@ const SpeciesDetailsPage: React.FC = () => {
                             )}
                         </div>
                     </div>
-                    {/* <div className='grid grid-cols-5 mt-2 gap-2 items-center'>
-                        <label className="text-sm font-medium text-gray-700 min-w-fit col-span-1">Preparation:</label>
-                                                <div className="col-span-4">
-                        {isEditing ? (
-                            <textarea
-                                name="preparation"
-                                value={formData.preparation || ''}
-                                onChange={handleInputChange}
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            />
-                        ) : (
-                            <b>{species.preparation}</b>
-                        )}
-                        </div>
-                    </div> */}
                     <div className='grid grid-cols-5 mt-2 gap-2 items-center'>
                         <label className="text-sm font-medium text-gray-700 min-w-fit col-span-1">Administration:</label>
                         <div className="col-span-4">
@@ -278,22 +265,6 @@ const SpeciesDetailsPage: React.FC = () => {
                             )}
                         </div>
                     </div>
-                    {/* <div className='grid grid-cols-5 mt-2 gap-2 items-center'>
-                        <label className="text-sm font-medium text-gray-700 min-w-fit col-span-1">Bio Activity:</label>
-                                                <div className="col-span-4">
-
-                        {isEditing ? (
-                            <textarea
-                                name="bio_activity"
-                                value={formData.bio_activity || ''}
-                                onChange={handleInputChange}
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                            />
-                        ) : (
-                            <b>{species.bio_activity}</b>
-                        )}
-                        </div>
-                    </div> */}
                     <div className='grid grid-cols-5 mt-2 gap-2 items-center'>
                         <label className="text-sm font-medium text-gray-700 min-w-fit col-span-1">Notes:</label>
                         <div className="col-span-4">
@@ -323,7 +294,7 @@ const SpeciesDetailsPage: React.FC = () => {
                                         className="rounded text-left hover:bg-gray-100 cursor-pointer"
                                         onClick={() => setSelectedCompound(compound)}
                                     >
-                                        <h3 className="font-bold">{compound.name}</h3>
+                                        <span className="font-normal">{compound.name}</span>
                                     </li>
                                 ))}
                             </ul>
@@ -339,6 +310,9 @@ const SpeciesDetailsPage: React.FC = () => {
                                     <p><b>Class:</b> {selectedCompound.compound_class}</p>
                                     <p><b>Subclass:</b> {selectedCompound.subclass}</p>
                                     <p><b>SMILES:</b> {selectedCompound.smiles}</p>
+                                    <p><b>Other Names:</b> {selectedCompound.other_names}</p>
+                                    <p><b>Pubchem ID:</b> {selectedCompound.pubchem_id}</p>
+                                    <p><b>Bio Activity:</b> {selectedCompound.bio_activity}</p>
                                     {/* Add more fields as needed */}
                                 </div>
                             </Modal>
@@ -358,69 +332,115 @@ const SpeciesDetailsPage: React.FC = () => {
             )}
 
             <div className="bg-white p-8 rounded shadow-md w-full items-center gap-2 mt-3">
-                <h2 className="text-xl font-bold mb-4">References</h2>
-                {/* <ReferenceList references={species.references as any} /> */}
-                {/* <Table columns={refColumns} data={species?.references as Reference[]} /> */}
-                <button
-                    onClick={() => setShowReferenceModal(true)}
-                    className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
-                >
-                    Manage References
-                </button>
+                <div className="flex justify-between items-center mb-6 w-full">
+                        <h2 className="text-xl font-bold">References</h2>
+
+                    <b>{species?.references?.length}</b>
+                </div>
+               {species?.references && species.references.length > 0 ? (
+                            <ol className="">
+                                {species.references.map((reference) => (
+                                    <li key={reference.id}
+                                        className="rounded text-left hover:bg-gray-100 cursor-pointer"
+                                        onClick={() => setSelectedReference(reference)}
+                                    >
+                                        <span className="font-normal">{reference.title}</span>
+                                    </li>
+                                ))}
+                            </ol>
+                        ) : (
+                            <p>No references associated with this species.</p>
+                        )}
+
+                        {/* Compound details modal */}
+                        {selectedReference && (
+                            <Modal show={true} onClose={() => setSelectedReference(null)}>
+                                <div className="p-8 text-left bg-white rounded shadow-md">
+                                    <h2 className="text-xl font-bold mb-2">{selectedReference.title}</h2>
+                                    <p><b>Type:</b> {selectedReference.type}</p>
+                                    <p><b>Author:</b> {selectedReference.author}</p>
+                                    <p><b>DOI:</b> {selectedReference.doi}</p>
+                                    <p><b>Thesis Level:</b> {selectedReference.thesis_level}</p>
+                                    {/* Add more fields as needed */}
+                                </div>
+                            </Modal>
+                        )}
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="bg-white p-8 rounded shadow-md w-full items-center gap-2 mt-3">
-                    <h2 className="text-xl font-bold mb-4">Place of collection</h2>
-                    {/* <Table columns={siteColumns} data={species.sites as Site[]} /> */}
-                    {/* <LocationList locations={species.sites as any} /> */}
-                    <button
-                        onClick={() => setShowSiteModal(true)}
-                        className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
-                    >
-                        Manage Sites
-                    </button>
+                     <div className="flex justify-between items-center mb-6 w-full">
+                        <h2 className="text-xl font-bold">Harvest Sites</h2>
+
+                    <b>{species?.harvest_sites?.length}</b>
+                </div>
+                    {species?.harvest_sites && species.harvest_sites.length > 0 ? (
+                            <ol className="">
+                                {species.harvest_sites.map((site) => (
+                                    <li key={site.id}
+                                        className="rounded text-left hover:bg-gray-100 cursor-pointer"
+                                        onClick={() => setSelectedSite(site)}
+                                    >
+                                        <span className="font-normal">{site.name}, {site.country}</span>
+                                    </li>
+                                ))}
+                            </ol>
+                        ) : (
+                            <p>No harvest sites associated with this species.</p>
+                        )}
+
+                        {/* Compound details modal */}
+                        {selectedSite && (
+                            <Modal show={true} onClose={() => setSelectedSite(null)}>
+                                <div className="p-8 text-left bg-white rounded shadow-md">
+                                    <h2 className="text-xl font-bold mb-2">{selectedSite.name}</h2>
+                                    <p><b>Country:</b> {selectedSite.country}</p>
+                                    <p><b>City/Town:</b> {selectedSite.city_town}</p>
+                                    <p><b>GPS Latitude:</b> {selectedSite.gps_latitude}</p>
+                                    <p><b>GPS Longitude:</b> {selectedSite.gps_longitude}</p>
+                                    {/* Add more fields as needed */}
+                                </div>
+                            </Modal>
+                        )}
                 </div>
                 <div className="bg-white p-8 rounded shadow-md w-full items-center gap-2 mt-3">
-                    <h2 className="text-xl font-bold mb-4">Herbariums</h2>
-                    {/* <Table columns={herbariumColumns} data={species.herbariums as Herbarium[]} /> */}
-                    <button
-                        onClick={() => setShowHerbariumModal(true)}
-                    >
-                        Manage Herbariums
-                    </button>
-            </div>
+                     <div className="flex justify-between items-center mb-6 w-full">
+                        <h2 className="text-xl font-bold">Herbariums</h2>
+
+                    <b>{species?.storage_locations?.length}</b>
+                </div>
+                    {species?.storage_locations && species.storage_locations.length > 0 ? (
+                            <ol className="">
+                                {species.storage_locations.map((herbarium) => (
+                                    <li key={herbarium.id}
+                                        className="rounded text-left hover:bg-gray-100 cursor-pointer"
+                                        onClick={() => setSelectedHerbarium(herbarium)}
+                                    >
+                                        <span className="font-normal">{herbarium.name}, {herbarium.country}</span>
+                                    </li>
+                                ))}
+                            </ol>
+                        ) : (
+                            <p>No herbariums associated with this species.</p>
+                        )}
+
+                        {/* Compound details modal */}
+                        {selectedHerbarium && (
+                            <Modal show={true} onClose={() => setSelectedHerbarium(null)}>
+                                <div className="p-8 text-left bg-white rounded shadow-md">
+                                    <h2 className="text-xl font-bold mb-2">{selectedHerbarium.name}</h2>
+                                    <p><b>Country:</b> {selectedHerbarium.country}</p>
+                                    <p><b>City/Town:</b> {selectedHerbarium.city_town}</p>
+                                    <p><b>GPS Latitude:</b> {selectedHerbarium.gps_latitude}</p>
+                                    <p><b>GPS Longitude:</b> {selectedHerbarium.gps_longitude}</p>
+                                    {/* Add more fields as needed */}
+                                </div>
+                            </Modal>
+                        )}
+                </div>
             </div>
             <div className="mt-8">
                 <SpeciesUserManagement />
             </div>
-
-            <Modal show={showHerbariumModal} onClose={() => setShowHerbariumModal(false)}>
-                <SpeciesHerbariumManager
-                    initialHerbariums={species.herbariums as Herbarium[]}
-                    onSave={handleSaveHerbariums}
-                />
-            </Modal>
-
-            <Modal show={showSiteModal} onClose={() => setShowSiteModal(false)}>
-                <SpeciesSiteManager
-                    initialSites={species.sites as Site[]}
-                    onSave={handleSaveSites}
-                />
-            </Modal>
-
-            <Modal show={showReferenceModal} onClose={() => setShowReferenceModal(false)}>
-                <SpeciesReferenceManager
-                    initialReferences={species.references as Reference[]}
-                    onSave={handleSaveReferences}
-                />
-            </Modal>
-
-            <Modal show={showCompoundModal} onClose={() => setShowCompoundModal(false)}>
-                <SpeciesCompoundManager
-                    initialCompounds={species.compounds as Compound[]}
-                    onSave={handleSaveCompounds}
-                />
-            </Modal>
         </AdminLayout>
     );
 };

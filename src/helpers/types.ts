@@ -47,8 +47,9 @@ export interface Species extends EntityModel {
     compound_codes: string[];
     compounds?: number[] | Compound[];
     sites?: number[] | Site[];
-    collection_date?: Date;
-    herbariums?: number[] | Herbarium[];
+    collection_date?: Date | string;
+    storage_locations?: Location[];
+    harvest_sites: Location[];
     collection_data?: string[];
 }
 

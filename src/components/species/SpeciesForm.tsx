@@ -80,7 +80,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
     const [herbariumInput, setHerbariumInput] = useState('');
     const [showHerbariumModal, setShowHerbariumModal] = useState(false);
     const [availableHerbaria, setAvailableHerbaria] = useState<Location[]>([]);
-    const [selectedHerbaria, setSelectedHerbaria] = useState<Location[]>([]);
+    const [selectedStorageLocations, setSelectedStorageLocations] = useState<Location[]>([]);
 
       useEffect(() => {
         const initial = getInitialFormData();
@@ -105,25 +105,25 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
             };
             fetchSelectedReferences();
         }
-        
-        if (initial.sites && initial.sites.length > 0) {
+
+        if (initial.harvest_sites && initial.harvest_sites.length > 0) {
             const fetchSelectedSites = async () => {
                 const allLocations = await listLocations();
-                const siteIds = initial.sites.map(s => typeof s === 'number' ? s : s.id);
+                const siteIds = initial.harvest_sites.map(s => typeof s === 'number' ? s : s.id);
                 const fetchedSites = allLocations.filter(l => siteIds.includes(l.id));
                 setSelectedSites(fetchedSites);
             };
             fetchSelectedSites();
         }
 
-        if (initial.herbariums && initial.herbariums.length > 0) {
-            const fetchSelectedHerbaria = async () => {
+        if (initial.storage_locations && initial.storage_locations.length > 0) {
+            const fetchSelectedStorageLocations = async () => {
                 const allLocations = await listLocations();
-                const herbariumIds = initial.herbariums.map(h => typeof h === 'number' ? h : h.id);
-                const fetchedHerbaria = allLocations.filter(h => herbariumIds.includes(h.id));
-                setSelectedHerbaria(fetchedHerbaria);
+                const storageLocationIds = initial.storage_locations.map(h => typeof h === 'number' ? h : h.id);
+                const fetchedStorageLocations = allLocations.filter(h => storageLocationIds.includes(h.id));
+                setSelectedStorageLocations(fetchedStorageLocations);
             };
-            fetchSelectedHerbaria();
+            fetchSelectedStorageLocations();
         }
 
     }, [initialData, referenceFromState]);
@@ -272,9 +272,9 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
         setSelectedSites(prev => prev.filter(s => s.id !== siteId));
     };
 
-    const handleHerbariumInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setHerbariumInput(e.target.value);
-    };
+    // const handleHerbariumInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     setHerbariumInput(e.target.value);
+    // };
 
     const handleSearchHerbarium = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputValue = e.target.value;
@@ -303,12 +303,12 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
     };
 
     const handleHerbariumCreated = (newLocation: Location) => {
-        setSelectedHerbaria(prev => [...prev, newLocation]);
+        setSelectedStorageLocations(prev => [...prev, newLocation]);
         setHerbariumInput('');
     };
 
     const handleSelectExistingHerbarium = (location: Location) => {
-        setSelectedHerbaria(prev => {
+        setSelectedStorageLocations(prev => {
             if (!prev.some(h => h.id === location.id)) {
                 return [...prev, location];
             }
@@ -319,7 +319,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
     };
     
     const handleRemoveSelectedHerbarium = (herbariumId: number) => {
-        setSelectedHerbaria(prev => prev.filter(h => h.id !== herbariumId));
+        setSelectedStorageLocations(prev => prev.filter(h => h.id !== herbariumId));
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -336,16 +336,21 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
             ...formData,
             compounds: selectedCompounds.map(c => c.id),
             references: selectedReferences.map(r => r.id),
-            sites: selectedSites.map(s => s.id),
-            herbariums: selectedHerbaria.map(h => h.id),
+            harvest_sites: selectedSites.map(s => s.id),
+            storage_locations: selectedStorageLocations.map(h => h.id),
         };
         try {
+            console.log('Submitting species form with data:', finalFormData);
+            let result;
             if (formData.id) {
-                await dispatch(updateSpeciesThunk(formData.id.toString(), finalFormData, addNotification));
+                result = await dispatch(updateSpeciesThunk(formData.id.toString(), finalFormData, addNotification));
             } else {
-                await dispatch(createSpeciesThunk(finalFormData as Species, addNotification));
+                result = await dispatch(createSpeciesThunk(finalFormData as Species, addNotification));
             }
-            onFormClose();
+            // Only close the form if the thunk was successful
+            if (result && !result.error) {
+                onFormClose();
+            }
         } catch (error) {
             // Notification is handled in the thunk
         }
@@ -373,23 +378,6 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
                             ))}
                         </select>
                     </div>
-                    {/* <div className="mb-6">
-                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('species.form_fields.family')}</label>
-                        <select
-                            id="family"
-                            className={"bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"}
-                            value={formData.family || ''}
-                            name='family'
-                            onChange={handleChange}
-                        >
-                            <option className="placeholder" value="" disabled>Select a family</option>
-                            {['Euphorbiaceae', 'Acanthaceae'].map((item, index) => (
-                                <option key={index} value={item}>
-                                    {item}
-                                </option>
-                            ))}
-                        </select>
-                    </div> */}
                      <div className="mb-6">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('species.form_fields.family')}</label>
                         <input
@@ -623,7 +611,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
                             </div>
                         )}
                         <div className="mt-2">
-                            {selectedHerbaria.map(herbarium => (
+                            {selectedStorageLocations.map(herbarium => (
                                 <span key={herbarium.id} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-2 mb-2">
                                     {herbarium.name}
                                     <button type="button" onClick={() => handleRemoveSelectedHerbarium(herbarium.id)} className="flex-shrink-0 ml-1.5 inline-flex text-blue-400 hover:text-blue-500 focus:outline-none focus:text-blue-500">

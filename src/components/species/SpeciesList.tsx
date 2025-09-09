@@ -33,7 +33,6 @@ const SpeciesList: React.FC<SpeciesListProps> = ({ onEditSpecies }) => {
         { key: 'recent_name', label: t('species.table_columns.recent_name') },
         { key: 'family', label: t('species.table_columns.family') },
         { key: 'kingdom', label: t('species.table_columns.kingdom') },
-        { key: 'trad_uses', label: t('species.table_columns.trad_uses') },
         { key: 'part_used', label: t('species.table_columns.part_used') },
         { 
             key: 'references',

@@ -5,10 +5,9 @@ const API_URL = '/species';
 
 export const createSpecies = async (speciesData: Species ) => {
     try {
-        const response = await api.post(`${API_URL}/`, speciesData);
-        return response.data;
-    } catch {
-        throw new Error('Failed to create species.');
+        return await api.post(`${API_URL}/`, speciesData);
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Failed to create species.');
     }
 };
 
@@ -17,8 +16,8 @@ export const listSpecies = async (queryParams: Record<string, string> = {}) => {
         const queryString = new URLSearchParams(queryParams).toString();
         const response = await api.get(`${API_URL}?${queryString}`);
         return response.data;
-    } catch {
-        throw new Error('Failed to fetch species.');
+    } catch (error) {
+        throw new Error(error.response?.data?.message || 'Failed to fetch species.');
     }
 };
 
