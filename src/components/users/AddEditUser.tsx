@@ -11,7 +11,7 @@ import { RootState } from '@/store/store';
 
 interface AddEditUserProps {
     user?: UserModel; // The user data for editing
-    onClose: () => void; // Function to call when form is closed/submitted
+    onClose?: () => void; // Function to call when form is closed/submitted
 }
 
 const AddEditUser: React.FC<AddEditUserProps> = ({ user, onClose }) => {

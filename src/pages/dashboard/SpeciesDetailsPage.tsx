@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { retrieveSingleSpeciesThunk, updateSpeciesThunk } from '@/store/thunks/speciesThunk';
@@ -29,11 +29,11 @@ const SpeciesDetailsPage: React.FC = () => {
     const { species, loading, error } = useSelector((state: RootState) => state.getSpecies);
     console.log('SpeciesDetailsPage render', { species, loading, error });    
     // Add notification handler
-    const addNotification = (message: string, type: 'success' | 'warning' | 'error') => {
+    const addNotification = useCallback((message: string, type: 'success' | 'warning' | 'error') => {
         // You can implement your notification logic here, e.g. using a toast library
         // For now, just log to console
         console.log(`[${type}] ${message}`);
-    };
+    }, []);
 
     const [isEditing, setIsEditing] = useState(false);
     const [formData, setFormData] = useState<Partial<Species>>({});
@@ -47,9 +47,9 @@ const SpeciesDetailsPage: React.FC = () => {
     const [selectedHerbarium, setSelectedHerbarium] = useState<Location | null>(null); // New state
     useEffect(() => {
         if (id) {
-            dispatch(retrieveSingleSpeciesThunk(id));
+            dispatch(retrieveSingleSpeciesThunk(id, addNotification));
         }
-    }, [dispatch, id]);
+    }, [dispatch, id, addNotification]);
 
     useEffect(() => {
         if (species) {

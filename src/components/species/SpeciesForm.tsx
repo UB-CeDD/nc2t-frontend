@@ -340,7 +340,6 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
             storage_locations: selectedStorageLocations.map(h => h.id),
         };
         try {
-            console.log('Submitting species form with data:', finalFormData);
             let result;
             if (formData.id) {
                 result = await dispatch(updateSpeciesThunk(formData.id.toString(), finalFormData, addNotification));

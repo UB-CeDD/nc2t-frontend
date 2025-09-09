@@ -1,13 +1,17 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import MainLayout from '@/components/layouts/MainLayout';
 
 const NotFoundPage: React.FC = () => {
     return (
-        <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100">
-            <h1 className="text-6xl font-bold text-gray-800">404</h1>
-            <p className="text-xl text-gray-600">Page Not Found</p>
-            <Link to="/" className="mt-4 text-blue-500 hover:underline">Go back to Home</Link>
-        </div>
+        <MainLayout>
+            <div className="text-center">
+                <h1 className="text-9xl font-bold text-gray-800">404</h1>
+                <p className="text-2xl font-semibold md:text-3xl">Sorry, we couldn't find this page.</p>
+                <p className="mt-4 mb-8 text-gray-600">But dont worry, you can find plenty of other things on our homepage.</p>
+                <Link to="/" className="px-8 py-3 font-semibold rounded bg-cyan-500 text-gray-50 hover:bg-cyan-600">Back to homepage</Link>
+            </div>
+        </MainLayout>
     );
 };
 

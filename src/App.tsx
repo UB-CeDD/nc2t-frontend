@@ -14,42 +14,45 @@ import SpeciesPage from './pages/dashboard/SpeciesPage';
 import UserDetails from '@components/users/UserDetails';
 // import SpeciesDetails from '@components/species/SpeciesDetails';
 import SpeciesDetailsPage from './pages/dashboard/SpeciesDetailsPage';
+import ErrorBoundary from '@/components/commons/ErrorBoundary';
 
 const App: React.FC = () => {
     return (
-        <Routes>
-            <Route path="/" element={<HomePage />} />
-            <Route path="/login" element={<LoginPage />} />
-            <Route
-                path="/dashboard/*"
-                element={
-                    <RouteService redirectTo="/login">
-                        <Routes>
-                            <Route path="compounds" element={<CompoundPage />} />
-                            <Route path="references" element={<ReferencePage />} />
-                            <Route path="locations" element={<LocationPage />} />
-                            <Route path="species" element={<SpeciesPage />} />
-                            <Route path="species/:id" element={<SpeciesDetailsPage />} />
-                        </Routes>
-                    </RouteService>
-                }
-            />
-            <Route
-                path="/admin/*"
-                element={
-                    <RouteService redirectTo="/login">
-                        <Routes>
-                            <Route path="dashboard" element={<AdminPage />} />
-                            <Route path="users" element={<UsersPage />} />
-                            <Route path="users/add" element={<AddEditUser />} />
-                            <Route path="users/:id" element={<UserDetails />} />
-                        </Routes>
-                    </RouteService>
-                }
-            />
+        <ErrorBoundary>
+            <Routes>
+                <Route path="/" element={<HomePage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route
+                    path="/dashboard/*"
+                    element={
+                        <RouteService redirectTo="/login">
+                            <Routes>
+                                <Route path="compounds" element={<CompoundPage />} />
+                                <Route path="references" element={<ReferencePage />} />
+                                <Route path="locations" element={<LocationPage />} />
+                                <Route path="species" element={<SpeciesPage />} />
+                                <Route path="species/:id" element={<SpeciesDetailsPage />} />
+                            </Routes>
+                        </RouteService>
+                    }
+                />
+                <Route
+                    path="/admin/*"
+                    element={
+                        <RouteService redirectTo="/login">
+                            <Routes>
+                                <Route path="dashboard" element={<AdminPage />} />
+                                <Route path="users" element={<UsersPage />} />
+                                <Route path="users/add" element={<AddEditUser />} />
+                                <Route path="users/:id" element={<UserDetails />} />
+                            </Routes>
+                        </RouteService>
+                    }
+                />
 
-            <Route path="*" element={<NotFoundPage />} />
-        </Routes>
+                <Route path="*" element={<NotFoundPage />} />
+            </Routes>
+        </ErrorBoundary>
     );
 };
 

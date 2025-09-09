@@ -65,7 +65,7 @@ const SpeciesUserManagement: React.FC = () => {
                         <option value="">Select User</option>
                         {users.map((user: UserModel) => (
                             <option key={user.id} value={user.id}>
-                                {user.username} ({user.first_name} {user.last_name})
+                                {user.username}
                             </option>
                         ))}
                     </select>
@@ -93,13 +93,13 @@ const SpeciesUserManagement: React.FC = () => {
                     <p>No users associated with this species.</p>
                 ) : (
                     <ul className="mt-2">
-                        {speciesUsers.map((su) => (
-                            <li key={su.user.id} className="flex items-center justify-between border-b py-2">
-                                <span>{su.user.username} - {su.role}</span>
+                        {speciesUsers.map((user) => (
+                            <li key={user.user.username} className="flex items-center justify-between border-b py-2">
+                                <span>{user.user.username} - {user.role}</span>
                                 <div className="flex gap-2">
                                     <select
-                                        value={su.role}
-                                        onChange={(e) => handleRoleChange(su.user.id!, e.target.value as SpeciesUserRole)}
+                                        value={user.role}
+                                        onChange={(e) => handleRoleChange(user.user.id!, e.target.value as SpeciesUserRole)}
                                         className="p-1 border rounded text-sm"
                                     >
                                         <option value="author">Author</option>
@@ -107,7 +107,7 @@ const SpeciesUserManagement: React.FC = () => {
                                         <option value="publisher">Publisher</option>
                                     </select>
                                     <button
-                                        onClick={() => handleRemoveUser(su.user.id!)}
+                                        onClick={() => handleRemoveUser(user.user.id!)}
                                         className="px-3 py-1 bg-red-500 text-white rounded text-sm"
                                     >
                                         Remove
