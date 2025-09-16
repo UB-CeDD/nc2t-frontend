@@ -15,8 +15,7 @@ export interface UserModel extends EntityModel {
     date_joined?: string;
     last_login?: string;
     password: string; // Password field
-    groups?: number[]; // Array of group IDs        
-    user_permissions?: number[]; // Array of permission IDs
+    role: string; // User role
 }
 
 // Compound model

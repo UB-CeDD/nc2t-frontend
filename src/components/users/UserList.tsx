@@ -20,17 +20,14 @@ const UserList: React.FC<UserListProps> = ({ onEditUser }) => {
     const filteredUsers = users.filter((user) => {
         return (
             user.username.toLowerCase().includes(searchText.toLowerCase()) ||
-            user.first_name.toLowerCase().includes(searchText.toLowerCase()) ||
-            user.last_name.toLowerCase().includes(searchText.toLowerCase()) ||
+            user.role.toLowerCase().includes(searchText.toLowerCase()) ||
             user.email.toLowerCase().includes(searchText.toLowerCase())
         );
     });
 
     const columns = [
-        { key: 'first_name', label: t('user.first_name') },
-        { key: 'last_name', label: t('user.last_name') },
-        { key: 'email', label: t('user.email') },
         { key: 'username', label: t('user.username') },
+        { key: 'email', label: t('user.email') },
     ];
     
     const handleView = (row: UserModel) => {
@@ -40,7 +37,6 @@ const UserList: React.FC<UserListProps> = ({ onEditUser }) => {
     const renderActions = (row: UserModel) => (
         <div className="flex justify-center items-center gap-2">
             <a className="text-blue-500 cursor-pointer" onClick={() => handleView(row)}>{t('user.view')}</a>
-            <a className="text-blue-500 cursor-pointer" onClick={() => onEditUser(row)} >{t('user.edit')}</a> {/* Add Edit button */}
             <a className="text-red-500 cursor-pointer" onClick={() => handleDelete(row)}>{t('user.delete')}</a>
         </div>
     );
