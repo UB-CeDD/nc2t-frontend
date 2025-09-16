@@ -19,7 +19,7 @@ import {
 
 const initialState = {
     species: [] as Species[],
-    specie: null as Species | null,
+    currentSpecies: null as Species | null, // New state property for single species
     searchResults: null,
     loading: false,
     error: null,
@@ -45,7 +45,7 @@ const speciesReducer = (state = initialState, action: Action) => {
         case CREATE_SPECIES_FAILURE:
             return {...state, loading: false, error: action.payload as string};
         case RETRIEVE_SPECIES_SUCCESS:
-            return {...state, species: action.payload, error: null};
+            return {...state, currentSpecies: action.payload as Species, error: null}; // Update currentSpecies
         case RETRIEVE_SPECIES_FAILURE:
             return {...state, error: action.payload as string};
         case UPDATE_SPECIES_SUCCESS:

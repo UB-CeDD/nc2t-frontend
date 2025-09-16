@@ -21,7 +21,7 @@ const SpeciesPage: React.FC = () => {
     };
 
     return (
-        <AdminLayout>
+        <>
             <div className="p-4">
                 <h1 className="text-2xl font-bold mb-4">{t('species.dashboard')}</h1>
                 <div className="mb-4">
@@ -43,7 +43,7 @@ const SpeciesPage: React.FC = () => {
                     {view === 'form' && <SpeciesForm initialData={{...selectedSpecies}} onFormClose={handleFormClose} />}
                 </div>
             </div>
-        </AdminLayout>
+        </>
     );
 };
 

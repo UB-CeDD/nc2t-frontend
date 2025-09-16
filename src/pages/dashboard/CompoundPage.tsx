@@ -19,7 +19,7 @@ const CompoundPage: React.FC = () => {
     };
 
     return (
-        <AdminLayout>
+        <>
             <div className="p-4">
                 <h1 className="text-2xl font-bold mb-4">Compounds Dashboard</h1>
                 <div className="mb-4">
@@ -47,7 +47,7 @@ const CompoundPage: React.FC = () => {
                     {view === 'form' && <CompoundForm compound={editingCompound} onClose={handleCloseForm} />}
                 </div>
             </div>
-        </AdminLayout>
+        </>
     );
 };
 

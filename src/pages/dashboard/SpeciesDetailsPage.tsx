@@ -26,8 +26,8 @@ const SpeciesDetailsPage: React.FC = () => {
     const navigate = useNavigate();
     const dispatch: AppDispatch = useDispatch();
 
-    const { species, loading, error } = useSelector((state: RootState) => state.getSpecies);
-    console.log('SpeciesDetailsPage render', { species, loading, error });    
+    const { currentSpecies, loading, error } = useSelector((state: RootState) => state.getSpecies);
+    console.log('SpeciesDetailsPage render', { currentSpecies, loading, error });    
     // Add notification handler
     const addNotification = useCallback((message: string, type: 'success' | 'warning' | 'error') => {
         // You can implement your notification logic here, e.g. using a toast library
@@ -52,10 +52,10 @@ const SpeciesDetailsPage: React.FC = () => {
     }, [dispatch, id, addNotification]);
 
     useEffect(() => {
-        if (species) {
-            setFormData(species);
+        if (currentSpecies) {
+            setFormData(currentSpecies);
         }
-    }, [species]);
+    }, [currentSpecies]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -105,7 +105,7 @@ const SpeciesDetailsPage: React.FC = () => {
         return <div>{error}</div>;
     }
 
-    if (!species) {
+    if (!currentSpecies) {
         return <div>Species not found.</div>;
     }
 
@@ -135,9 +135,9 @@ const SpeciesDetailsPage: React.FC = () => {
     ];
 
     return (
-        <AdminLayout>
+        <>
             <div className="flex justify-between items-center mb-4">
-                <h1 className="text-2xl font-bold">{species.name}</h1>
+                <h1 className="text-2xl font-bold">{currentSpecies.name}</h1>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -166,7 +166,7 @@ const SpeciesDetailsPage: React.FC = () => {
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 />
                             ) : (
-                                <b className="flex-1">{species.recent_name}</b>
+                                <b className="flex-1">{currentSpecies.recent_name}</b>
                             )}
                         </div>
                     </div>
@@ -182,7 +182,7 @@ const SpeciesDetailsPage: React.FC = () => {
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             />
                         ) : (
-                            <b className="flex-1">{species.kingdom}</b>
+                            <b className="flex-1">{currentSpecies.kingdom}</b>
                         )}
                         </div>
                     </div>
@@ -199,7 +199,7 @@ const SpeciesDetailsPage: React.FC = () => {
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             />
                         ) : (
-                            <b className="flex-1">{species.family}</b>
+                            <b className="flex-1">{currentSpecies.family}</b>
                         )}
                         </div>
                     </div>
@@ -215,7 +215,7 @@ const SpeciesDetailsPage: React.FC = () => {
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             />
                         ) : (
-                            <b>{species.trad_uses}</b>
+                            <b>{currentSpecies.trad_uses}</b>
                         )}
                         </div>
                     </div>
@@ -231,7 +231,7 @@ const SpeciesDetailsPage: React.FC = () => {
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 />
                             ) : (
-                                <b className="flex-1">{species.part_used}</b>
+                                <b className="flex-1">{currentSpecies.part_used}</b>
                             )}
                         </div>
                     </div>
@@ -246,7 +246,7 @@ const SpeciesDetailsPage: React.FC = () => {
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 />
                             ) : (
-                                <b>{species.administration}</b>
+                                <b>{currentSpecies.administration}</b>
                             )}
                         </div>
                     </div>
@@ -261,7 +261,7 @@ const SpeciesDetailsPage: React.FC = () => {
                                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                                 />
                             ) : (
-                                <b>{species.effects}</b>
+                                <b>{currentSpecies.effects}</b>
                             )}
                         </div>
                     </div>
@@ -276,7 +276,7 @@ const SpeciesDetailsPage: React.FC = () => {
                                 className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                             />
                         ) : (
-                            <b>{species.notes}</b>
+                            <b>{currentSpecies.notes}</b>
                         )}
                         </div>
                     </div>
@@ -285,11 +285,11 @@ const SpeciesDetailsPage: React.FC = () => {
                     <div className="flex justify-between items-center mb-6 w-full">
                         <h2 className="text-xl font-bold">Compounds</h2>
 
-                        <b>{species?.compounds?.length}</b>
+                        <b>{currentSpecies?.compounds?.length}</b>
                     </div>
-                    {species?.compounds && species.compounds.length > 0 ? (
+                    {currentSpecies?.compounds && currentSpecies.compounds.length > 0 ? (
                             <ul className="">
-                                {species.compounds.map((compound) => (
+                                {currentSpecies.compounds.map((compound) => (
                                     <li key={compound.id}
                                         className="rounded text-left hover:bg-gray-100 cursor-pointer"
                                         onClick={() => setSelectedCompound(compound)}
@@ -335,11 +335,11 @@ const SpeciesDetailsPage: React.FC = () => {
                 <div className="flex justify-between items-center mb-6 w-full">
                         <h2 className="text-xl font-bold">References</h2>
 
-                    <b>{species?.references?.length}</b>
+                    <b>{currentSpecies?.references?.length}</b>
                 </div>
-               {species?.references && species.references.length > 0 ? (
+               {currentSpecies?.references && currentSpecies.references.length > 0 ? (
                             <ol className="">
-                                {species.references.map((reference) => (
+                                {currentSpecies.references.map((reference) => (
                                     <li key={reference.id}
                                         className="rounded text-left hover:bg-gray-100 cursor-pointer"
                                         onClick={() => setSelectedReference(reference)}
@@ -371,11 +371,11 @@ const SpeciesDetailsPage: React.FC = () => {
                      <div className="flex justify-between items-center mb-6 w-full">
                         <h2 className="text-xl font-bold">Harvest Sites</h2>
 
-                    <b>{species?.harvest_sites?.length}</b>
+                    <b>{currentSpecies?.harvest_sites?.length}</b>
                 </div>
-                    {species?.harvest_sites && species.harvest_sites.length > 0 ? (
+                    {currentSpecies?.harvest_sites && currentSpecies.harvest_sites.length > 0 ? (
                             <ol className="">
-                                {species.harvest_sites.map((site) => (
+                                {currentSpecies.harvest_sites.map((site) => (
                                     <li key={site.id}
                                         className="rounded text-left hover:bg-gray-100 cursor-pointer"
                                         onClick={() => setSelectedSite(site)}
@@ -406,11 +406,11 @@ const SpeciesDetailsPage: React.FC = () => {
                      <div className="flex justify-between items-center mb-6 w-full">
                         <h2 className="text-xl font-bold">Herbariums</h2>
 
-                    <b>{species?.storage_locations?.length}</b>
+                    <b>{currentSpecies?.storage_locations?.length}</b>
                 </div>
-                    {species?.storage_locations && species.storage_locations.length > 0 ? (
+                    {currentSpecies?.storage_locations && currentSpecies.storage_locations.length > 0 ? (
                             <ol className="">
-                                {species.storage_locations.map((herbarium) => (
+                                {currentSpecies.storage_locations.map((herbarium) => (
                                     <li key={herbarium.id}
                                         className="rounded text-left hover:bg-gray-100 cursor-pointer"
                                         onClick={() => setSelectedHerbarium(herbarium)}
@@ -438,10 +438,7 @@ const SpeciesDetailsPage: React.FC = () => {
                         )}
                 </div>
             </div>
-            <div className="mt-8">
-                <SpeciesUserManagement />
-            </div>
-        </AdminLayout>
+        </>
     );
 };
 

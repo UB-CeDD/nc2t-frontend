@@ -3,6 +3,7 @@ import { validateRefreshToken } from './authService';
 import store from '@/store/store';
 import { logout } from '@/store/thunks/authThunks';
 import { notify } from '@/components/commons/NotificationContext';
+import { setLoading, unsetLoading } from '@/store/actions/loadingActions';
 
 const api = axios.create({
     baseURL: 'http://localhost:8000/api',
@@ -35,6 +36,7 @@ api.interceptors.request.use(
         if (config.url === '/login/' || config.url === '/register/') {
             return config;
         }
+        store.dispatch(setLoading());
         const token = localStorage.getItem('access_token');
         const expiresIn = localStorage.getItem('expires_in'); // should be a timestamp (seconds)
 
@@ -84,12 +86,19 @@ api.interceptors.request.use(
         }
         return config;
     },
-    (error) => Promise.reject(error)
+    (error) => {
+        store.dispatch(unsetLoading());
+        return Promise.reject(error);
+    }
 );
 
 api.interceptors.response.use(
-    (response) => response,
+    (response) => {
+        store.dispatch(unsetLoading());
+        return response;
+    },
     (error) => {
+        store.dispatch(unsetLoading());
         const originalRequest = error.config;
         if (error.response && error.response.status === 401 && !originalRequest._retry) {
             originalRequest._retry = true;

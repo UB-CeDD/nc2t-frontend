@@ -21,7 +21,7 @@ const ReferencePage: React.FC = () => {
     };
 
     return (
-        <AdminLayout>
+        <>
             <div className="p-4">
                 <h1 className="text-2xl font-bold mb-4">{t('reference.reference')}</h1>
                 <div className="mb-4">
@@ -47,7 +47,7 @@ const ReferencePage: React.FC = () => {
                 {view === 'list' && <ReferenceList onEditReference={handleEditReference} />}
                 {view === 'form' && <ReferenceForm reference={editingReference} onCancel={handleCloseForm} onSave={handleCloseForm} />}
             </div>
-        </AdminLayout>
+        </>
     );
 };
 

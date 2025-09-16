@@ -112,7 +112,7 @@ const AdminPage: React.FC = () => {
     const recentActivity = allEntities.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 10);
 
     return (
-        <AdminLayout>
+        <>
             <h1 className="text-3xl font-bold mb-8 text-gray-800">Admin Dashboard</h1>
 
             {allLoading ? (
@@ -197,7 +197,7 @@ const AdminPage: React.FC = () => {
                     </div>
                 </>
             )}
-        </AdminLayout>
+        </>
     );
 };
 

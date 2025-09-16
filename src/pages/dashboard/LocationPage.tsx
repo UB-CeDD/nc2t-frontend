@@ -22,7 +22,7 @@ const LocationPage: React.FC = () => {
     };
 
     return (
-        <AdminLayout>
+        <>
             <div className="p-4">
                 <h1 className="text-2xl font-bold mb-4">{t('location.location')}</h1>
                 <div className="mb-4">
@@ -48,7 +48,7 @@ const LocationPage: React.FC = () => {
                 {view === 'list' && <LocationList onEditLocation={handleEditLocation} />}
                 {view === 'form' && <LocationForm location={editingLocation} onCancel={handleCloseForm} onSave={handleCloseForm} />}
             </div>
-        </AdminLayout>
+        </>
     );
 };
 
