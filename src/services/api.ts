@@ -2,6 +2,7 @@ import axios from 'axios';
 import { validateRefreshToken } from './authService';
 import store from '@/store/store';
 import { logout } from '@/store/thunks/authThunks';
+import { notify } from '@/components/commons/NotificationContext';
 
 const api = axios.create({
     baseURL: 'http://localhost:8000/api',
@@ -58,6 +59,8 @@ api.interceptors.request.use(
                                 isRefreshing = false;
                                 processQueue(err, null);
                                 store.dispatch(logout());
+                                notify('Session expired. Please log in again.', 'error');
+                                window.location.href = '/login';
                             });
                     }
                     return new Promise((resolve, reject) => {
@@ -72,6 +75,8 @@ api.interceptors.request.use(
                     });
                 } else {
                     store.dispatch(logout());
+                    notify('Session expired. Please log in again.', 'error');
+                    window.location.href = '/login';
                     return Promise.reject(new Error('Refresh token not found.'));
                 }
             }
@@ -108,14 +113,19 @@ api.interceptors.response.use(
                                 isRefreshing = false;
                                 processQueue(err, null);
                                 store.dispatch(logout());
+                                notify('Session expired. Please log in again.', 'error');
+                                window.location.href = '/login';
                                 reject(err);
                             });
                     });
                 } else {
                     store.dispatch(logout());
+                    notify('Session expired. Please log in again.', 'error');
+                    window.location.href = '/login';
                     return Promise.reject(new Error('Refresh token not found.'));
                 }
             } else {
+                isRefreshing = false;
                 return new Promise((resolve, reject) => {
                     failedQueue.push({ resolve, reject });
                 })
@@ -123,9 +133,16 @@ api.interceptors.response.use(
                     originalRequest.headers['Authorization'] = `Bearer ${token}`;
                     return api(originalRequest);
                 })
-                .catch(err => Promise.reject(err));
+                .catch(err => {
+                    store.dispatch(logout());
+                    notify('Session expired. Please log in again.', 'error');
+                    window.location.href = '/login';
+                    return Promise.reject(err);
+                });
             }
         }
+        console.log(error.response?.data || error.message);
+        
         return Promise.reject(error);
     }
 );

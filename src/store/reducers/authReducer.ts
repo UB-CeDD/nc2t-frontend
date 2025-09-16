@@ -20,6 +20,7 @@ const authReducer = (state = initialState, action) => {
             localStorage.setItem('isAuthenticated', 'true');
             localStorage.setItem('access_token', action.payload.accessToken);
             localStorage.setItem('refresh_token', action.payload.refreshToken);
+            console.log('LOGIN_SUCCESS: isAuthenticated set to true in localStorage and state.');
             return {
                 ...state,
                 isAuthenticated: true,
@@ -33,6 +34,7 @@ const authReducer = (state = initialState, action) => {
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
             localStorage.removeItem('isAuthenticated');
+            console.log('LOGIN_FAILURE: isAuthenticated set to false in localStorage and state.');
             return {
                 ...state,
                 isAuthenticated: false,
@@ -46,6 +48,7 @@ const authReducer = (state = initialState, action) => {
             localStorage.removeItem('access_token');
             localStorage.removeItem('refresh_token');
             localStorage.removeItem('isAuthenticated');
+            console.log('LOGOUT_SUCCESS: isAuthenticated set to false in localStorage and state.');
             return {
                 ...state,
                 isAuthenticated: false,

@@ -14,25 +14,31 @@ export const login = async (username: string, password: string) => {
 export const validateRefreshToken = async (refreshToken: string) => {
     try {
         const response = await api.post(`/token/refresh/`, { refresh: refreshToken });
-        return { status: response.status };
-    } catch {
-        throw new Error('Token validation failed.');
+        const { access, expires_in } = response.data;
+        return { status: response.status, access, expires_in };
+    } catch (error) {
+        if (error.response && error.response.status === 401) {
+            console.log('Dispatching unauthorized event.');
+            window.dispatchEvent(new CustomEvent('unauthorized'));
+        }
+        throw error; // Re-throw the error so the thunk can catch it
     }
 };
 
 export const logout = async () => {
-    console.log('got here');
-    
-    return await api.post(`/logout/`, {
-        refresh: localStorage.getItem('refreshToken')
-    }).then(response => {
+    console.log('Logout function called.');
+    try {
+        await api.post(`/logout/`, {
+            refresh: localStorage.getItem('refresh_token')
+        });
+    } catch (error) {
+        console.error('Logout failed:', error);
+    } finally {
+        console.log('Clearing localStorage...');
         localStorage.removeItem('access_token');
         localStorage.removeItem('refresh_token');
         localStorage.removeItem('current_user');
         localStorage.removeItem('isAuthenticated');
-        return response.status;
-    }).catch(error => {
-        console.error('Logout failed:', error);
-        throw new Error('Logout failed. Please try again.');
-    });
+        console.log('localStorage cleared.');
+    }
 };

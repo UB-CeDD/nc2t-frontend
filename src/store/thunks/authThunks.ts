@@ -29,15 +29,14 @@ export const validateToken = (): ThunkAction<void, RootState, unknown, AnyAction
                 if (response.status === 200) {
                     const user = JSON.parse(localStorage.getItem('current_user') || 'null');
                     dispatch(loginSuccess(user));
-                } else {
-                    dispatch(loginFailure('Session expired. Please log in again.'));
                 }
             }
-        } catch {
-            dispatch(loginFailure('An error occurred during token validation'));
+        } catch (error) {
+            console.error(error);
         }
     };
 };
+
 export const logout = (): ThunkAction<void, RootState, unknown, AnyAction> => {
     return async (dispatch) => {
         try {

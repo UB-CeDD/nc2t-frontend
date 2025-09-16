@@ -12,6 +12,9 @@ interface NotificationContextType {
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
 
+// Declare a global variable to hold the addNotification function
+let globalAddNotification: ((message: string, type: 'success' | 'warning' | 'error') => void) | undefined;
+
 export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
     const [notifications, setNotifications] = useState<Notification[]>([]);
 
@@ -25,6 +28,9 @@ export const NotificationProvider: React.FC<{ children: ReactNode }> = ({ childr
             setNotifications((prev) => prev.filter((n) => n.id !== id));
         }, 5000);
     };
+
+    // Register the addNotification function globally
+    globalAddNotification = addNotification;
 
     return (
         <NotificationContext.Provider value={{ addNotification }}>
@@ -49,4 +55,13 @@ export const useNotification = () => {
         throw new Error('useNotification must be used within a NotificationProvider');
     }
     return context;
+};
+
+// Export a non-hook function to add notifications
+export const notify = (message: string, type: 'success' | 'warning' | 'error') => {
+    if (globalAddNotification) {
+        globalAddNotification(message, type);
+    } else {
+        console.warn('NotificationProvider not yet mounted. Cannot display notification:', message);
+    }
 };
