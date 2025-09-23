@@ -14,7 +14,6 @@ export interface UserModel extends EntityModel {
     is_superuser?: boolean;
     date_joined?: string;
     last_login?: string;
-    password: string; // Password field
     role: string; // User role
 }
 

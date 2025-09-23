@@ -25,13 +25,7 @@ const App: React.FC = () => {
 
                 {/* Admin Layout for dashboard routes */}
                 <Route
-                    path="/dashboard/*"
-                    element={
-                        <RouteService redirectTo="/login">
-                            <AdminLayout />
-                        </RouteService>
-                    }
-                >
+                    path="/dashboard/*">
                     <Route path="compounds" element={<CompoundPage />} />
                     <Route path="references" element={<ReferencePage />} />
                     <Route path="locations" element={<LocationPage />} />
@@ -41,13 +35,7 @@ const App: React.FC = () => {
 
                 {/* Admin Layout for admin routes */}
                 <Route
-                    path="/admin/*"
-                    element={
-                        <RouteService redirectTo="/login">
-                            <AdminLayout />
-                        </RouteService>
-                    }
-                >
+                    path="/admin/*">
                     <Route path="dashboard" element={<AdminPage />} />
                     <Route path="users" element={<UsersPage />} />
                     <Route path="users/add" element={<AddEditUser />} />

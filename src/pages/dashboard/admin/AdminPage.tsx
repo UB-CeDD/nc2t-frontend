@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import AdminLayout from '@/components/layouts/AdminLayout';
+import Loader from '@/components/commons/Loader';
 import { RootState, AppDispatch } from '@/store/store';
 import { fetchSpecies } from '@/store/thunks/speciesThunk';
 import { fetchCompounds } from '@/store/thunks/compoundThunk';
@@ -11,9 +11,11 @@ import { fetchHerbariumsThunk } from '@/store/thunks/herbariumThunk';
 import { Species, Compound, UserModel, LocationModel, Reference, Herbarium } from '@/helpers/types';
 import { FaLeaf, FaFlask, FaUsers, FaMapMarkerAlt, FaBook, FaBuilding } from 'react-icons/fa';
 import MapComponent from '@/components/commons/MapComponent';
+import AdminLayout from '@components/layouts/AdminLayout';
 
 const AdminPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
+    const { isLoading } = useSelector((state: RootState) => state.loading);
 
     // const { species, loading: speciesLoading } = useSelector((state: RootState) => state.species);
     // const { compounds, loading: compoundsLoading } = useSelector((state: RootState) => state.compounds);
@@ -39,8 +41,6 @@ const AdminPage: React.FC = () => {
     }, [dispatch]);
 
     // const allLoading = speciesLoading || compoundsLoading || usersLoading || locationsLoading || referencesLoading || herbariumsLoading;
-
-    const allLoading : any = false;
     // --- Statistics Calculations ---
 
     const getSpeciesByKingdom = () => {
@@ -112,11 +112,11 @@ const AdminPage: React.FC = () => {
     const recentActivity = allEntities.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 10);
 
     return (
-        <>
+        <AdminLayout>
             <h1 className="text-3xl font-bold mb-8 text-gray-800">Admin Dashboard</h1>
 
-            {allLoading ? (
-                <div className="text-center text-lg text-gray-600">Loading dashboard data...</div>
+            {isLoading ? (
+                <Loader />
             ) : (
                 <>
                     {/* Overview Cards */}
@@ -197,7 +197,7 @@ const AdminPage: React.FC = () => {
                     </div>
                 </>
             )}
-        </>
+        </AdminLayout>
     );
 };
 

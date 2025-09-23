@@ -1,13 +1,12 @@
 import React from 'react';
-import { useSelector } from 'react-redux';
-import { Outlet } from 'react-router-dom';
 import Sidebar from '@components/commons/Sidebar';
 import Navbar from '@components/commons/Navbar';
-import Loader from '@/components/commons/Loader';
-import { RootState } from '@/store/store';
 
-const AdminLayout: React.FC = () => {
-    const { isLoading } = useSelector((state: RootState) => state.loading);
+interface AdminLayoutProps {
+    children?: React.ReactNode;
+}
+
+const AdminLayout: React.FC<AdminLayoutProps> = ({ children }) => {
 
     return (
         <div className="flex h-screen bg-gray-100">
@@ -21,8 +20,7 @@ const AdminLayout: React.FC = () => {
 
                 {/* Central content area */}
                 <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 p-6 relative">
-                    {isLoading && <Loader />}
-                    <Outlet />
+                    {children}
                 </main>
             </div>
         </div>

@@ -1,8 +1,12 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
 import logo from '@/assets/nc2t_logo.png';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store/store';
 
 const Sidebar: React.FC = () => {
+    const user = useSelector((state: RootState) => state.auth.user);
+
     return (
         <div className="sidebar bg-gray-800 text-white h-full p-4 flex flex-col">
             <div className="logo mb-6 flex items-center justify-center">
@@ -21,38 +25,20 @@ const Sidebar: React.FC = () => {
                         Admin Dashboard
                     </NavLink>
                 </li>
-                <li>
-                    {/* <div className="group relative"> */}
-                    <NavLink
-                        to="/admin/users"
-                        className={({ isActive }) =>
-                            isActive
-                                ? 'bg-white text-sky-500 p-2 rounded block'
-                                : 'text-white p-2 block hover:bg-gray-700 hover:text-sky-400'
-                        }
-                    >
-                        Users
-                    </NavLink>
-                    {/* <ul className="absolute left-0 top-full mt-2 hidden group-hover:block bg-gray-700 text-white rounded shadow-lg">
-                            <li>
-                                <NavLink
-                                    to="/admin/users/list"
-                                    className="block px-4 py-2 hover:bg-gray-600"
-                                >
-                                    User List
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink
-                                    to="/admin/users/add"
-                                    className="block px-4 py-2 hover:bg-gray-600"
-                                >
-                                    Add User
-                                </NavLink>
-                            </li>
-                        </ul>
-                    </div> */}
-                </li>
+                {user && user.role === 'admin' && (
+                    <li>
+                        <NavLink
+                            to="/admin/users"
+                            className={({ isActive }) =>
+                                isActive
+                                    ? 'bg-white text-sky-500 p-2 rounded block'
+                                    : 'text-white p-2 block hover:bg-gray-700 hover:text-sky-400'
+                            }
+                        >
+                            Users
+                        </NavLink>
+                    </li>
+                )}
                 <li>
                     <NavLink
                         to="/dashboard/compounds"

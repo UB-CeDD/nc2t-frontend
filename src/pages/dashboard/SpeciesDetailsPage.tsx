@@ -135,7 +135,7 @@ const SpeciesDetailsPage: React.FC = () => {
     ];
 
     return (
-        <>
+        <AdminLayout>
             <div className="flex justify-between items-center mb-4">
                 <h1 className="text-2xl font-bold">{currentSpecies.name}</h1>
             </div>
@@ -438,7 +438,7 @@ const SpeciesDetailsPage: React.FC = () => {
                         )}
                 </div>
             </div>
-        </>
+        </AdminLayout>
     );
 };
 

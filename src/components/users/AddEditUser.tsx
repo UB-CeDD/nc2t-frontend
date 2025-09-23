@@ -66,10 +66,10 @@ const AddEditUser: React.FC<AddEditUserProps> = ({ user, onClose }) => {
         e.preventDefault();
         try {
             if (user?.id) { // Use user.id if user prop is present
-                await dispatch(updateUserThunk(user.id, formData));
+                dispatch(updateUserThunk(user.id, formData));
                 addNotification(t('user.update_success'), 'success');
             } else {
-                await dispatch(createUserThunk(formData));
+                dispatch(createUserThunk(formData));
                 addNotification(t('user.create_success'), 'success');
             }
             onClose(); // Call onClose after successful submission
@@ -114,6 +114,20 @@ const AddEditUser: React.FC<AddEditUserProps> = ({ user, onClose }) => {
                             required
                         />
                     </div>
+                    {/* <div>
+                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">
+                            {t('user.form_fields.password')}
+                        </label>
+                        <input
+                            type="password"
+                            name="password"
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            placeholder={t('user.form_fields.password')}
+                            value={formData.password}
+                            onChange={handleChange}
+                            required
+                        />
+                    </div> */}
                     <div>
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">
                             {t('user.form_fields.roles')}

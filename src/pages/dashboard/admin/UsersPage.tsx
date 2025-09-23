@@ -4,9 +4,14 @@ import UserList from '@/components/users/UserList';
 import AddEditUser from '@/components/users/AddEditUser';
 import { useTranslation } from "react-i18next";
 import { UserModel } from '@/helpers/types';
+import { RootState } from '@store/store';
+import { useSelector } from 'react-redux';
+import Loader from '@components/commons/Loader';
 
 const UsersPage: React.FC = () => {
     const { t } = useTranslation();
+    const { isLoading } = useSelector((state: RootState) => state.loading);
+
     const [showAddEditUser, setShowAddEditUser] = useState(false);
     const [editingUser, setEditingUser] = useState<UserModel | undefined>(undefined);
 
@@ -21,7 +26,8 @@ const UsersPage: React.FC = () => {
     };
 
     return (
-        <>
+        <AdminLayout>
+        { isLoading ? ( <Loader /> ) : (
             <div className="flex flex-col p-4">
                 <div className="flex flex-row items-center justify-between w-full mb-4">
                     <h1 className="text-2xl font-bold">{t('user.user')}</h1>
@@ -37,7 +43,8 @@ const UsersPage: React.FC = () => {
                 {showAddEditUser && <AddEditUser user={editingUser} onClose={handleCloseForm} />}
                 {!showAddEditUser && <UserList onEditUser={handleEditUser} />}
             </div>
-        </>
+        )}
+        </AdminLayout>
     );
 };
 
