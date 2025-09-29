@@ -13,8 +13,9 @@ import {
     UPDATE_SPECIES_FAILURE,
     DELETE_SPECIES_SUCCESS,
     DELETE_SPECIES_FAILURE,
+    SEARCH_SPECIES_REQUEST,
     SEARCH_SPECIES_SUCCESS,
-    SEARCH_SPECIES_FAILURE,
+    SEARCH_SPECIES_FAILURE, SET_SPECIES_FOR_EDIT,
 } from '../actions/speciesActions';
 
 const initialState = {
@@ -36,6 +37,8 @@ const speciesReducer = (state = initialState, action: Action) => {
         case CREATE_SPECIES_REQUEST:
         case UPDATE_SPECIES_REQUEST:
             return {...state, loading: true, error: null};
+        case SEARCH_SPECIES_REQUEST:
+            return {...state, loading: true, searchResults: null, error: null};
         case FETCH_SPECIES_SUCCESS:
             return {...state, loading: false, species: action.payload, error: null};
         case FETCH_SPECIES_FAILURE:
@@ -71,9 +74,11 @@ const speciesReducer = (state = initialState, action: Action) => {
         case DELETE_SPECIES_FAILURE:
             return {...state, error: action.payload as string};
         case SEARCH_SPECIES_SUCCESS:
-            return { ...state, searchResults: action.payload, error: null };
+            return { ...state, loading: false, searchResults: action.payload, error: null };
         case SEARCH_SPECIES_FAILURE:
-            return { ...state, searchResults: null, error: action.payload as string };
+            return { ...state, loading: false, searchResults: null, error: action.payload as string };
+        case SET_SPECIES_FOR_EDIT:
+            return { ...state, currentSpecies: action.payload as Species, error: null };
         default:
             return state;
     }

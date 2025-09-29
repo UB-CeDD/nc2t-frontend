@@ -11,7 +11,7 @@ import loadingReducer from './loadingReducer';
 
 const rootReducer = combineReducers({
     auth: authReducer,
-    user: userReducer,
+    getUsers: userReducer,
     getCompounds: compoundReducer,
     getSpecies: speciesReducer,
     getLocations: locationReducer,

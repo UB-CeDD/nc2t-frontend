@@ -5,6 +5,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsersThunk } from '@store/thunks/userThunks';
 import { UserModel } from '@/helpers/types';
 import { useNavigate } from 'react-router-dom';
+import { RootState } from '@store/store';
 
 interface UserListProps {
     onEditUser: (user: UserModel) => void; // Add this prop
@@ -14,7 +15,7 @@ const UserList: React.FC<UserListProps> = ({ onEditUser }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    const { users } = useSelector((state: RootState) => state.user);
+    const { users } = useSelector((state: RootState) => state.getUsers);
     const [searchText, setSearchText] = useState('');
 
     const filteredUsers = users.filter((user) => {

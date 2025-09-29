@@ -14,8 +14,11 @@ export const UPDATE_SPECIES_SUCCESS = 'UPDATE_SPECIES_SUCCESS';
 export const UPDATE_SPECIES_FAILURE = 'UPDATE_SPECIES_FAILURE';
 export const DELETE_SPECIES_SUCCESS = 'DELETE_SPECIES_SUCCESS';
 export const DELETE_SPECIES_FAILURE = 'DELETE_SPECIES_FAILURE';
+export const SEARCH_SPECIES_REQUEST = 'SEARCH_SPECIES_REQUEST';
 export const SEARCH_SPECIES_SUCCESS = 'SEARCH_SPECIES_SUCCESS';
 export const SEARCH_SPECIES_FAILURE = 'SEARCH_SPECIES_FAILURE';
+export const SET_SPECIES_FOR_EDIT = 'SET_SPECIES_FOR_EDIT';
+export const CLEAR_CURRENT_SPECIES = 'CLEAR_CURRENT_SPECIES';
 
 // Action Creators
 export const fetchSpeciesRequest = () => ({
@@ -80,6 +83,10 @@ export const deleteSpeciesFailure = (error: string) => ({
     payload: error,
 });
 
+export const searchSpeciesRequest = () => ({
+    type: SEARCH_SPECIES_REQUEST,
+});
+
 export const searchSpeciesSuccess = (species: Species[]) => ({
     type: SEARCH_SPECIES_SUCCESS,
     payload: species,
@@ -92,4 +99,13 @@ export const searchSpeciesFailure = (error: string) => ({
 export const searchSpeciesByReference = (reference: string) => ({
     type: 'SEARCH_SPECIES_BY_REFERENCE',
     payload: reference,
+});
+
+export const setSpeciesForEdit = (species: Species) => ({
+    type: SET_SPECIES_FOR_EDIT,
+    payload: species,
+});
+
+export const clearCurrentSpecies = () => ({
+    type: CLEAR_CURRENT_SPECIES,
 });

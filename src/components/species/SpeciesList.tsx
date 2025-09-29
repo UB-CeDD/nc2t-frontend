@@ -20,7 +20,6 @@ const SpeciesList: React.FC<SpeciesListProps> = ({ onEditSpecies }) => {
     const dispatch: AppDispatch = useDispatch();
     const { species, error: speciesError, searchResults, loading} = useSelector((state: RootState) => state.getSpecies);
     const { error: referencesError } = useSelector((state: RootState) => state.getReferences);
-    console.log('SpeciesList render', { species, speciesError, referencesError, searchResults, loading });
 
     const handleSearch = async (e: string) => {
         if (e.trim() !== '') {

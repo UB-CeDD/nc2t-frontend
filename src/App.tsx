@@ -2,7 +2,6 @@ import React from 'react';
 import { Routes, Route } from 'react-router-dom';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/auth/LoginPage';
-import RouteService from './services/RouteService';
 import NotFoundPage from '@/pages/NotFoundPage';
 import CompoundPage from "@/pages/dashboard/CompoundPage.tsx";
 import LocationPage from "@/pages/dashboard/LocationPage";
@@ -13,8 +12,8 @@ import SpeciesPage from './pages/dashboard/SpeciesPage';
 import UserDetails from '@components/users/UserDetails';
 import SpeciesDetailsPage from './pages/dashboard/SpeciesDetailsPage';
 import ErrorBoundary from '@/components/commons/ErrorBoundary';
-import AdminLayout from '@/components/layouts/AdminLayout';
 import AdminPage from './pages/dashboard/admin/AdminPage';
+import AddSpeciesPage from './pages/dashboard/AddSpeciesPage';
 
 const App: React.FC = () => {
     return (
@@ -31,6 +30,8 @@ const App: React.FC = () => {
                     <Route path="locations" element={<LocationPage />} />
                     <Route path="species" element={<SpeciesPage />} />
                     <Route path="species/:id" element={<SpeciesDetailsPage />} />
+                    <Route path="species/add" element={<AddSpeciesPage />} />
+                    <Route path="species/:id/edit" element={<AddSpeciesPage />} />
                 </Route>
 
                 {/* Admin Layout for admin routes */}

@@ -19,6 +19,7 @@ import {
     updateSpeciesFailure,
     deleteSpeciesSuccess,
     deleteSpeciesFailure,
+    searchSpeciesRequest,
     searchSpeciesFailure,
     searchSpeciesSuccess,
 } from '../actions/speciesActions';
@@ -87,6 +88,7 @@ export const deleteSpeciesThunk = (id: string, addNotification: (message: string
 };
 
 export const searchSpeciesByReference = (query: string) => async (dispatch: any) => {
+    dispatch(searchSpeciesRequest());
     try {
         const searchSpecies = await searchReferences(query);
         dispatch(searchSpeciesSuccess(searchSpecies));

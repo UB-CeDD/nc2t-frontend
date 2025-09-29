@@ -236,11 +236,6 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
         }
         try {
             const allLocations = await listLocations(inputValue ? { q: inputValue } : {});
-            // const filtered = allLocations.filter(location =>
-            //     location.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-            //     location.place.toLowerCase().includes(inputValue.toLowerCase()) ||
-            //     location.city_town.toLowerCase().includes(inputValue.toLowerCase())
-            // );
             setAvailableSites(allLocations);
         } catch (error) {
             console.error('Error searching sites:', error);
@@ -286,11 +281,6 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
         }
         try {
             const allLocations = await listLocations(inputValue ? { q: inputValue } : {});
-            // const filtered = allLocations.filter(location =>
-            //     location.name.toLowerCase().includes(inputValue.toLowerCase()) ||
-            //     location.place.toLowerCase().includes(inputValue.toLowerCase()) ||
-            //     location.city_town.toLowerCase().includes(inputValue.toLowerCase())
-            // );
             setAvailableHerbaria(allLocations);
         } catch (error) {
             console.error('Error searching herbaria:', error);
@@ -340,11 +330,13 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
             storage_locations: selectedStorageLocations.map(h => h.id),
         };
         try {
+            console.log('Submitting form data:', finalFormData);
+
             let result;
             if (formData.id) {
-                result = await dispatch(updateSpeciesThunk(formData.id.toString(), finalFormData, addNotification));
+                result = dispatch(updateSpeciesThunk(formData.id.toString(), finalFormData, addNotification));
             } else {
-                result = await dispatch(createSpeciesThunk(finalFormData as Species, addNotification));
+                result = dispatch(createSpeciesThunk(finalFormData as Species, addNotification));
             }
             // Only close the form if the thunk was successful
             if (result && !result.error) {

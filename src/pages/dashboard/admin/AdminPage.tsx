@@ -1,36 +1,61 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Loader from '@/components/commons/Loader';
 import { RootState, AppDispatch } from '@/store/store';
-import { fetchSpecies } from '@/store/thunks/speciesThunk';
+import { fetchSpecies, searchSpeciesByReference } from '@/store/thunks/speciesThunk';
 import { fetchCompounds } from '@/store/thunks/compoundThunk';
 import { fetchUsersThunk } from '@/store/thunks/userThunks';
 import { fetchLocationsThunk } from '@/store/thunks/locationThunk';
 import { fetchReferencesThunk } from '@/store/thunks/referenceThunk';
 import { fetchHerbariumsThunk } from '@/store/thunks/herbariumThunk';
-import { Species, Compound, UserModel, LocationModel, Reference, Herbarium } from '@/helpers/types';
+import { Species, Compound, UserModel, LocationModel, Reference, Herbarium, SearchedSpecies } from '@/helpers/types';
 import { FaLeaf, FaFlask, FaUsers, FaMapMarkerAlt, FaBook, FaBuilding } from 'react-icons/fa';
 import MapComponent from '@/components/commons/MapComponent';
 import AdminLayout from '@components/layouts/AdminLayout';
+import SpeciesCard from '@components/species/SpeciesCard';
+import { getSpeciesByReference } from '@/services/speciesService';
+import { useNavigate } from 'react-router-dom';
 
 const AdminPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
+    const navigate = useNavigate();
     const { isLoading } = useSelector((state: RootState) => state.loading);
 
-    // const { species, loading: speciesLoading } = useSelector((state: RootState) => state.species);
-    // const { compounds, loading: compoundsLoading } = useSelector((state: RootState) => state.compounds);
-    // const { users, loading: usersLoading } = useSelector((state: RootState) => state.user);
-    // const { locations, loading: locationsLoading } = useSelector((state: RootState) => state.locations);
-    // const { references, loading: referencesLoading } = useSelector((state: RootState) => state.references);
-    // const { herbariums, loading: herbariumsLoading } = useSelector((state: RootState) => state.herbariums);
+    const [isSearching, setIsSearching] = useState<boolean>(false);
+    const [searchTerm, setSearchTerm] = useState<string>('');
 
-    const [species, setSpecies] = React.useState<Species[] | null>([]);
-    const [compounds, setCompounds] = React.useState<Compound[] | null>([]);
-    const [users, setUsers] = React.useState<UserModel[] | null>(null);
-    const [locations, setLocations] = React.useState<LocationModel[] | null>([]);
-    const [references, setReferences] = React.useState<Reference[] | null>([]);
-    const [herbariums, setHerbariums] = React.useState<Herbarium[] | null>([]);
+    const { species, error: speciesError, searchResults } = useSelector((state: RootState) => state.getSpecies) as {
+        species: Species[] | null;
+        error: string | null;
+        searchResults: { results: SearchedSpecies[]; message?: string };
+    };
 
+    const { compounds, error: compoundError } = useSelector((state: RootState) => state.getCompounds) as {
+        compounds: Compound[] | null;
+        error: string | null;
+    };
+
+    const { users, error: userError } = useSelector((state: RootState) => state.getUsers) as {
+        users: UserModel[] | null;
+        error: string | null;
+    };
+
+    const { locations, error: locationError } = useSelector((state: RootState) => state.getLocations) as {
+        locations: LocationModel[] | null;
+        error: string | null;
+    };
+
+    const { references, error: referenceError } = useSelector((state: RootState) => state.getReferences) as {
+        references: Reference[] | null;
+        error: string | null;
+    };
+
+    const { herbariums, error: herbariumError } = useSelector((state: RootState) => state.getHerbariums) as {
+        herbariums: Herbarium[] | null;
+        error: string | null;
+    };
+
+    
     useEffect(() => {
         dispatch(fetchSpecies());
         dispatch(fetchCompounds());
@@ -40,8 +65,11 @@ const AdminPage: React.FC = () => {
         dispatch(fetchHerbariumsThunk());
     }, [dispatch]);
 
-    // const allLoading = speciesLoading || compoundsLoading || usersLoading || locationsLoading || referencesLoading || herbariumsLoading;
-    // --- Statistics Calculations ---
+    useEffect(() => {
+        if (isSearching && searchResults) {
+            setIsSearching(false);
+        }
+    }, [searchResults]);
 
     const getSpeciesByKingdom = () => {
         if (!species) return [];
@@ -66,8 +94,7 @@ const AdminPage: React.FC = () => {
     const getUsersByRole = () => {
         if (!users) return [];
         const data: { [key: string]: number } = users.reduce((acc: { [key: string]: number }, u: UserModel) => {
-            // Assuming UserModel has a 'role' property
-            const role = u.role || 'Unknown'; 
+            const role = u.role || 'Unknown';
             acc[role] = (acc[role] || 0) + 1;
             return acc;
         }, {});
@@ -99,7 +126,6 @@ const AdminPage: React.FC = () => {
     const referencesByTypeData = getReferencesByType();
     const locationsMapData = getLocationsForMap();
 
-    // --- Recent Activity ---
     const allEntities = [
         ...(species || []).map(s => ({ ...s, type: 'species', createdAt: s.created_at })),
         ...(compounds || []).map(c => ({ ...c, type: 'compound', createdAt: c.created_at })),
@@ -111,97 +137,149 @@ const AdminPage: React.FC = () => {
 
     const recentActivity = allEntities.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()).slice(0, 10);
 
+    const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const value = e.target.value;
+        setSearchTerm(value);
+        if (value.trim() !== '') {
+            setIsSearching(true);
+            dispatch(searchSpeciesByReference(value));
+        } else {
+            setIsSearching(false);
+            // Optionally clear search results here if needed
+        }
+    };
+
+    const handleEdit = async (row: Species | SearchedSpecies | Reference) => {
+        if ('kingdom' in row) {
+            navigate(`/dashboard/species/add`, { state: { specie: row } });
+        } else {
+            const existingSpecies = await getSpeciesByReference(row.id);
+            if (existingSpecies) {
+                navigate(`/dashboard/species/edit/${existingSpecies.id}`, { state: { specie: existingSpecies } });
+            } else {
+                navigate(`/dashboard/species/add`, { state: { specie: { reference: row } } });
+            }
+        }
+    };
+
+    const handleDelete = (row: Species) => {
+        console.log('Delete', row);
+    };
+
     return (
         <AdminLayout>
             <h1 className="text-3xl font-bold mb-8 text-gray-800">Admin Dashboard</h1>
 
-            {isLoading ? (
+            <div className="filters mb-6 mt-4 flex gap-4">
+                <input
+                    type="text"
+                    placeholder="Search by reference..."
+                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                />
+            </div>
+            {isSearching ? (
                 <Loader />
             ) : (
-                <>
-                    {/* Overview Cards */}
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
-                        <StatCard title="Total Species" count={species?.length || 0} icon={<FaLeaf className="text-green-500" />} />
-                        <StatCard title="Total Compounds" count={compounds?.length || 0} icon={<FaFlask className="text-blue-500" />} />
-                        <StatCard title="Total Users" count={users?.length || 0} icon={<FaUsers className="text-purple-500" />} />
-                        <StatCard title="Total Locations" count={locations?.length || 0} icon={<FaMapMarkerAlt className="text-red-500" />} />
-                        <StatCard title="Total References" count={references?.length || 0} icon={<FaBook className="text-yellow-500" />} />
-                        <StatCard title="Total Herbariums" count={herbariums?.length || 0} icon={<FaBuilding className="text-teal-500" />} />
-                    </div>
+                searchTerm.trim() !== '' && searchResults && searchResults.results ? (
+                    searchResults.results.length > 0 ? (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                            {searchResults.results.map((specie: SearchedSpecies) => (
+                                <SpeciesCard
+                                    key={specie.id}
+                                    specie={specie}
+                                    onEdit={handleEdit}
+                                    onDelete={handleDelete}
+                                />
+                            ))}
+                        </div>
+                    ) : (
+                        <p className="text-center text-gray-500 mb-8">
+                            {searchResults.message || 'No results found.'}
+                        </p>
+                    )
+                ) : (
+                    <>
+                        {/* Overview Cards */}
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
+                            <StatCard title="Total Species" count={species?.length || 0} icon={<FaLeaf className="text-green-500" />} />
+                            <StatCard title="Total Compounds" count={compounds?.length || 0} icon={<FaFlask className="text-blue-500" />} />
+                            <StatCard title="Total Users" count={users?.length || 0} icon={<FaUsers className="text-purple-500" />} />
+                            <StatCard title="Total Locations" count={locations?.length || 0} icon={<FaMapMarkerAlt className="text-red-500" />} />
+                            <StatCard title="Total References" count={references?.length || 0} icon={<FaBook className="text-yellow-500" />} />
+                            <StatCard title="Total Herbariums" count={herbariums?.length || 0} icon={<FaBuilding className="text-teal-500" />} />
+                        </div>
 
-                    {/* Charts Section */}
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                        <div className="bg-white p-6 rounded-lg shadow-md">
-                            <h2 className="text-xl font-semibold mb-4 text-gray-700">Species by Kingdom</h2>
-                            {/* Recharts PieChart goes here */}
-                            <div className="h-64 flex items-center justify-center text-gray-500">Chart Placeholder</div>
-                            <pre className="text-xs bg-gray-100 p-2 rounded mt-2">{JSON.stringify(speciesByKingdomData, null, 2)}</pre>
+                        {/* Charts Section */}
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                            <div className="bg-white p-6 rounded-lg shadow-md">
+                                <h2 className="text-xl font-semibold mb-4 text-gray-700">Species by Kingdom</h2>
+                                <div className="h-64 flex items-center justify-center text-gray-500">Chart Placeholder</div>
+                                <pre className="text-xs bg-gray-100 p-2 rounded mt-2">{JSON.stringify(speciesByKingdomData, '', 2)}</pre>
+                            </div>
+                            <div className="bg-white p-6 rounded-lg shadow-md">
+                                <h2 className="text-xl font-semibold mb-4 text-gray-700">Compounds by Class</h2>
+                                <div className="h-64 flex items-center justify-center text-gray-500">Chart Placeholder</div>
+                                <pre className="text-xs bg-gray-100 p-2 rounded mt-2">{JSON.stringify(compoundsByClassData, null, 2)}</pre>
+                            </div>
+                            <div className="bg-white p-6 rounded-lg shadow-md">
+                                <h2 className="text-xl font-semibold mb-4 text-gray-700">Users by Role</h2>
+                                <div className="h-64 flex items-center justify-center text-gray-500">Chart Placeholder</div>
+                                <pre className="text-xs bg-gray-100 p-2 rounded mt-2">{JSON.stringify(usersByRoleData, null, 2)}</pre>
+                            </div>
+                            <div className="bg-white p-6 rounded-lg shadow-md">
+                                <h2 className="text-xl font-semibold mb-4 text-gray-700">References by Type</h2>
+                                <div className="h-64 flex items-center justify-center text-gray-500">Chart Placeholder</div>
+                                <pre className="text-xs bg-gray-100 p-2 rounded mt-2">{JSON.stringify(referencesByTypeData, null, 2)}</pre>
+                            </div>
                         </div>
-                        <div className="bg-white p-6 rounded-lg shadow-md">
-                            <h2 className="text-xl font-semibold mb-4 text-gray-700">Compounds by Class</h2>
-                            {/* Recharts BarChart goes here */}
-                            <div className="h-64 flex items-center justify-center text-gray-500">Chart Placeholder</div>
-                            <pre className="text-xs bg-gray-100 p-2 rounded mt-2">{JSON.stringify(compoundsByClassData, null, 2)}</pre>
-                        </div>
-                        <div className="bg-white p-6 rounded-lg shadow-md">
-                            <h2 className="text-xl font-semibold mb-4 text-gray-700">Users by Role</h2>
-                            {/* Recharts PieChart goes here */}
-                            <div className="h-64 flex items-center justify-center text-gray-500">Chart Placeholder</div>
-                            <pre className="text-xs bg-gray-100 p-2 rounded mt-2">{JSON.stringify(usersByRoleData, null, 2)}</pre>
-                        </div>
-                        <div className="bg-white p-6 rounded-lg shadow-md">
-                            <h2 className="text-xl font-semibold mb-4 text-gray-700">References by Type</h2>
-                            {/* Recharts PieChart goes here */}
-                            <div className="h-64 flex items-center justify-center text-gray-500">Chart Placeholder</div>
-                            <pre className="text-xs bg-gray-100 p-2 rounded mt-2">{JSON.stringify(referencesByTypeData, null, 2)}</pre>
-                        </div>
-                    </div>
 
-                    {/* Locations Map */}
-                    <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-                        <h2 className="text-xl font-semibold mb-4 text-gray-700">Locations Overview</h2>
-                        <div className="h-96 w-full">
-                            {locationsMapData.length > 0 ? (
-                                <MapComponent locations={locationsMapData} />
+                        {/* Locations Map */}
+                        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+                            <h2 className="text-xl font-semibold mb-4 text-gray-700">Locations Overview</h2>
+                            <div className="h-96 w-full">
+                                {locationsMapData.length > 0 ? (
+                                    <MapComponent locations={locationsMapData} />
+                                ) : (
+                                    <div className="h-full flex items-center justify-center text-gray-500">No location data available for map.</div>
+                                )}
+                            </div>
+                        </div>
+
+                        {/* Recent Activity */}
+                        <div className="bg-white p-6 rounded-lg shadow-md">
+                            <h2 className="text-xl font-semibold mb-4 text-gray-700">Recent Activity</h2>
+                            {recentActivity.length === 0 ? (
+                                <p className="text-gray-500">No recent activity.</p>
                             ) : (
-                                <div className="h-full flex items-center justify-center text-gray-500">No location data available for map.</div>
+                                <ul className="divide-y divide-gray-200">
+                                    {recentActivity.map((item, index) => (
+                                        <li key={item.id || index} className="py-3 flex items-center">
+                                            <span className="mr-3 text-lg">
+                                                {item.type === 'species' && <FaLeaf className="text-green-500" />}
+                                                {item.type === 'compound' && <FaFlask className="text-blue-500" />}
+                                                {item.type === 'user' && <FaUsers className="text-purple-500" />}
+                                                {item.type === 'location' && <FaMapMarkerAlt className="text-red-500" />}
+                                                {item.type === 'reference' && <FaBook className="text-yellow-500" />}
+                                                {item.type === 'herbarium' && <FaBuilding className="text-teal-500" />}
+                                            </span>
+                                            <div>
+                                                <p className="font-medium text-gray-800">{item.name || item.username || item.title || item.city_town || 'Unnamed Item'}</p>
+                                                <p className="text-sm text-gray-500">{new Date(item.createdAt).toLocaleDateString()}</p>
+                                            </div>
+                                        </li>
+                                    ))}
+                                </ul>
                             )}
                         </div>
-                    </div>
-
-                    {/* Recent Activity */}
-                    <div className="bg-white p-6 rounded-lg shadow-md">
-                        <h2 className="text-xl font-semibold mb-4 text-gray-700">Recent Activity</h2>
-                        {recentActivity.length === 0 ? (
-                            <p className="text-gray-500">No recent activity.</p>
-                        ) : (
-                            <ul className="divide-y divide-gray-200">
-                                {recentActivity.map((item, index) => (
-                                    <li key={item.id || index} className="py-3 flex items-center">
-                                        <span className="mr-3 text-lg">
-                                            {item.type === 'species' && <FaLeaf className="text-green-500" />}
-                                            {item.type === 'compound' && <FaFlask className="text-blue-500" />}
-                                            {item.type === 'user' && <FaUsers className="text-purple-500" />}
-                                            {item.type === 'location' && <FaMapMarkerAlt className="text-red-500" />}
-                                            {item.type === 'reference' && <FaBook className="text-yellow-500" />}
-                                            {item.type === 'herbarium' && <FaBuilding className="text-teal-500" />}
-                                        </span>
-                                        <div>
-                                            <p className="font-medium text-gray-800">{item.name || item.username || item.title || item.city_town || 'Unnamed Item'}</p>
-                                            <p className="text-sm text-gray-500">{item.type} added on {new Date(item.createdAt).toLocaleDateString()}</p>
-                                        </div>
-                                    </li>
-                                ))}
-                            </ul>
-                        )}
-                    </div>
-                </>
+                    </>
+                )
             )}
         </AdminLayout>
     );
 };
 
-// Simple StatCard Component
 const StatCard: React.FC<{ title: string; count: number; icon: React.ReactNode }> = ({ title, count, icon }) => (
     <div className="bg-white p-6 rounded-lg shadow-md flex items-center justify-between">
         <div>

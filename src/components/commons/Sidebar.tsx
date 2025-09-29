@@ -25,7 +25,7 @@ const Sidebar: React.FC = () => {
                         Admin Dashboard
                     </NavLink>
                 </li>
-                {user && user.role === 'admin' && (
+                {user && user.role.toLowerCase() === 'admin' && (
                     <li>
                         <NavLink
                             to="/admin/users"
