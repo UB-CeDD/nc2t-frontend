@@ -19,38 +19,40 @@ import { useNavigate } from 'react-router-dom';
 const AdminPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
-    const { isLoading } = useSelector((state: RootState) => state.loading);
+    useSelector((state: RootState) => state.loading);
 
     const [isSearching, setIsSearching] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>('');
 
-    const { species, error: speciesError, searchResults } = useSelector((state: RootState) => state.getSpecies) as {
+    const { species, searchResults } = useSelector((state: RootState) => state.getSpecies) as {
         species: Species[] | null;
         error: string | null;
-        searchResults: { results: SearchedSpecies[]; message?: string };
+        searchResults: {
+            [x: string]: number; results: SearchedSpecies[]; message?: string 
+};
     };
 
-    const { compounds, error: compoundError } = useSelector((state: RootState) => state.getCompounds) as {
+    const { compounds } = useSelector((state: RootState) => state.getCompounds) as {
         compounds: Compound[] | null;
         error: string | null;
     };
 
-    const { users, error: userError } = useSelector((state: RootState) => state.getUsers) as {
+    const { users } = useSelector((state: RootState) => state.getUsers) as {
         users: UserModel[] | null;
         error: string | null;
     };
 
-    const { locations, error: locationError } = useSelector((state: RootState) => state.getLocations) as {
+    const { locations } = useSelector((state: RootState) => state.getLocations) as {
         locations: LocationModel[] | null;
         error: string | null;
     };
 
-    const { references, error: referenceError } = useSelector((state: RootState) => state.getReferences) as {
+    const { references } = useSelector((state: RootState) => state.getReferences) as {
         references: Reference[] | null;
         error: string | null;
     };
 
-    const { herbariums, error: herbariumError } = useSelector((state: RootState) => state.getHerbariums) as {
+    const { herbariums } = useSelector((state: RootState) => state.getHerbariums) as {
         herbariums: Herbarium[] | null;
         error: string | null;
     };
@@ -69,7 +71,7 @@ const AdminPage: React.FC = () => {
         if (isSearching && searchResults) {
             setIsSearching(false);
         }
-    }, [searchResults]);
+    }, [isSearching, searchResults]);
 
     const getSpeciesByKingdom = () => {
         if (!species) return [];
@@ -155,7 +157,7 @@ const AdminPage: React.FC = () => {
         } else {
             const existingSpecies = await getSpeciesByReference(row.id);
             if (existingSpecies) {
-                navigate(`/dashboard/species/edit/${existingSpecies.id}`, { state: { specie: existingSpecies } });
+                navigate(`/dashboard/species/${existingSpecies.id}/edit`, { state: { specie: existingSpecies } });
             } else {
                 navigate(`/dashboard/species/add`, { state: { specie: { reference: row } } });
             }
@@ -165,11 +167,11 @@ const AdminPage: React.FC = () => {
     const handleDelete = (row: Species) => {
         console.log('Delete', row);
     };
+    console.log({ searchResults });
 
     return (
         <AdminLayout>
             <h1 className="text-3xl font-bold mb-8 text-gray-800">Admin Dashboard</h1>
-
             <div className="filters mb-6 mt-4 flex gap-4">
                 <input
                     type="text"
@@ -184,16 +186,19 @@ const AdminPage: React.FC = () => {
             ) : (
                 searchTerm.trim() !== '' && searchResults && searchResults.results ? (
                     searchResults.results.length > 0 ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-                            {searchResults.results.map((specie: SearchedSpecies) => (
-                                <SpeciesCard
-                                    key={specie.id}
-                                    specie={specie}
-                                    onEdit={handleEdit}
-                                    onDelete={handleDelete}
-                                />
-                            ))}
-                        </div>
+                        <>
+                            <h3 className="text-center text-gray-700">{searchResults.message}</h3>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                                {searchResults.results.map((specie: SearchedSpecies) => (
+                                    <SpeciesCard
+                                        key={specie.id}
+                                        specie={specie}
+                                        onEdit={handleEdit}
+                                        onDelete={handleDelete}
+                                    />
+                                ))}
+                            </div>
+                        </>
                     ) : (
                         <p className="text-center text-gray-500 mb-8">
                             {searchResults.message || 'No results found.'}

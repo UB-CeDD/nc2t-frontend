@@ -15,7 +15,9 @@ import {
     DELETE_SPECIES_FAILURE,
     SEARCH_SPECIES_REQUEST,
     SEARCH_SPECIES_SUCCESS,
-    SEARCH_SPECIES_FAILURE, SET_SPECIES_FOR_EDIT,
+    SEARCH_SPECIES_FAILURE,
+    SET_SPECIES_FOR_EDIT,
+    CLEAR_CURRENT_SPECIES,
 } from '../actions/speciesActions';
 
 const initialState = {
@@ -79,6 +81,8 @@ const speciesReducer = (state = initialState, action: Action) => {
             return { ...state, loading: false, searchResults: null, error: action.payload as string };
         case SET_SPECIES_FOR_EDIT:
             return { ...state, currentSpecies: action.payload as Species, error: null };
+        case CLEAR_CURRENT_SPECIES:
+            return { ...state, currentSpecies: null };
         default:
             return state;
     }

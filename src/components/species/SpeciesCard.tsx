@@ -15,10 +15,7 @@ const SpeciesCard: React.FC<SpeciesCardProps> = ({ specie, onEdit, onDelete }) =
                 <h2 className="text-xl font-bold mb-2">{specie.title}</h2>
                 <p className="text-gray-700">Author: {specie.author}</p>
                 <p className="text-gray-700">DOI: {specie.doi}</p>
-                                <p className="text-gray-700">DOI: {specie.doi}</p>
-                <p className="text-gray-700">Year: {specie.year}</p>
-                <p className="text-gray-700">Thesis Level: {specie.thesis_level}</p>
-                <p className="text-gray-700">Link: <a href={specie.link} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">{specie.link}</a></p>
+                <p className="text-gray-700">Link: <a href={specie.link} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">{specie.link ?? "#"}</a></p>
                 <p className="text-gray-700">Brief Text: {specie.brief_text || 'N/A'}</p>
             </div>
             <div className="flex justify-end items-center gap-2 mt-4">
