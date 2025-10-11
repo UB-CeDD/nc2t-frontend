@@ -108,12 +108,20 @@
       "smile": "SMILES",
       "other_names": "Other Names",
       "pubchem_id": "PubChem ID",
-      "bio_activity": "Bio Activity",
+      "bio_activity": "Bioactivity",
       "formula": "Formula",
       "molecular_weight": "Molecular Weight",
       "density": "Density",
       "melting_point": "Melting Point",
-      "boiling_point": "Boiling Point"
+      "boiling_point": "Boiling Point",
+      "lookup_pubchem": "Lookup PubChem"
+    },
+    "notifications": {
+      "enter_name_for_pubchem": "Please enter a compound name to lookup in PubChem.",
+      "pubchem_cid_not_found": "PubChem CID not found for this compound name.",
+      "pubchem_smiles_not_found": "PubChem SMILES not found for the retrieved CID.",
+      "pubchem_data_fetched": "PubChem data fetched successfully!",
+      "pubchem_fetch_error": "Failed to fetch PubChem data. Please try again."
     }
   },
   "map": {

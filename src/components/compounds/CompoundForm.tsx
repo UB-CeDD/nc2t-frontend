@@ -6,6 +6,7 @@ import { Compound } from '@/helpers/types';
 import { useNotification } from '@/components/commons/NotificationContext';
 import Spinner from '@/components/commons/Spinner';
 import { RootState } from '@/store/store';
+import usePubChemLookup from '@/hooks/usePubChemLookup';
 
 interface CompoundProps {
     compound?: Compound;
@@ -18,7 +19,7 @@ const CompoundForm: React.FC<CompoundProps> = ({ compound, onSave, onCancel, onC
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const { addNotification } = useNotification();
-    const { loading } = useSelector((state: RootState) => state.getCompounds);
+    const { loading: compoundLoading } = useSelector((state: RootState) => state.getCompounds);
     const [formData, setFormData] = useState<Compound>({
         name: compound?.name || '',
         subclass: compound?.subclass || '',
@@ -31,9 +32,31 @@ const CompoundForm: React.FC<CompoundProps> = ({ compound, onSave, onCancel, onC
         id: compound?.id, // if EntityModel includes id
     });
 
+    const { loading: pubchemLoading, error: pubchemError, lookupCompound } = usePubChemLookup();
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
+    };
+
+    const handlePubChemButtonClick = async () => {
+        if (!formData.name) {
+            addNotification(t('compound.notifications.enter_name_for_pubchem'), 'warning');
+            return;
+        }
+
+        const { cid, smiles } = await lookupCompound(formData.name);
+
+        if (pubchemError) {
+            addNotification(pubchemError, 'error');
+        } else if (cid !== undefined && smiles !== undefined) {
+            setFormData(prevData => ({
+                ...prevData,
+                pubchem_id: cid,
+                smiles: smiles,
+            }));
+            addNotification(t('compound.notifications.pubchem_data_fetched'), 'success');
+        }
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -43,8 +66,8 @@ const CompoundForm: React.FC<CompoundProps> = ({ compound, onSave, onCancel, onC
                 await dispatch(updateCompoundThunk(compound.id, formData, addNotification));               
             } else {
                 const resultAction = await dispatch(createCompoundThunk(formData, addNotification));
-                if (resultAction && (resultAction as any).payload) {
-                    onCompoundCreated?.((resultAction as any).payload as Compound);
+                if (resultAction && resultAction.payload) {
+                    onCompoundCreated?.(resultAction.payload as Compound);
                     // Reset form fields to empty values on success
                     setFormData({
                         name: '',
@@ -72,16 +95,26 @@ const CompoundForm: React.FC<CompoundProps> = ({ compound, onSave, onCancel, onC
                 <form onSubmit={handleSubmit} className="p-4">
                      <div className="mb-6">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('compound.form_fields.name')}</label>
-                        <input
-                            required
-                            id="compound_name"
-                            type="text"
-                            name="name"
-                            value={formData.name}
-                            onChange={handleChange}
-                            placeholder={t('compound.form_fields.name')}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        />
+                        <div className="flex">
+                            <input
+                                required
+                                id="compound_name"
+                                type="text"
+                                name="name"
+                                value={formData.name}
+                                onChange={handleChange}
+                                placeholder={t('compound.form_fields.name')}
+                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                            />
+                            <button
+                                type="button"
+                                onClick={handlePubChemButtonClick}
+                                className="ml-2 px-4 py-2 bg-green-500 text-white w-50 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
+                                disabled={pubchemLoading}
+                            >
+                                {pubchemLoading ? <Spinner size={5} /> : t('compound.form_fields.lookup_pubchem')}
+                            </button>
+                        </div>
                     </div>
                     <div className="mb-6">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">
@@ -162,7 +195,17 @@ const CompoundForm: React.FC<CompoundProps> = ({ compound, onSave, onCancel, onC
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         />
                     </div>
-                  
+                    <div className="mb-6">
+                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('compound.form_fields.pubchem_id')}</label>
+                        <input
+                            type="number"
+                            name="pubchem_id"
+                            value={formData.pubchem_id || ''}
+                            onChange={handleChange}
+                            placeholder={t('compound.form_fields.pubchem_id')}
+                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                        />
+                    </div>
                     <div className="mb-6">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('compound.form_fields.smile')}</label>
                         <input
@@ -175,17 +218,7 @@ const CompoundForm: React.FC<CompoundProps> = ({ compound, onSave, onCancel, onC
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         />
                     </div>
-                    <div className="mb-6">
-                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('compound.form_fields.pubchem_id')}</label>
-                        <input
-                            type="number"
-                            name="pubchem_id"
-                            value={formData.pubchem_id || ''}
-                            onChange={handleChange}
-                            placeholder={t('compound.form_fields.pubchem_id')}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        />
-                    </div>
+                    
                     <div className="mb-6">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('compound.form_fields.bio_activity')}</label>
                         <input
@@ -202,16 +235,16 @@ const CompoundForm: React.FC<CompoundProps> = ({ compound, onSave, onCancel, onC
                         type="button"
                         onClick={onCancel}
                         className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 mr-2"
-                        disabled={loading}
+                        disabled={compoundLoading}
                     >
                         {t('cancel')}
                     </button>
                     <button
                         type="submit"
                         className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600"
-                        disabled={loading}
+                        disabled={compoundLoading}
                     >
-                        {loading ? <Spinner size={5} /> : compound ? 'Update Compound' : 'Create Compound'}
+                        {compoundLoading ? <Spinner size={5} /> : compound ? 'Update Compound' : 'Create Compound'}
                     </button>
                     </div>
                 </form>

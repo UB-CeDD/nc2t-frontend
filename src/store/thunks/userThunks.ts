@@ -18,11 +18,13 @@ import {
     viewUserAction,
     deleteUserAction,
 } from '../actions/userActions';
+import { UserModel } from '@/helpers/types';
 
 export const createUserThunk = (userData) => async (dispatch) => {
+
     dispatch(createUserRequestAction());
     try {
-        const user = await addUser(userData);
+        const user: UserModel = await addUser(userData);
         dispatch(createUserSuccessAction(user));
     } catch (error) {
         dispatch(createUserFailureAction(error.message));
