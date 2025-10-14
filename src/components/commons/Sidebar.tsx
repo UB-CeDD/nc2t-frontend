@@ -28,7 +28,7 @@ const Sidebar: React.FC = () => {
                 {user && user.role.toLowerCase() === 'admin' && (
                     <li>
                         <NavLink
-                            to="/admin/users"
+                            to="#"
                             // className={({ isActive }) =>
                             //     isActive
                             //         ? 'bg-white text-sky-500 p-2 rounded block'
@@ -43,7 +43,7 @@ const Sidebar: React.FC = () => {
                                     to="/admin/users"
                                     className={({ isActive }) =>
                                         isActive
-                                            ? 'bg-white pl-2 text-sky-500 rounded block'
+                                            ? 'bg-gray-800 pl-2 text-sky-500 rounded block'
                                             : 'text-white pl-2 block hover:bg-gray-700 hover:text-sky-400'
                                     }
                                 >
@@ -55,7 +55,7 @@ const Sidebar: React.FC = () => {
                                     to="/admin/users/add"
                                     className={({ isActive }) =>
                                         isActive
-                                            ? 'bg-white pl-2 text-sky-500 rounded block'
+                                            ? 'bg-gray-800 pl-2 text-sky-500 rounded block'
                                             : 'text-white pl-2 block hover:bg-gray-700 hover:text-sky-400'
                                     }
                                 >
@@ -67,7 +67,7 @@ const Sidebar: React.FC = () => {
                 )}
                 <li>
                         <NavLink
-                            to="/dashboard/species"
+                            to="#"
                             // className={({ isActive }) =>
                             //     isActive
                             //         ? 'bg-white text-sky-500 rounded block'
@@ -82,7 +82,7 @@ const Sidebar: React.FC = () => {
                                     to="/dashboard/species"
                                     className={({ isActive }) =>
                                         isActive
-                                            ? 'bg-white pl-2 text-sky-500 rounded block'
+                                            ? 'bg-gray-800 pl-2 text-sky-500 rounded block'
                                             : 'text-white pl-2 block hover:bg-gray-700 hover:text-sky-400'
                                     }
                                 >
@@ -94,7 +94,7 @@ const Sidebar: React.FC = () => {
                                     to="/dashboard/species/add"
                                     className={({ isActive }) =>
                                         isActive
-                                            ? 'bg-white pl-2 text-sky-500 rounded block'
+                                            ? 'bg-gray-800 pl-2 text-sky-500 rounded block'
                                             : 'text-white pl-2 block hover:bg-gray-700 hover:text-sky-400'
                                     }
                                 >
@@ -106,12 +106,12 @@ const Sidebar: React.FC = () => {
                 </li>
                 <li>
                     <NavLink
-                        to="/dashboard/compounds"
-                        className={({ isActive }) =>
-                            isActive
-                                ? 'bg-white text-sky-500 rounded block'
-                                : 'text-white block hover:bg-gray-700 hover:text-sky-400'
-                        }
+                        to="#"
+                        // className={({ isActive }) =>
+                        //     isActive
+                        //         ? 'bg-white text-sky-500 rounded block'
+                        //         : 'text-white block hover:bg-gray-700 hover:text-sky-400'
+                        // }
                     >
                         Compounds
                     </NavLink>
@@ -121,7 +121,7 @@ const Sidebar: React.FC = () => {
                                     to="/dashboard/compounds"
                                     className={({ isActive }) =>
                                         isActive
-                                            ? 'bg-white pl-2 text-sky-500 rounded block'
+                                            ? 'bg-gray-800 pl-2 text-sky-500 rounded block'
                                             : 'text-white pl-2 block hover:bg-gray-700 hover:text-sky-400'
                                     }
                                 >
@@ -133,7 +133,7 @@ const Sidebar: React.FC = () => {
                                     to="/dashboard/species/add"
                                     className={({ isActive }) =>
                                         isActive
-                                            ? 'bg-white text-sky-500 rounded block'
+                                            ? 'bg-gray-800 text-sky-500 rounded block'
                                             : 'text-white block hover:bg-gray-700 hover:text-sky-400'
                                     }
                                 >
@@ -145,10 +145,10 @@ const Sidebar: React.FC = () => {
                 
                 <li>
                     <NavLink
-                        to="/dashboard/references"
+                        to="#"
                         // className={({ isActive }) =>
                         //     isActive
-                        //         ? 'bg-white text-sky-500 rounded block'
+                        //         ? 'bg-gray-800 text-sky-500 rounded block'
                         //         : 'text-white block hover:bg-gray-700 hover:text-sky-400'
                         // }
                     >
@@ -160,7 +160,7 @@ const Sidebar: React.FC = () => {
                                     to="/dashboard/references"
                                     className={({ isActive }) =>
                                         isActive
-                                            ? 'bg-white pl-2 text-sky-500 rounded block'
+                                            ? 'bg-gray-800 pl-2 text-sky-500 rounded block'
                                             : 'text-white pl-2 block hover:bg-gray-700 hover:text-sky-400'
                                     }
                                 >
@@ -172,7 +172,7 @@ const Sidebar: React.FC = () => {
                                     to="/dashboard/species/add"
                                     className={({ isActive }) =>
                                         isActive
-                                            ? 'bg-white pl-2 text-sky-500 rounded block'
+                                            ? 'bg-gray-800 pl-2 text-sky-500 rounded block'
                                             : 'text-white pl-2 block hover:bg-gray-700 hover:text-sky-400'
                                     }
                                 >
@@ -183,10 +183,10 @@ const Sidebar: React.FC = () => {
                 </li>
                 <li>
                     <NavLink
-                        to="/dashboard/locations"
+                        to="#"
                         // className={({ isActive }) =>
                         //     isActive
-                        //         ? 'bg-white text-sky-500 rounded block'
+                        //         ? 'bg-gray-800 text-sky-500 rounded block'
                         //         : 'text-white block hover:bg-gray-700 hover:text-sky-400'
                         // }
                     >
@@ -198,7 +198,7 @@ const Sidebar: React.FC = () => {
                                     to="/dashboard/locations"
                                     className={({ isActive }) =>
                                         isActive
-                                            ? 'bg-white pl-2 text-sky-500 rounded block'
+                                            ? 'bg-gray-800 pl-2 text-sky-500 rounded block'
                                             : 'text-white pl-2 block hover:bg-gray-700 hover:text-sky-400'
                                     }
                                 >

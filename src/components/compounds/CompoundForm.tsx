@@ -45,11 +45,13 @@ const CompoundForm: React.FC<CompoundProps> = ({ compound, onSave, onCancel, onC
             return;
         }
 
-        const { cid, smiles } = await lookupCompound(formData.name);
+        const { cid, smiles } = await lookupCompound(formData.name);        
 
         if (pubchemError) {
             addNotification(pubchemError, 'error');
-        } else if (cid !== undefined && smiles !== undefined) {
+        } else if (cid !== undefined || smiles !== undefined) {
+            console.log('PubChem data fetched:', { cid, smiles });
+            
             setFormData(prevData => ({
                 ...prevData,
                 pubchem_id: cid,
