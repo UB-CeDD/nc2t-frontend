@@ -412,7 +412,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({
       if (result && !result.error) {
         onFormClose();
       }
-    } catch () {
+    } catch (error: unknown) {
       // Notification is handled in the thunk
     }
   };
