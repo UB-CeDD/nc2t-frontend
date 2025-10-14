@@ -23,7 +23,7 @@ import UsersByRoleChart from '@components/charts/UsersByRoleChart';
 const AdminPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
     const navigate = useNavigate();
-    useSelector((state: RootState) => state.loading);
+    const { isLoading } = useSelector((state: RootState) => state.loading);
 
     const [isSearching, setIsSearching] = useState<boolean>(false);
     const [searchTerm, setSearchTerm] = useState<string>('');
@@ -176,113 +176,143 @@ const AdminPage: React.FC = () => {
     return (
         <AdminLayout>
             <h1 className="text-3xl font-bold mb-8 text-gray-800">Admin Dashboard</h1>
-            <div className="filters mb-6 mt-4 flex gap-4">
-                <input
-                    type="text"
-                    placeholder="Search by reference..."
-                    className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                />
-            </div>
-            {isSearching ? (
+                    <div className="filters mb-6 mt-4 flex gap-4">
+                        <input
+                            type="text"
+                            placeholder="Search by reference..."
+                            className='bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500'
+                            value={searchTerm}
+                            onChange={handleSearchChange}
+                        />
+                    </div>
+                    <div className='w-full'>
+            {isLoading ? (
                 <Loader />
             ) : (
-                searchTerm.trim() !== '' && searchResults && searchResults.results ? (
-                    searchResults.results.length > 0 ? (
-                        <>
-                            <h3 className="text-center text-gray-700">{searchResults.message}</h3>
-                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
-                                {searchResults.results.map((specie: SearchedSpecies) => (
-                                    <SpeciesCard
-                                        key={specie.id}
-                                        specie={specie}
-                                        onEdit={handleEdit}
-                                        onDelete={handleDelete}
-                                    />
-                                ))}
-                            </div>
-                        </>
+                <>
+                    {isSearching ? (
+                        <Loader />
                     ) : (
-                        <p className="text-center text-gray-500 mb-8">
-                            {searchResults.message || 'No results found.'}
-                        </p>
-                    )
-                ) : (
-                    <>
-                        {/* Overview Cards */}
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
-                            <StatCard title="Species" count={species?.length || 0} icon={<FaLeaf className="text-green-500" />} />
-                            <StatCard title="Compounds" count={compounds?.length || 0} icon={<FaFlask className="text-blue-500" />} />
-                            <StatCard title="Users" count={users?.length || 0} icon={<FaUsers className="text-purple-500" />} />
-                            <StatCard title="Harvest Sites" count={locations?.length || 0} icon={<FaMapMarkerAlt className="text-red-500" />} />
-                            <StatCard title="References" count={references?.length || 0} icon={<FaBook className="text-yellow-500" />} />
-                            <StatCard title="Herbariums" count={herbariums?.length || 0} icon={<FaBuilding className="text-teal-500" />} />
-                        </div>
-
-                        {/* Charts Section */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-                            <div className="bg-white p-6 rounded-lg shadow-md">
-                                <h2 className="text-xl font-semibold mb-4 text-gray-700">Species by Kingdom</h2>
-                                <SpeciesByKingdomChart data={speciesByKingdomData} />
-                            </div>
-                            <div className="bg-white p-6 rounded-lg shadow-md">
-                                <h2 className="text-xl font-semibold mb-4 text-gray-700">Compounds by Class</h2>
-                                <CompoundsByClassChart data={compoundsByClassData} />
-                            </div>
-                            <div className="bg-white p-6 rounded-lg shadow-md">
-                                <h2 className="text-xl font-semibold mb-4 text-gray-700">Users by Role</h2>
-                                <UsersByRoleChart data={usersByRoleData} />
-                            </div>
-                            <div className="bg-white p-6 rounded-lg shadow-md">
-                                <h2 className="text-xl font-semibold mb-4 text-gray-700">References by Type</h2>
-                                <ReferencesByTypeChart data={referencesByTypeData} />
-                            </div>
-                        </div>
-
-                        {/* ... (rest of the component code) ... */}
-
-                        {/* Locations Map */}
-                        <div className="bg-white p-6 rounded-lg shadow-md mb-8">
-                            <h2 className="text-xl font-semibold mb-4 text-gray-700">Locations Overview</h2>
-                            <div className="h-96 w-full">
-                                {locationsMapData.length > 0 ? (
-                                    <MapComponent locations={locationsMapData} />
-                                ) : (
-                                    <div className="h-full flex items-center justify-center text-gray-500">No location data available for map.</div>
-                                )}
-                            </div>
-                        </div>
-
-                        {/* Recent Activity */}
-                        <div className="bg-white p-6 rounded-lg shadow-md">
-                            <h2 className="text-xl font-semibold mb-4 text-gray-700">Recent Activity</h2>
-                            {recentActivity.length === 0 ? (
-                                <p className="text-gray-500">No recent activity.</p>
+                        searchTerm.trim() !== '' && searchResults && searchResults.results ? (
+                            searchResults.results.length > 0 ? (
+                                <>
+                                    <h3 className="text-center text-gray-700">{searchResults.message}</h3>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-8">
+                                                                        {searchResults.results.map((result: SearchedSpecies | Reference, index: number) => {
+                                                                            const specie: SearchedSpecies = 'kingdom' in result ? result : {
+                                                                                ...(result as Reference),
+                                                                                id: undefined,
+                                                                                name: result.title,
+                                                                                recent_name: '',
+                                                                                kingdom: '',
+                                                                                family: '',
+                                                                                trad_uses: '',
+                                                                                part_used: '',
+                                                                                administration: '',
+                                                                                effects: '',
+                                                                                notes: '',
+                                                                                references: [result as Reference],
+                                                                                compound_codes: [],
+                                                                                compounds: [],
+                                                                                sites: [],
+                                                                                collection_date: '',
+                                                                                storage_locations: [],
+                                                                                harvest_sites: [],
+                                                                                collection_data: [],
+                                                                            };
+                                                                            return (
+                                                                                <SpeciesCard
+                                                                                    key={index}
+                                                                                    specie={specie}
+                                                                                    onEdit={handleEdit}
+                                                                                    onDelete={handleDelete}
+                                                                                />
+                                                                            );
+                                                                        })}                                    </div>
+                                </>
                             ) : (
-                                <ul className="divide-y divide-gray-200">
-                                    {recentActivity.map((item, index) => (
-                                        <li key={item.id || index} className="py-3 flex items-center">
-                                            <span className="mr-3 text-lg">
-                                                {item.type === 'species' && <FaLeaf className="text-green-500" />}
-                                                {item.type === 'compound' && <FaFlask className="text-blue-500" />}
-                                                {item.type === 'user' && <FaUsers className="text-purple-500" />}
-                                                {item.type === 'location' && <FaMapMarkerAlt className="text-red-500" />}
-                                                {item.type === 'reference' && <FaBook className="text-yellow-500" />}
-                                                {item.type === 'herbarium' && <FaBuilding className="text-teal-500" />}
-                                            </span>
-                                            <div>
-                                                <p className="font-medium text-gray-800">{item.name || item.username || item.title || item.city_town || 'Unnamed Item'}</p>
-                                                <p className="text-sm text-gray-500">{new Date(item.createdAt).toLocaleDateString()}</p>
-                                            </div>
-                                        </li>
-                                    ))}
-                                </ul>
-                            )}
-                        </div>
-                    </>
-                )
+                                <p className="text-center text-gray-500 mb-8">
+                                    {searchResults.message || 'No results found.'}
+                                </p>
+                            )
+                        ) : (
+                            <>
+                                {/* Overview Cards */}
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
+                                    <StatCard title="Species" count={species?.length || 0} icon={<FaLeaf className="text-green-500" />} />
+                                    <StatCard title="Compounds" count={compounds?.length || 0} icon={<FaFlask className="text-blue-500" />} />
+                                    <StatCard title="Users" count={users?.length || 0} icon={<FaUsers className="text-purple-500" />} />
+                                    <StatCard title="Harvest Sites" count={locations?.length || 0} icon={<FaMapMarkerAlt className="text-red-500" />} />
+                                    <StatCard title="References" count={references?.length || 0} icon={<FaBook className="text-yellow-500" />} />
+                                    <StatCard title="Herbariums" count={herbariums?.length || 0} icon={<FaBuilding className="text-teal-500" />} />
+                                </div>
+
+                                {/* Charts Section */}
+                                <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                                    <div className="bg-white p-6 rounded-lg shadow-md">
+                                        <h2 className="text-xl font-semibold mb-4 text-gray-700">Species by Kingdom</h2>
+                                        <SpeciesByKingdomChart data={speciesByKingdomData} />
+                                    </div>
+                                    <div className="bg-white p-6 rounded-lg shadow-md">
+                                        <h2 className="text-xl font-semibold mb-4 text-gray-700">Compounds by Class</h2>
+                                        <CompoundsByClassChart data={compoundsByClassData} />
+                                    </div>
+                                    <div className="bg-white p-6 rounded-lg shadow-md">
+                                        <h2 className="text-xl font-semibold mb-4 text-gray-700">Users by Role</h2>
+                                        <UsersByRoleChart data={usersByRoleData} />
+                                    </div>
+                                    <div className="bg-white p-6 rounded-lg shadow-md">
+                                        <h2 className="text-xl font-semibold mb-4 text-gray-700">References by Type</h2>
+                                        <ReferencesByTypeChart data={referencesByTypeData} />
+                                    </div>
+                                </div>
+
+                                {/* ... (rest of the component code) ... */}
+
+                                {/* Locations Map */}
+                                <div className="bg-white p-6 rounded-lg shadow-md mb-8">
+                                    <h2 className="text-xl font-semibold mb-4 text-gray-700">Locations Overview</h2>
+                                    <div className="h-150 w-full">
+                                        {locationsMapData.length > 0 ? (
+                                            <MapComponent locations={locationsMapData} />
+                                        ) : (
+                                            <div className="h-full flex items-center justify-center text-gray-500">No location data available for map.</div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                {/* Recent Activity */}
+                                <div className="bg-white p-6 rounded-lg shadow-md">
+                                    <h2 className="text-xl font-semibold mb-4 text-gray-700">Recent Activity</h2>
+                                    {recentActivity.length === 0 ? (
+                                        <p className="text-gray-500">No recent activity.</p>
+                                    ) : (
+                                        <ul className="divide-y divide-gray-200">
+                                            {recentActivity.map((item, index) => (
+                                                <li key={item.id || index} className="py-3 flex items-center">
+                                                    <span className="mr-3 text-lg">
+                                                        {item.type === 'species' && <FaLeaf className="text-green-500" />}
+                                                        {item.type === 'compound' && <FaFlask className="text-blue-500" />}
+                                                        {item.type === 'user' && <FaUsers className="text-purple-500" />}
+                                                        {item.type === 'location' && <FaMapMarkerAlt className="text-red-500" />}
+                                                        {item.type === 'reference' && <FaBook className="text-yellow-500" />}
+                                                        {item.type === 'herbarium' && <FaBuilding className="text-teal-500" />}
+                                                    </span>
+                                                    <div>
+                                                        <p className="font-medium text-gray-800">{item.name || item.username || item.title || item.city_town || 'Unnamed Item'}</p>
+                                                        <p className="text-sm text-gray-500">{new Date(item.createdAt).toLocaleDateString()}</p>
+                                                    </div>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    )}
+                                </div>
+                            </>
+                        )
+                    )}
+                </>
             )}
+            </div>
         </AdminLayout>
     );
 };

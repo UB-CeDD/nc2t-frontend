@@ -29,7 +29,7 @@ const UsersPage: React.FC = () => {
 
     return (
         <AdminLayout>
-        {/* { isLoading ? ( <Loader /> ) : ( */}
+        { isLoading ? ( <Loader /> ) : (
             <div className="flex flex-col p-4">
                 <div className="flex flex-row items-center justify-between w-full mb-4">
                     <h1 className="text-2xl font-bold">{t('user.user')}</h1>
@@ -41,7 +41,7 @@ const UsersPage: React.FC = () => {
                 {/* {showAddEditUser && <AddEditUser user={editingUser} onClose={handleCloseForm} />} */}
                 <UserList onEditUser={handleEditUser} />
             </div>
-        {/* )} */}
+        )}
         </AdminLayout>
     );
 };

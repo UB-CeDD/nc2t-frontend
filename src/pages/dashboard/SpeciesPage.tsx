@@ -6,10 +6,12 @@ import { Reference, SearchedSpecies, Species } from '@/helpers/types';
 import { useTranslation } from "react-i18next";
 import { RootState, AppDispatch } from '@/store/store';
 import { clearCurrentSpecies } from '@/store/actions/speciesActions';
+import { useNavigate } from 'react-router-dom';
 
 const SpeciesPage: React.FC = () => {
     const { t } = useTranslation();
     const dispatch: AppDispatch = useDispatch();
+    const navigate = useNavigate();
     const [view, setView] = useState<'list' | 'form'>('list');
     const [selectedSpecies, setSelectedSpecies] = useState<Species | null>(null);
 
@@ -22,8 +24,7 @@ const SpeciesPage: React.FC = () => {
     }, [currentSpecies]);
 
     const handleEditSpecies = (species: Species | SearchedSpecies | Reference) => {
-        
-        setView('form');
+        navigate('/dashboard/add-species', { state: { specie: species } });
     };
 
     return (
@@ -33,7 +34,7 @@ const SpeciesPage: React.FC = () => {
                     <h1 className="text-2xl font-bold mb-4">{t('species.dashboard')}</h1>
                     <button
                         className={'px-4 py-2 bg-blue-500 text-white'}
-                        onClick={() => { setView('form'); setSelectedSpecies(null); dispatch(clearCurrentSpecies()); }}
+                        onClick={() => { navigate('/dashboard/add-species'); }}
                     >
                         {t('species.add')}
                     </button>

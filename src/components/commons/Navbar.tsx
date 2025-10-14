@@ -34,7 +34,7 @@ const Navbar: React.FC = () => {
         <nav className="bg-gray-800 border-gray-200 px-4 py-2.5 dark:bg-gray-900">
             <div className="container flex flex-wrap items-center justify-between mx-auto">
                 <Link to="/" className="flex items-center">
-                    <span className="self-center text-xl font-semibold whitespace-nowrap text-white">MyApp</span>
+                    <span className="self-center text-xl font-semibold whitespace-nowrap text-white">NC2T</span>
                 </Link>
                 <div className="flex items-center md:order-2 space-x-3 md:space-x-0 rtl:space-x-reverse">
         {isAuthenticated ? (

@@ -31,22 +31,25 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
     const { addNotification } = useNotification();
     const { loading } = useSelector((state: RootState) => state.getSpecies);
 
+    console.log('Initial Data:', initialData);
+    
+
     const getInitialFormData = () => {
-        if (initialData && 'id' in initialData) {
-            return initialData;
-        }
-        if (initialData && 'reference' in initialData) {
-            const ref = (initialData as { reference: Reference }).reference;
-            return {
-                name: ref.title,
-                references: [ref],
-            };
-        }
-        if (referenceFromState) {
-            return {
-                name: referenceFromState.title,
-                references: [referenceFromState],
-            };
+        if (initialData) {
+            if ('id' in initialData) { // Covers both Species and SearchedSpecies
+                const data = { ...initialData };
+                if (data.collection_date && typeof data.collection_date === 'string') {
+                    data.collection_date = data.collection_date.split('T')[0];
+                }
+                return data;
+            }
+            if ('reference' in initialData) { // New species from reference
+                const ref = (initialData as { reference: Reference }).reference;
+                return {
+                    name: ref.title,
+                    references: [ref],
+                };
+            }
         }
         return {
             name: '',
@@ -87,43 +90,59 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
         setFormData(initial);
 
         if (initial.compounds && initial.compounds.length > 0) {
-            const fetchSelectedCompounds = async () => {
-                const allCompounds = await listCompounds();
-                const compoundIds = initial.compounds.map(c => typeof c === 'number' ? c : c.id);
-                const fetchedCompounds = allCompounds.filter(c => compoundIds.includes(c.id));
-                setSelectedCompounds(fetchedCompounds);
-            };
-            fetchSelectedCompounds();
+            if (typeof initial.compounds[0] === 'number') {
+                const fetchSelectedCompounds = async () => {
+                    const allCompounds = await listCompounds();
+                    const compoundIds = initial.compounds as number[];
+                    const fetchedCompounds = allCompounds.filter(c => compoundIds.includes(c.id));
+                    setSelectedCompounds(fetchedCompounds);
+                };
+                fetchSelectedCompounds();
+            } else {
+                setSelectedCompounds(initial.compounds as Compound[]);
+            }
         }
 
         if (initial.references && initial.references.length > 0) {
-            const fetchSelectedReferences = async () => {
-                const allReferences = await listReferences();
-                const referenceIds = initial.references.map(r => typeof r === 'number' ? r : r.id);
-                const fetchedReferences = allReferences.filter(r => referenceIds.includes(r.id));
-                setSelectedReferences(fetchedReferences);
-            };
-            fetchSelectedReferences();
+            if (typeof initial.references[0] === 'number') {
+                const fetchSelectedReferences = async () => {
+                    const allReferences = await listReferences();
+                    const referenceIds = initial.references as number[];
+                    const fetchedReferences = allReferences.filter(r => referenceIds.includes(r.id));
+                    setSelectedReferences(fetchedReferences);
+                };
+                fetchSelectedReferences();
+            } else {
+                setSelectedReferences(initial.references as Reference[]);
+            }
         }
 
         if (initial.harvest_sites && initial.harvest_sites.length > 0) {
-            const fetchSelectedSites = async () => {
-                const allLocations = await listLocations();
-                const siteIds = initial.harvest_sites.map(s => typeof s === 'number' ? s : s.id);
-                const fetchedSites = allLocations.filter(l => siteIds.includes(l.id));
-                setSelectedSites(fetchedSites);
-            };
-            fetchSelectedSites();
+            if (typeof initial.harvest_sites[0] === 'number') {
+                const fetchSelectedSites = async () => {
+                    const allLocations = await listLocations();
+                    const siteIds = initial.harvest_sites as number[];
+                    const fetchedSites = allLocations.filter(l => siteIds.includes(l.id));
+                    setSelectedSites(fetchedSites);
+                };
+                fetchSelectedSites();
+            } else {
+                setSelectedSites(initial.harvest_sites as Location[]);
+            }
         }
 
         if (initial.storage_locations && initial.storage_locations.length > 0) {
-            const fetchSelectedStorageLocations = async () => {
-                const allLocations = await listLocations();
-                const storageLocationIds = initial.storage_locations.map(h => typeof h === 'number' ? h : h.id);
-                const fetchedStorageLocations = allLocations.filter(h => storageLocationIds.includes(h.id));
-                setSelectedStorageLocations(fetchedStorageLocations);
-            };
-            fetchSelectedStorageLocations();
+            if (typeof initial.storage_locations[0] === 'number') {
+                const fetchSelectedStorageLocations = async () => {
+                    const allLocations = await listLocations();
+                    const storageLocationIds = initial.storage_locations as number[];
+                    const fetchedStorageLocations = allLocations.filter(h => storageLocationIds.includes(h.id));
+                    setSelectedStorageLocations(fetchedStorageLocations);
+                };
+                fetchSelectedStorageLocations();
+            } else {
+                setSelectedStorageLocations(initial.storage_locations as Location[]);
+            }
         }
 
     }, [initialData, referenceFromState]);

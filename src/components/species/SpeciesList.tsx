@@ -66,11 +66,10 @@ const SpeciesList: React.FC<SpeciesListProps> = ({ onEditSpecies }) => {
             <a
                 className="text-blue-500 cursor-pointer"
                 onClick={() => {
-                    // handleEdit(row);
-                    window.location.href = `/dashboard/species/${row.id}`;
+                    handleEdit(row);
                 }}
             >
-                {row.id ? 'View' : 'Create'}
+                {row.id ? 'Edit' : 'Create'}
             </a>
             <a className="text-red-500 cursor-pointer" onClick={() => handleDelete(row)} >Delete</a>
         </div>
