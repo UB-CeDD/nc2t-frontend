@@ -4,7 +4,7 @@ import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
 // Fix for default icon issue with webpack
-// @ts-expect-error
+// @ts-expect-error: Leaflet's default icon is not fully typed, and this is a common workaround for Webpack issues.
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl:

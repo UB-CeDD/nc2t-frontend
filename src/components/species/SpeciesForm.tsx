@@ -44,7 +44,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({
 
   console.log("Initial Data:", initialData);
 
-  const getInitialFormData = () => {
+  const getInitialFormData = useCallback(() => {
     if (initialData) {
       if ("id" in initialData) {
         // Covers both Species and SearchedSpecies
@@ -74,7 +74,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({
       collection_date: "",
       herbariums: [],
     };
-  };
+  }, [initialData]);
 
   const [formData, setFormData] =
     useState<Partial<Species>>(getInitialFormData());
@@ -412,9 +412,8 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({
       if (result && !result.error) {
         onFormClose();
       }
-    } catch (error) {
+    } catch () {
       // Notification is handled in the thunk
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     }
   };
 

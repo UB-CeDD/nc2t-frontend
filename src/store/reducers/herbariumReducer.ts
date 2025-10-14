@@ -29,7 +29,7 @@ const initialState: HerbariumState = {
 
 interface Action {
   type: string;
-  payload?: any;
+  payload?: Herbarium[] | Herbarium | string;
 }
 
 const herbariumReducer = (

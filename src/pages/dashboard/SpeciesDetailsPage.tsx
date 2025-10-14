@@ -6,7 +6,7 @@ import {
   updateSpeciesThunk,
 } from "@/store/thunks/speciesThunk";
 import { RootState } from "@/store/store";
-import { Compound, Reference, Species, Location } from "@/helpers/types";
+import { Species } from "@/helpers/types";
 import Modal from "@components/commons/Modal";
 import AdminLayout from "@components/layouts/AdminLayout";
 import { useTranslation } from "react-i18next";
@@ -14,10 +14,9 @@ import { AppDispatch } from "@/store/store";
 
 const SpeciesDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const { t } = useTranslation();
   const dispatch: AppDispatch = useDispatch();
 
-  const { currentSpecies, loading, error } = useSelector(
+  const { currentSpecies } = useSelector(
     (state: RootState) => state.getSpecies,
   );
   // Add notification handler

@@ -104,8 +104,7 @@ export const searchSpeciesByReference =
     try {
       const searchSpecies = await searchReferences(query);
       dispatch(searchSpeciesSuccess(searchSpecies));
-    } catch (error) {
+    } catch () {
       dispatch(searchSpeciesFailure("Failed to search species by reference."));
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     }
   };

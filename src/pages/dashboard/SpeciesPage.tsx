@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SpeciesList from "@components/species/SpeciesList";
 import AdminLayout from "@components/layouts/AdminLayout";
@@ -9,12 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const SpeciesPage: React.FC = () => {
   const { t } = useTranslation();
-  const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-
-  const { currentSpecies } = useSelector(
-    (state: RootState) => state.getSpecies,
-  );
 
   const handleEditSpecies = (
     species: Species | SearchedSpecies | Reference,

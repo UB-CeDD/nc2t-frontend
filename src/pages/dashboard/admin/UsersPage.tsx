@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import AdminLayout from "@/components/layouts/AdminLayout";
 import UserList from "@/components/users/UserList";
 import { useTranslation } from "react-i18next";
@@ -13,7 +13,7 @@ const UsersPage: React.FC = () => {
   const navigate = useNavigate();
   const { isLoading } = useSelector((state: RootState) => state.loading);
 
-  const handleEditUser = (user: UserModel) => {
+  const handleEditUser = (/* user: UserModel */) => {
     // setEditingUser(user);
     // setShowAddEditUser(true);
   };

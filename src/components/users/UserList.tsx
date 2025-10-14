@@ -7,15 +7,7 @@ import { UserModel } from "@/helpers/types";
 import { useNavigate } from "react-router-dom";
 import { RootState } from "@store/store";
 
-interface UserListProps {
-  // onEditUser: (user: UserModel) => void; // Add this prop
-}
-
-const UserList: React.FC<UserListProps> = (
-  {
-    /* onEditUser */
-  },
-) => {
+const UserList: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();

@@ -25,7 +25,7 @@ const initialState: SpeciesUserRoleState = {
 
 interface Action {
   type: string;
-  payload?: any;
+  payload?: SpeciesUser[] | SpeciesUser | string;
 }
 
 const speciesUserRoleReducer = (
