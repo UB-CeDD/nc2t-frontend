@@ -1,10 +1,8 @@
 import React from "react";
-import { useDispatch, useSelector } from "react-redux";
 import SpeciesList from "@components/species/SpeciesList";
 import AdminLayout from "@components/layouts/AdminLayout";
 import { Reference, SearchedSpecies, Species } from "@/helpers/types";
 import { useTranslation } from "react-i18next";
-import { RootState, AppDispatch } from "@/store/store";
 import { useNavigate } from "react-router-dom";
 
 const SpeciesPage: React.FC = () => {

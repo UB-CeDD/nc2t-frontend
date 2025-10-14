@@ -105,6 +105,7 @@ export const searchSpeciesByReference =
       const searchSpecies = await searchReferences(query);
       dispatch(searchSpeciesSuccess(searchSpecies));
     } catch (error: unknown) {
+      console.log(error);
       dispatch(searchSpeciesFailure("Failed to search species by reference."));
     }
   };

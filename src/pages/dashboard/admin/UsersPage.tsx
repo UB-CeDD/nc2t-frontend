@@ -2,7 +2,6 @@ import React from "react";
 import AdminLayout from "@/components/layouts/AdminLayout";
 import UserList from "@/components/users/UserList";
 import { useTranslation } from "react-i18next";
-import { UserModel } from "@/helpers/types";
 import { RootState } from "@store/store";
 import { useSelector } from "react-redux";
 import Loader from "@components/commons/Loader";

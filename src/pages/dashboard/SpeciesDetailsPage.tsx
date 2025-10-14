@@ -9,7 +9,6 @@ import { RootState } from "@/store/store";
 import { Species } from "@/helpers/types";
 import Modal from "@components/commons/Modal";
 import AdminLayout from "@components/layouts/AdminLayout";
-import { useTranslation } from "react-i18next";
 import { AppDispatch } from "@/store/store";
 
 const SpeciesDetailsPage: React.FC = () => {
