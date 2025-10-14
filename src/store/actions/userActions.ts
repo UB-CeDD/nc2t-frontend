@@ -71,7 +71,7 @@ export const filterUsersAction = (filters: UserFilters) => ({
 });
 
 interface UserFilters {
-    username?: string;
-    email?: string;
-    role?: string;
+  username?: string;
+  email?: string;
+  role?: string;
 }

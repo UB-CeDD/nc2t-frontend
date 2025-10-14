@@ -7,9 +7,7 @@ export const fetchSpecies =
       dispatch(fetchSpeciesSuccess(species));
     } catch (error: Error) {
       dispatch(
-        fetchSpeciesFailure(
-          error.message || "Failed to fetch species.",
-        ),
+        fetchSpeciesFailure(error.message || "Failed to fetch species."),
       );
     }
   };

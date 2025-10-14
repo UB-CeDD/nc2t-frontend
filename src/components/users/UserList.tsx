@@ -11,7 +11,11 @@ interface UserListProps {
   // onEditUser: (user: UserModel) => void; // Add this prop
 }
 
-const UserList: React.FC<UserListProps> = ({ /* onEditUser */ }) => {
+const UserList: React.FC<UserListProps> = (
+  {
+    /* onEditUser */
+  },
+) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();

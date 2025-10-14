@@ -58,16 +58,17 @@ export const createCompoundThunk =
     }
   };
 
-export const retrieveCompoundThunk = (id: string) => async (dispatch: AppDispatch) => {
-  try {
-    const compound = await retrieveCompound(id);
-    dispatch(retrieveCompoundSuccess(compound));
-    return compound;
-  } catch (error: Error) {
-    dispatch(retrieveCompoundFailure(error.message));
-    throw error;
-  }
-};
+export const retrieveCompoundThunk =
+  (id: string) => async (dispatch: AppDispatch) => {
+    try {
+      const compound = await retrieveCompound(id);
+      dispatch(retrieveCompoundSuccess(compound));
+      return compound;
+    } catch (error: Error) {
+      dispatch(retrieveCompoundFailure(error.message));
+      throw error;
+    }
+  };
 
 export const updateCompoundThunk =
   (
@@ -92,13 +93,14 @@ export const updateCompoundThunk =
     }
   };
 
-export const deleteCompoundThunk = (id: string) => async (dispatch: AppDispatch) => {
-  try {
-    await deleteCompound(id);
-    dispatch(deleteCompoundSuccess(id));
-    return id;
-  } catch (error) {
-    dispatch(deleteCompoundFailure("Failed to delete compound."));
-    throw error;
-  }
-};
+export const deleteCompoundThunk =
+  (id: string) => async (dispatch: AppDispatch) => {
+    try {
+      await deleteCompound(id);
+      dispatch(deleteCompoundSuccess(id));
+      return id;
+    } catch (error) {
+      dispatch(deleteCompoundFailure("Failed to delete compound."));
+      throw error;
+    }
+  };

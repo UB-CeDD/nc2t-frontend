@@ -32,7 +32,8 @@ export const fetchSpeciesUsersThunk =
   };
 
 export const addSpeciesUserThunk =
-  (speciesId: string, userId: number, role: string) => async (dispatch: AppDispatch) => {
+  (speciesId: string, userId: number, role: string) =>
+  async (dispatch: AppDispatch) => {
     try {
       const newSpeciesUser = await addSpeciesUser(speciesId, userId, role);
       dispatch(addSpeciesUserSuccess(newSpeciesUser));
@@ -46,7 +47,8 @@ export const addSpeciesUserThunk =
   };
 
 export const updateSpeciesUserRoleThunk =
-  (speciesId: string, userId: number, role: string) => async (dispatch: AppDispatch) => {
+  (speciesId: string, userId: number, role: string) =>
+  async (dispatch: AppDispatch) => {
     try {
       const updatedSpeciesUser = await updateSpeciesUserRole(
         speciesId,

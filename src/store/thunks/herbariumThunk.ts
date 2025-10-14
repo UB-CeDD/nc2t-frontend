@@ -47,21 +47,23 @@ export const createHerbariumThunk =
     }
   };
 
-export const retrieveHerbariumThunk = (id: string) => async (dispatch: AppDispatch) => {
-  try {
-    const herbarium = await retrieveHerbarium(id);
-    dispatch(retrieveHerbariumSuccess(herbarium));
-  } catch (error: Error) {
-    dispatch(
-      retrieveHerbariumFailure(
-        error.message || "Failed to retrieve herbarium.",
-      ),
-    );
-  }
-};
+export const retrieveHerbariumThunk =
+  (id: string) => async (dispatch: AppDispatch) => {
+    try {
+      const herbarium = await retrieveHerbarium(id);
+      dispatch(retrieveHerbariumSuccess(herbarium));
+    } catch (error: Error) {
+      dispatch(
+        retrieveHerbariumFailure(
+          error.message || "Failed to retrieve herbarium.",
+        ),
+      );
+    }
+  };
 
 export const updateHerbariumThunk =
-  (id: string, herbariumData: Partial<Herbarium>) => async (dispatch: AppDispatch) => {
+  (id: string, herbariumData: Partial<Herbarium>) =>
+  async (dispatch: AppDispatch) => {
     try {
       const updatedHerbarium = await updateHerbarium(id, herbariumData);
       dispatch(updateHerbariumSuccess(updatedHerbarium));
@@ -72,13 +74,14 @@ export const updateHerbariumThunk =
     }
   };
 
-export const deleteHerbariumThunk = (id: string) => async (dispatch: AppDispatch) => {
-  try {
-    await deleteHerbarium(id);
-    dispatch(deleteHerbariumSuccess(id));
-  } catch (error: Error) {
-    dispatch(
-      deleteHerbariumFailure(error.message || "Failed to delete herbarium."),
-    );
-  }
-};
+export const deleteHerbariumThunk =
+  (id: string) => async (dispatch: AppDispatch) => {
+    try {
+      await deleteHerbarium(id);
+      dispatch(deleteHerbariumSuccess(id));
+    } catch (error: Error) {
+      dispatch(
+        deleteHerbariumFailure(error.message || "Failed to delete herbarium."),
+      );
+    }
+  };

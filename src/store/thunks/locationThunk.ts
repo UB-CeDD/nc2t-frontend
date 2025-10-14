@@ -49,16 +49,17 @@ export const createLocationThunk =
     }
   };
 
-export const retrieveLocationThunk = (id: string) => async (dispatch: AppDispatch) => {
-  try {
-    const location = await retrieveLocation(id);
-    dispatch(retrieveLocationSuccess(location));
-    return location;
-  } catch (error: Error) {
-    dispatch(retrieveLocationFailure(error.message));
-    throw error;
-  }
-};
+export const retrieveLocationThunk =
+  (id: string) => async (dispatch: AppDispatch) => {
+    try {
+      const location = await retrieveLocation(id);
+      dispatch(retrieveLocationSuccess(location));
+      return location;
+    } catch (error: Error) {
+      dispatch(retrieveLocationFailure(error.message));
+      throw error;
+    }
+  };
 
 export const updateLocationThunk =
   (id: string, locationData: Location) => async (dispatch: AppDispatch) => {
@@ -73,13 +74,14 @@ export const updateLocationThunk =
     }
   };
 
-export const deleteLocationThunk = (id: string) => async (dispatch: AppDispatch) => {
-  try {
-    await deleteLocation(id);
-    dispatch(deleteLocationSuccess(id));
-    return id;
-  } catch (error: Error) {
-    dispatch(deleteLocationFailure(error.message));
-    throw error;
-  }
-};
+export const deleteLocationThunk =
+  (id: string) => async (dispatch: AppDispatch) => {
+    try {
+      await deleteLocation(id);
+      dispatch(deleteLocationSuccess(id));
+      return id;
+    } catch (error: Error) {
+      dispatch(deleteLocationFailure(error.message));
+      throw error;
+    }
+  };
