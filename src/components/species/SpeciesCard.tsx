@@ -1,10 +1,10 @@
 import React from "react";
-import { SearchedSpecie, Species } from "@/helpers/types.ts";
+import { SearchedSpecies } from "@/helpers/types.ts";
 
 interface SpeciesCardProps {
-  specie: SearchedSpecie;
-  onEdit: (specie: any) => void;
-  onDelete: (specie: any) => void;
+  specie: SearchedSpecies;
+  onEdit: (specie: SearchedSpecies) => void;
+  onDelete: (specie: SearchedSpecies) => void;
 }
 
 const SpeciesCard: React.FC<SpeciesCardProps> = ({

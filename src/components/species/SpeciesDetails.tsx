@@ -21,7 +21,6 @@ import { useNotification } from "../commons/NotificationContext"; // New import
 
 const SpeciesDetails: React.FC = () => {
   const { id } = useParams<{ id: string }>();
-  const navigate = useNavigate();
   const dispatch = useDispatch();
   const { addNotification } = useNotification(); // New hook call
 
@@ -304,7 +303,7 @@ const SpeciesDetails: React.FC = () => {
 
       <div className="mt-8">
         <h2 className="text-xl font-bold mb-4">Compounds</h2>
-        <CompoundList compounds={species.compounds as any} />
+        <CompoundList compounds={species.compounds as Compound[]} />
         <button
           onClick={() => setShowCompoundModal(true)}
           className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
@@ -315,7 +314,7 @@ const SpeciesDetails: React.FC = () => {
 
       <div className="mt-8">
         <h2 className="text-xl font-bold mb-4">References</h2>
-        <ReferenceList references={species.references as any} />
+        <ReferenceList references={species.references as Reference[]} />
         <button
           onClick={() => setShowReferenceModal(true)}
           className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
@@ -326,7 +325,7 @@ const SpeciesDetails: React.FC = () => {
 
       <div className="mt-8">
         <h2 className="text-xl font-bold mb-4">Sites</h2>
-        <LocationList locations={species.sites as any} />
+        <LocationList locations={species.harvest_sites as Location[]} />
         <button
           onClick={() => setShowSiteModal(true)}
           className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"
@@ -337,7 +336,7 @@ const SpeciesDetails: React.FC = () => {
 
       <div className="mt-8">
         <h2 className="text-xl font-bold mb-4">Herbariums</h2>
-        <HerbariumList herbariums={species.herbariums as any} />
+        <HerbariumList herbariums={species.storage_locations as Location[]} />
         <button
           onClick={() => setShowHerbariumModal(true)}
           className="mt-2 px-4 py-2 bg-blue-500 text-white rounded"

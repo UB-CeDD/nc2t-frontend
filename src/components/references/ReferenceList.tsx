@@ -23,7 +23,6 @@ const ReferenceList: React.FC<ReferenceListProps> = ({
   );
 
   const [searchText, setSearchText] = useState("");
-  const [authorFilter, setAuthorFilter] = useState("");
   const [dateFilter, setDateFilter] = useState("");
 
   useEffect(() => {
@@ -39,9 +38,6 @@ const ReferenceList: React.FC<ReferenceListProps> = ({
       return (
         (reference.title.toLowerCase().includes(searchText.toLowerCase()) ||
           reference.author.toLowerCase().includes(searchText.toLowerCase())) &&
-        (authorFilter
-          ? reference.author.toLowerCase().includes(authorFilter.toLowerCase())
-          : true) &&
         (dateFilter ? reference.year.toString() === dateFilter : true)
       );
     },
