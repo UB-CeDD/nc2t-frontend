@@ -15,6 +15,10 @@ import AdminLayout from '@components/layouts/AdminLayout';
 import SpeciesCard from '@components/species/SpeciesCard';
 import { getSpeciesByReference } from '@/services/speciesService';
 import { useNavigate } from 'react-router-dom';
+import SpeciesByKingdomChart from '@components/charts/SpeciesByKingdomChart';
+import CompoundsByClassChart from '@components/charts/CompoundsByClassChart';
+import ReferencesByTypeChart from '@components/charts/ReferencesByTypeChart';
+import UsersByRoleChart from '@components/charts/UsersByRoleChart';
 
 const AdminPage: React.FC = () => {
     const dispatch: AppDispatch = useDispatch();
@@ -208,37 +212,35 @@ const AdminPage: React.FC = () => {
                     <>
                         {/* Overview Cards */}
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6 mb-8">
-                            <StatCard title="Total Species" count={species?.length || 0} icon={<FaLeaf className="text-green-500" />} />
-                            <StatCard title="Total Compounds" count={compounds?.length || 0} icon={<FaFlask className="text-blue-500" />} />
-                            <StatCard title="Total Users" count={users?.length || 0} icon={<FaUsers className="text-purple-500" />} />
-                            <StatCard title="Total Locations" count={locations?.length || 0} icon={<FaMapMarkerAlt className="text-red-500" />} />
-                            <StatCard title="Total References" count={references?.length || 0} icon={<FaBook className="text-yellow-500" />} />
-                            <StatCard title="Total Herbariums" count={herbariums?.length || 0} icon={<FaBuilding className="text-teal-500" />} />
+                            <StatCard title="Species" count={species?.length || 0} icon={<FaLeaf className="text-green-500" />} />
+                            <StatCard title="Compounds" count={compounds?.length || 0} icon={<FaFlask className="text-blue-500" />} />
+                            <StatCard title="Users" count={users?.length || 0} icon={<FaUsers className="text-purple-500" />} />
+                            <StatCard title="Harvest Sites" count={locations?.length || 0} icon={<FaMapMarkerAlt className="text-red-500" />} />
+                            <StatCard title="References" count={references?.length || 0} icon={<FaBook className="text-yellow-500" />} />
+                            <StatCard title="Herbariums" count={herbariums?.length || 0} icon={<FaBuilding className="text-teal-500" />} />
                         </div>
 
                         {/* Charts Section */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
                             <div className="bg-white p-6 rounded-lg shadow-md">
                                 <h2 className="text-xl font-semibold mb-4 text-gray-700">Species by Kingdom</h2>
-                                <div className="h-64 flex items-center justify-center text-gray-500">Chart Placeholder</div>
-                                <pre className="text-xs bg-gray-100 p-2 rounded mt-2">{JSON.stringify(speciesByKingdomData, '', 2)}</pre>
+                                <SpeciesByKingdomChart data={speciesByKingdomData} />
                             </div>
                             <div className="bg-white p-6 rounded-lg shadow-md">
                                 <h2 className="text-xl font-semibold mb-4 text-gray-700">Compounds by Class</h2>
-                                <div className="h-64 flex items-center justify-center text-gray-500">Chart Placeholder</div>
-                                <pre className="text-xs bg-gray-100 p-2 rounded mt-2">{JSON.stringify(compoundsByClassData, null, 2)}</pre>
+                                <CompoundsByClassChart data={compoundsByClassData} />
                             </div>
                             <div className="bg-white p-6 rounded-lg shadow-md">
                                 <h2 className="text-xl font-semibold mb-4 text-gray-700">Users by Role</h2>
-                                <div className="h-64 flex items-center justify-center text-gray-500">Chart Placeholder</div>
-                                <pre className="text-xs bg-gray-100 p-2 rounded mt-2">{JSON.stringify(usersByRoleData, null, 2)}</pre>
+                                <UsersByRoleChart data={usersByRoleData} />
                             </div>
                             <div className="bg-white p-6 rounded-lg shadow-md">
                                 <h2 className="text-xl font-semibold mb-4 text-gray-700">References by Type</h2>
-                                <div className="h-64 flex items-center justify-center text-gray-500">Chart Placeholder</div>
-                                <pre className="text-xs bg-gray-100 p-2 rounded mt-2">{JSON.stringify(referencesByTypeData, null, 2)}</pre>
+                                <ReferencesByTypeChart data={referencesByTypeData} />
                             </div>
                         </div>
+
+                        {/* ... (rest of the component code) ... */}
 
                         {/* Locations Map */}
                         <div className="bg-white p-6 rounded-lg shadow-md mb-8">
