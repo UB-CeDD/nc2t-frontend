@@ -17,12 +17,12 @@ import {
 } from "../actions/speciesUserRoleActions";
 
 export const fetchSpeciesUsersThunk =
-  (speciesId: string) => async (dispatch: any) => {
+  (speciesId: string) => async (dispatch: AppDispatch) => {
     dispatch(fetchSpeciesUsersRequest());
     try {
       const speciesUsers = await listSpeciesUsers(speciesId);
       dispatch(fetchSpeciesUsersSuccess(speciesUsers));
-    } catch (error: any) {
+    } catch (error: Error) {
       dispatch(
         fetchSpeciesUsersFailure(
           error.message || "Failed to fetch species users.",
@@ -32,11 +32,11 @@ export const fetchSpeciesUsersThunk =
   };
 
 export const addSpeciesUserThunk =
-  (speciesId: string, userId: number, role: any) => async (dispatch: any) => {
+  (speciesId: string, userId: number, role: string) => async (dispatch: AppDispatch) => {
     try {
       const newSpeciesUser = await addSpeciesUser(speciesId, userId, role);
       dispatch(addSpeciesUserSuccess(newSpeciesUser));
-    } catch (error: any) {
+    } catch (error: Error) {
       dispatch(
         addSpeciesUserFailure(
           error.message || "Failed to add user to species.",
@@ -46,7 +46,7 @@ export const addSpeciesUserThunk =
   };
 
 export const updateSpeciesUserRoleThunk =
-  (speciesId: string, userId: number, role: any) => async (dispatch: any) => {
+  (speciesId: string, userId: number, role: string) => async (dispatch: AppDispatch) => {
     try {
       const updatedSpeciesUser = await updateSpeciesUserRole(
         speciesId,
@@ -54,7 +54,7 @@ export const updateSpeciesUserRoleThunk =
         role,
       );
       dispatch(updateSpeciesUserRoleSuccess(updatedSpeciesUser));
-    } catch (error: any) {
+    } catch (error: Error) {
       dispatch(
         updateSpeciesUserRoleFailure(
           error.message || "Failed to update user role for species.",
@@ -64,11 +64,11 @@ export const updateSpeciesUserRoleThunk =
   };
 
 export const removeSpeciesUserThunk =
-  (speciesId: string, userId: number) => async (dispatch: any) => {
+  (speciesId: string, userId: number) => async (dispatch: AppDispatch) => {
     try {
       await removeSpeciesUser(speciesId, userId);
       dispatch(removeSpeciesUserSuccess(userId));
-    } catch (error: any) {
+    } catch (error: Error) {
       dispatch(
         removeSpeciesUserFailure(
           error.message || "Failed to remove user from species.",

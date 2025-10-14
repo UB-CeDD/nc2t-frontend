@@ -65,7 +65,13 @@ export const deleteUserAction = (id: string) => ({
   payload: id,
 });
 
-export const filterUsersAction = (filters: any) => ({
+export const filterUsersAction = (filters: UserFilters) => ({
   type: FILTER_USERS,
   payload: filters,
 });
+
+interface UserFilters {
+    username?: string;
+    email?: string;
+    role?: string;
+}

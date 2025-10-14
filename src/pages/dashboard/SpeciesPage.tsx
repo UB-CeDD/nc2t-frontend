@@ -5,25 +5,16 @@ import AdminLayout from "@components/layouts/AdminLayout";
 import { Reference, SearchedSpecies, Species } from "@/helpers/types";
 import { useTranslation } from "react-i18next";
 import { RootState, AppDispatch } from "@/store/store";
-import { clearCurrentSpecies } from "@/store/actions/speciesActions";
 import { useNavigate } from "react-router-dom";
 
 const SpeciesPage: React.FC = () => {
   const { t } = useTranslation();
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
-  const [view, setView] = useState<"list" | "form">("list");
-  const [selectedSpecies, setSelectedSpecies] = useState<Species | null>(null);
 
   const { currentSpecies } = useSelector(
     (state: RootState) => state.getSpecies,
   );
-
-  useEffect(() => {
-    if (currentSpecies) {
-      setSelectedSpecies(currentSpecies);
-    }
-  }, [currentSpecies]);
 
   const handleEditSpecies = (
     species: Species | SearchedSpecies | Reference,

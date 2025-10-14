@@ -23,9 +23,14 @@ const initialState: SpeciesUserRoleState = {
   error: null,
 };
 
+interface Action {
+  type: string;
+  payload?: any;
+}
+
 const speciesUserRoleReducer = (
   state = initialState,
-  action: any,
+  action: Action,
 ): SpeciesUserRoleState => {
   switch (action.type) {
     case FETCH_SPECIES_USERS_REQUEST:

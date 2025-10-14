@@ -8,7 +8,11 @@ const initialState: LoadingState = {
   isLoading: false,
 };
 
-const loadingReducer = (state = initialState, action: any): LoadingState => {
+interface Action {
+  type: string;
+}
+
+const loadingReducer = (state = initialState, action: Action): LoadingState => {
   switch (action.type) {
     case SET_LOADING:
       return {

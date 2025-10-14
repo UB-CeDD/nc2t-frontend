@@ -13,7 +13,6 @@ import Table from "@components/commons/Table";
 import { searchSpeciesByReference } from "@store/thunks/speciesThunk.ts";
 import SpeciesCard from "./SpeciesCard";
 import { getSpeciesByReference } from "@/services/speciesService";
-import Spinner from "@components/commons/Spinner.tsx";
 import { AppDispatch } from "@store/store";
 import Loader from "@components/commons/Loader";
 
@@ -28,7 +27,6 @@ const SpeciesList: React.FC<SpeciesListProps> = ({ onEditSpecies }) => {
     species,
     error: speciesError,
     searchResults,
-    loading,
   } = useSelector((state: RootState) => state.getSpecies);
   const { error: referencesError } = useSelector(
     (state: RootState) => state.getReferences,

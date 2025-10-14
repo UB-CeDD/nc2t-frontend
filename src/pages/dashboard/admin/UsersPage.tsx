@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import AdminLayout from "@/components/layouts/AdminLayout";
 import UserList from "@/components/users/UserList";
-import AddEditUser from "@/components/users/AddEditUser";
 import { useTranslation } from "react-i18next";
 import { UserModel } from "@/helpers/types";
 import { RootState } from "@store/store";
@@ -14,19 +13,9 @@ const UsersPage: React.FC = () => {
   const navigate = useNavigate();
   const { isLoading } = useSelector((state: RootState) => state.loading);
 
-  const [showAddEditUser, setShowAddEditUser] = useState(false);
-  const [editingUser, setEditingUser] = useState<UserModel | undefined>(
-    undefined,
-  );
-
   const handleEditUser = (user: UserModel) => {
-    setEditingUser(user);
-    setShowAddEditUser(true);
-  };
-
-  const handleCloseForm = () => {
-    setEditingUser(undefined);
-    setShowAddEditUser(false);
+    // setEditingUser(user);
+    // setShowAddEditUser(true);
   };
 
   return (

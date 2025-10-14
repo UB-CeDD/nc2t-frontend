@@ -12,6 +12,7 @@ import {
   VIEW_USER,
   DELETE_USER,
   FILTER_USERS,
+  UserFilters,
 } from "../actions/userActions";
 
 const initialState = {
@@ -24,7 +25,7 @@ const initialState = {
 
 interface Action {
   type: string;
-  payload?: UserModel[] | UserModel | string | any;
+  payload?: UserModel[] | UserModel | string | UserFilters;
 }
 
 const userReducer = (state = initialState, action: Action) => {

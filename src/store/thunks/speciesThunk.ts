@@ -1,45 +1,14 @@
-import {
-  createSpecies,
-  listSpecies,
-  updateSpecies,
-  deleteSpecies,
-  retrieveSingleSpecies,
-} from "@/services/speciesService.ts";
-import {
-  fetchSpeciesRequest,
-  fetchSpeciesSuccess,
-  fetchSpeciesFailure,
-  createSpeciesRequest,
-  createSpeciesSuccess,
-  createSpeciesFailure,
-  retrieveSpeciesSuccess,
-  retrieveSpeciesFailure,
-  updateSpeciesRequest,
-  updateSpeciesSuccess,
-  updateSpeciesFailure,
-  deleteSpeciesSuccess,
-  deleteSpeciesFailure,
-  searchSpeciesRequest,
-  searchSpeciesFailure,
-  searchSpeciesSuccess,
-} from "../actions/speciesActions";
-
-import { Species } from "@/helpers/types";
-import { searchReferences } from "@/services/referenceService";
-
-import { Dispatch } from "redux";
-
 export const fetchSpecies =
   (queryParams: Record<string, string> = {}) =>
-  async (dispatch: Dispatch) => {
+  async (dispatch: AppDispatch) => {
     dispatch(fetchSpeciesRequest());
     try {
       const species = await listSpecies(queryParams);
       dispatch(fetchSpeciesSuccess(species));
-    } catch (error: unknown) {
+    } catch (error: Error) {
       dispatch(
         fetchSpeciesFailure(
-          (error as Error).message || "Failed to fetch species.",
+          error.message || "Failed to fetch species.",
         ),
       );
     }
@@ -53,13 +22,13 @@ export const createSpeciesThunk =
       type: "success" | "warning" | "error",
     ) => void,
   ) =>
-  async (dispatch) => {
+  async (dispatch: AppDispatch) => {
     dispatch(createSpeciesRequest());
     try {
       const response = await createSpecies(speciesData);
       dispatch(createSpeciesSuccess(response.data));
       addNotification("Species created successfully!", "success");
-    } catch (error: any) {
+    } catch (error: Error) {
       console.log(error.response?.data || error.message);
       dispatch(
         createSpeciesFailure(error.message || "Failed to create species."),
@@ -76,11 +45,11 @@ export const retrieveSingleSpeciesThunk =
       type: "success" | "warning" | "error",
     ) => void,
   ) =>
-  async (dispatch: Dispatch) => {
+  async (dispatch: AppDispatch) => {
     try {
       const specie = await retrieveSingleSpecies(id);
       dispatch(retrieveSpeciesSuccess(specie));
-    } catch (error) {
+    } catch (error: Error) {
       console.log(error.response?.data || error.message);
       dispatch(retrieveSpeciesFailure("Failed to retrieve species."));
       addNotification("Failed to retrieve species.", "error");
@@ -96,13 +65,13 @@ export const updateSpeciesThunk =
       type: "success" | "warning" | "error",
     ) => void,
   ) =>
-  async (dispatch: Dispatch) => {
+  async (dispatch: AppDispatch) => {
     dispatch(updateSpeciesRequest());
     try {
       const updatedSpecies = await updateSpecies(id, speciesData);
       dispatch(updateSpeciesSuccess(updatedSpecies));
       addNotification("Species updated successfully!", "success");
-    } catch (error: any) {
+    } catch (error: Error) {
       dispatch(
         updateSpeciesFailure(error.message || "Failed to update species."),
       );
@@ -118,12 +87,12 @@ export const deleteSpeciesThunk =
       type: "success" | "warning" | "error",
     ) => void,
   ) =>
-  async (dispatch) => {
+  async (dispatch: AppDispatch) => {
     try {
       await deleteSpecies(id);
       dispatch(deleteSpeciesSuccess(id));
       addNotification("Species deleted successfully!", "success");
-    } catch (error: any) {
+    } catch (error: Error) {
       dispatch(
         deleteSpeciesFailure(error.message || "Failed to delete species."),
       );
@@ -132,12 +101,12 @@ export const deleteSpeciesThunk =
   };
 
 export const searchSpeciesByReference =
-  (query: string) => async (dispatch: any) => {
+  (query: string) => async (dispatch: AppDispatch) => {
     dispatch(searchSpeciesRequest());
     try {
       const searchSpecies = await searchReferences(query);
       dispatch(searchSpeciesSuccess(searchSpecies));
-    } catch (error) {
+    } catch (/* error */) {
       dispatch(searchSpeciesFailure("Failed to search species by reference."));
     }
   };

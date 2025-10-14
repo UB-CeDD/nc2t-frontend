@@ -26,9 +26,7 @@ import { RootState } from "@/store/store";
 
 interface SpeciesFormProps {
   initialData?: Species | SearchedSpecies | { reference: Reference };
-  onSave?: () => void;
   onCancel?: () => void;
-  onSpeciesCreated?: (species: Species) => void;
   onFormClose: () => void;
 }
 
@@ -36,8 +34,6 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({
   initialData,
   onFormClose,
   onCancel,
-  onSave,
-  onSpeciesCreated,
 }) => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -173,7 +169,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({
         setSelectedStorageLocations(initial.storage_locations as Location[]);
       }
     }
-  }, [initialData, referenceFromState]);
+  }, [initialData, referenceFromState, getInitialFormData]);
 
   const handleSearchCompound = async (
     e: React.ChangeEvent<HTMLInputElement>,
@@ -281,10 +277,6 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({
 
   const handleRemoveSelectedReference = (referenceId: number) => {
     setSelectedReferences((prev) => prev.filter((r) => r.id !== referenceId));
-  };
-
-  const handleSiteInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setSiteInput(e.target.value);
   };
 
   const handleSearchSite = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -420,7 +412,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({
       if (result && !result.error) {
         onFormClose();
       }
-    } catch (error) {
+    } catch (/* error */) {
       // Notification is handled in the thunk
     }
   };

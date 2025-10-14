@@ -24,7 +24,7 @@ import { Compound } from "@/helpers/types";
 
 export const fetchCompounds =
   (queryParams: Record<string, string> = {}) =>
-  async (dispatch: any) => {
+  async (dispatch: AppDispatch) => {
     dispatch(fetchCompoundsRequest());
     try {
       const compounds = await listCompounds(queryParams);
@@ -44,26 +44,26 @@ export const createCompoundThunk =
       type: "success" | "warning" | "error",
     ) => void,
   ) =>
-  async (dispatch: any) => {
+  async (dispatch: AppDispatch) => {
     dispatch(createCompoundRequest());
     try {
       const newCompound = await createCompound(compoundData);
       dispatch(createCompoundSuccess(newCompound));
       addNotification("Compound created successfully", "success");
       return newCompound;
-    } catch (error: any) {
+    } catch (error: Error) {
       dispatch(createCompoundFailure(error.message));
       addNotification(error.message, "error");
       throw error;
     }
   };
 
-export const retrieveCompoundThunk = (id: string) => async (dispatch: any) => {
+export const retrieveCompoundThunk = (id: string) => async (dispatch: AppDispatch) => {
   try {
     const compound = await retrieveCompound(id);
     dispatch(retrieveCompoundSuccess(compound));
     return compound;
-  } catch (error: any) {
+  } catch (error: Error) {
     dispatch(retrieveCompoundFailure(error.message));
     throw error;
   }
@@ -78,21 +78,21 @@ export const updateCompoundThunk =
       type: "success" | "warning" | "error",
     ) => void,
   ) =>
-  async (dispatch: any) => {
+  async (dispatch: AppDispatch) => {
     dispatch(updateCompoundRequest());
     try {
       const updatedCompound = await updateCompound(id, compoundData);
       dispatch(updateCompoundSuccess(updatedCompound));
       addNotification("Compound updated successfully", "success");
       return updatedCompound;
-    } catch (error: any) {
+    } catch (error: Error) {
       dispatch(updateCompoundFailure(error.message));
       addNotification(error.message, "error");
       throw error;
     }
   };
 
-export const deleteCompoundThunk = (id: string) => async (dispatch: any) => {
+export const deleteCompoundThunk = (id: string) => async (dispatch: AppDispatch) => {
   try {
     await deleteCompound(id);
     dispatch(deleteCompoundSuccess(id));

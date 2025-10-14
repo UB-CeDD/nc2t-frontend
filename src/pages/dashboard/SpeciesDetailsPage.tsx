@@ -1,36 +1,25 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import {
   retrieveSingleSpeciesThunk,
   updateSpeciesThunk,
 } from "@/store/thunks/speciesThunk";
 import { RootState } from "@/store/store";
-import { Compound, Herbarium, Reference, Site, Species } from "@/helpers/types";
-import ReferenceList from "@components/references/ReferenceList";
-import LocationList from "@components/locations/LocationList";
-import HerbariumList from "@components/commons/HerbariumList";
-import SpeciesUserManagement from "@components/species/SpeciesUserManagement";
-import SpeciesHerbariumManager from "@components/species/SpeciesHerbariumManager";
+import { Compound, Reference, Species, Location } from "@/helpers/types";
 import Modal from "@components/commons/Modal";
-import SpeciesSiteManager from "@components/species/SpeciesSiteManager";
-import SpeciesReferenceManager from "@components/species/SpeciesReferenceManager";
-import SpeciesCompoundManager from "@components/species/SpeciesCompoundManager";
 import AdminLayout from "@components/layouts/AdminLayout";
 import { useTranslation } from "react-i18next";
 import { AppDispatch } from "@/store/store";
-import Table from "@components/commons/Table";
 
 const SpeciesDetailsPage: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const { t } = useTranslation();
-  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
 
   const { currentSpecies, loading, error } = useSelector(
     (state: RootState) => state.getSpecies,
   );
-  console.log("SpeciesDetailsPage render", { currentSpecies, loading, error });
   // Add notification handler
   const addNotification = useCallback(
     (message: string, type: "success" | "warning" | "error") => {
@@ -43,20 +32,6 @@ const SpeciesDetailsPage: React.FC = () => {
 
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState<Partial<Species>>({});
-  const [showCompoundModal, setShowCompoundModal] = useState(false);
-  const [showReferenceModal, setShowReferenceModal] = useState(false);
-  const [showSiteModal, setShowSiteModal] = useState(false);
-  const [showHerbariumModal, setShowHerbariumModal] = useState(false); // New state
-  const [selectedCompound, setSelectedCompound] = useState<Compound | null>(
-    null,
-  );
-  const [selectedReference, setSelectedReference] = useState<Reference | null>(
-    null,
-  );
-  const [selectedSite, setSelectedSite] = useState<Location | null>(null);
-  const [selectedHerbarium, setSelectedHerbarium] = useState<Location | null>(
-    null,
-  ); // New state
   useEffect(() => {
     if (id) {
       dispatch(retrieveSingleSpeciesThunk(id, addNotification));
@@ -83,90 +58,9 @@ const SpeciesDetailsPage: React.FC = () => {
     }
   };
 
-  const handleSaveCompounds = (selectedCompoundIds: number[]) => {
-    if (id) {
-      dispatch(
-        updateSpeciesThunk(
-          id,
-          { compounds: selectedCompoundIds },
-          addNotification,
-        ),
-      );
-      setShowCompoundModal(false);
-    }
-  };
-
-  const handleSaveReferences = (selectedReferenceIds: number[]) => {
-    if (id) {
-      dispatch(
-        updateSpeciesThunk(
-          id,
-          { references: selectedReferenceIds },
-          addNotification,
-        ),
-      );
-      setShowReferenceModal(false);
-    }
-  };
-
-  const handleSaveSites = (selectedSiteIds: number[]) => {
-    if (id) {
-      dispatch(
-        updateSpeciesThunk(id, { sites: selectedSiteIds }, addNotification),
-      );
-      setShowSiteModal(false);
-    }
-  };
-
-  const handleSaveHerbariums = (selectedHerbariumIds: number[]) => {
-    if (id) {
-      dispatch(
-        updateSpeciesThunk(
-          id,
-          { herbariums: selectedHerbariumIds },
-          addNotification,
-        ),
-      );
-      setShowHerbariumModal(false);
-    }
-  };
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
-
   if (!currentSpecies) {
     return <div>Species not found.</div>;
   }
-
-  const cmpdColumns = [
-    { key: "name", label: t("compound.form_fields.name") },
-    { key: "compound_class", label: t("compound.form_fields.class") },
-    { key: "subclass", label: t("compound.form_fields.sub_class") },
-    { key: "smiles", label: t("compound.form_fields.smile") },
-  ];
-
-  const refColumns = [
-    { key: "type", label: t("reference.form_fields.type") },
-    { key: "author", label: t("reference.form_fields.author") },
-    { key: "year", label: t("reference.form_fields.year") },
-    { key: "doi", label: t("reference.form_fields.doi") },
-  ];
-
-  const siteColumns = [
-    { key: "name", label: t("site.form_fields.name") },
-    { key: "location", label: t("site.form_fields.location") },
-  ];
-
-  const herbariumColumns = [
-    { key: "name", label: t("herbarium.form_fields.name") },
-    { key: "location", label: t("herbarium.form_fields.location") },
-    { key: "date", label: t("herbarium.form_fields.date") },
-  ];
 
   return (
     <AdminLayout>

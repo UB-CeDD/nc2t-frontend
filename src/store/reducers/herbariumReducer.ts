@@ -27,9 +27,14 @@ const initialState: HerbariumState = {
   error: null,
 };
 
+interface Action {
+  type: string;
+  payload?: any;
+}
+
 const herbariumReducer = (
   state = initialState,
-  action: any,
+  action: Action,
 ): HerbariumState => {
   switch (action.type) {
     case FETCH_HERBARIUMS_REQUEST:
