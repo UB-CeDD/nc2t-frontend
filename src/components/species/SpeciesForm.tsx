@@ -412,8 +412,9 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({
       if (result && !result.error) {
         onFormClose();
       }
-    } catch () {
+    } catch (error) {
       // Notification is handled in the thunk
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
     }
   };
 
