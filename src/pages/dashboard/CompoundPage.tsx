@@ -1,14 +1,12 @@
 import React, {useState} from 'react';
 import CompoundList from '@components/compounds/CompoundList';
 import CompoundForm from '@components/compounds/CompoundForm';
-import Loader from '@components/commons/Loader';
 import { Compound } from '@/helpers/types';
 import { RootState } from '@store/store';
 import { useSelector } from 'react-redux';
 import AdminLayout from '@components/layouts/AdminLayout';
 
 const CompoundPage: React.FC = () => {
-    const { isLoading } = useSelector((state: RootState) => state.loading);
     const [view, setView] = useState<'list' | 'form'>('list');
     const [editingCompound, setEditingCompound] = useState<Compound | undefined>(undefined);
 
@@ -24,7 +22,6 @@ const CompoundPage: React.FC = () => {
 
     return (
         <AdminLayout>
-            { isLoading ? ( <Loader /> ) : (
             <div className="p-4">
                 <h1 className="text-2xl font-bold mb-4">Compounds Dashboard</h1>
                 <div className="mb-4">
@@ -52,7 +49,6 @@ const CompoundPage: React.FC = () => {
                     {view === 'form' && <CompoundForm compound={editingCompound} onClose={handleCloseForm} />}
                 </div>
             </div>
-            )}
         </AdminLayout>
     );
 };

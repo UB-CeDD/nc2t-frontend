@@ -38,6 +38,8 @@ const CompoundList: React.FC<CompoundListProps> = ({ compounds: propCompounds, o
 
 
     useEffect(() => {
+        console.log('CompoundList mounted', propCompounds);
+        
         if (!propCompounds) { // Only fetch if propCompounds is not provided
             dispatch(fetchCompounds());
         }
