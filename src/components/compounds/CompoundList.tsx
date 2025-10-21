@@ -5,7 +5,7 @@ import { RootState } from '@store/store';
 import { Compound } from "@/helpers/types.ts";
 import { useTranslation } from "react-i18next";
 import Table from '@components/commons/Table';
-import Spinner from "@components/commons/Spinner.tsx";
+import Loader from '@components/commons/Loader';
 
 interface CompoundListProps {
     compounds?: Compound[];
@@ -47,7 +47,7 @@ const CompoundList: React.FC<CompoundListProps> = ({ compounds: propCompounds, o
 
     const displayCompounds = propCompounds || compounds;
 
-    if (loading && !propCompounds) return <Spinner />;
+    if (loading && !propCompounds) return <Loader />;
     if (error && !propCompounds) return <p>Error: {error}</p>;
 
     return (
