@@ -1,23 +1,20 @@
-# Use Node.js 22 as the base image
+# Use a Node.js image for development
 FROM node:22-alpine
 
-# Set the working directory inside the container
+# Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json to the container
+# Copy package.json and package-lock.json
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci
 
-# Copy the rest of the application files
+# Copy the rest of the application code
 COPY . .
 
-# Install SWC globally (in case you need it for compilation)
-RUN npm install -g @swc/cli @swc/core
-
-# Expose the port the app runs on
+# Expose the port the development server runs on
 EXPOSE 3000
 
-# Start the React development server
+# The command to start the development server
 CMD ["npm", "run", "dev"]

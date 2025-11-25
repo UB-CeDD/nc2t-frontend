@@ -4,7 +4,11 @@ import tsconfigPaths from 'vite-tsconfig-paths';
 import tailwindcss from "@tailwindcss/vite";
 export default defineConfig({
     server: {
-        port: 3000,
+        hmr: {
+            host: '0.0.0.0',
+            port: 5173,
+        },
+        port: 5173,
         host: '0.0.0.0',
     },
     build: {
