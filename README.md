@@ -1,7 +1,7 @@
 
-# NCCT Frontend
+# NC2T Frontend
 
-This is the frontend for the NCCT project. It is a React application built with Vite.
+This is the frontend for the NC2T project. It is a React application built with Vite.
 
 ## Development
 

@@ -13,7 +13,7 @@ const AboutPage: React.FC = () => {
                     <div>
                         <h2 className="heading mb-6 text-gray-700">Our Mission</h2>
                         <p className="text-lg text-gray-700 mb-4 leading-relaxed">
-                            The National Center for Chemical and Tropical Conservation (NCCT) project is dedicated to advancing scientific understanding of biodiversity and natural resources. Our mission is to provide a robust platform for researchers, conservationists, and policymakers to access, manage, and analyze critical data related to species, their geographical distribution, associated chemical compounds, and relevant scientific literature.
+                            The National Compound Curation Tool (NC2T) project is dedicated to advancing scientific understanding of biodiversity and natural resources. Our mission is to provide a robust platform for researchers, conservationists, and policymakers to access, manage, and analyze critical data related to species, their geographical distribution, associated chemical compounds, and relevant scientific literature.
                         </p>
                         <p className="text-lg text-gray-700 mb-4 leading-relaxed">
                             We aim to facilitate interdisciplinary research, support informed decision-making for conservation efforts, and contribute to the sustainable utilization of natural wealth, particularly in tropical regions.

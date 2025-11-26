@@ -33,7 +33,7 @@ const Navbar: React.FC = () => {
         };
     }, [isDropdownOpen]);
     return (
-        <nav className="bg-gray-800 border-gray-200 px-4 py-3 dark:bg-gray-900">
+        <nav className="bg-gray-800 border-gray-200 p-4 dark:bg-gray-900">
             <div className="container flex flex-wrap items-center justify-between mx-auto">
                 <Link to="/" className="flex items-center">
                     <span className="self-center text-xl font-semibold whitespace-nowrap text-white">NC2T</span>

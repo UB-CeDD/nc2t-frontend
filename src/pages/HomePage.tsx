@@ -1,15 +1,18 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import MainLayout from './../components/layouts/MainLayout';
 import { fetchTotalSpeciesCount } from '@/store/thunks/speciesThunk';
 import { fetchTotalCompoundCount } from '@/store/thunks/compoundThunk';
 import { fetchTotalLocationCount } from '@/store/thunks/locationThunk';
 import { fetchTotalReferenceCount } from '@/store/thunks/referenceThunk';
-import { RootState, AppDispatch } from '@/store/store'; // Import AppDispatch
+import { RootState, AppDispatch } from '@/store/store';
 
 const HomePage: React.FC = () => {
-    const dispatch: AppDispatch = useDispatch(); // Explicitly type useDispatch
+    const dispatch: AppDispatch = useDispatch();
+    const navigate = useNavigate();
+    const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+
     const totalSpeciesCount = useSelector((state: RootState) => state.getSpecies.totalSpeciesCount);
     const totalCompoundCount = useSelector((state: RootState) => state.getCompounds.totalCompoundCount);
     const totalLocationCount = useSelector((state: RootState) => state.getLocations.totalLocationCount);
@@ -22,24 +25,45 @@ const HomePage: React.FC = () => {
         dispatch(fetchTotalReferenceCount());
     }, [dispatch]);
 
+    const handleExploreSpeciesClick = () => {
+        if (isAuthenticated) {
+            navigate('/dashboard/species');
+        } else {
+            navigate('/login');
+        }
+    };
+
+    const handleDiscoverCompoundsClick = () => {
+        if (isAuthenticated) {
+            navigate('/dashboard/compounds');
+        }
+        else {
+            navigate('/login');
+        }
+    };
+
     return (
         <MainLayout>
             {/* Hero Section */}
-            <section className="bg-gradient-to-r from-blue-700 to-blue-500 text-white py-20 md:py-32 text-center shadow-lg">
-                <div className="container mx-auto px-4">
+            <section
+                className="relative bg-cover bg-center py-20 md:py-32 text-center text-white shadow-lg"
+                style={{ backgroundImage: 'url(https://placehold.co/1920x800/2563eb/ffffff?text=Biodiversity+Research)' }}
+            >
+                <div className="absolute inset-0 bg-black opacity-50"></div> {/* Overlay for readability */}
+                <div className="container mx-auto px-4 relative z-10">
                     <h1 className="heading-xl mb-4 leading-tight">
-                        NCCT Project: Unlocking Biodiversity and Chemical Insights
+                        NC2T Project: Unlocking Biodiversity and Chemical Insights
                     </h1>
                     <p className="text-lg md:text-xl mb-8 opacity-90 max-w-3xl mx-auto">
                         A comprehensive platform for managing species, their geographic locations, associated chemical compounds, and scientific references.
                     </p>
                     <div className="space-x-4">
-                        <Link to="/species" className="btn-primary text-lg px-8 py-3 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
+                        <button onClick={handleExploreSpeciesClick} className="btn-primary text-lg px-8 py-3 rounded-full transition duration-300 ease-in-out transform hover:scale-105">
                             Explore Species
-                        </Link>
-                        <Link to="/compounds" className="bg-white text-blue-700 text-lg px-8 py-3 rounded-full transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-100">
+                        </button>
+                        <button onClick={handleDiscoverCompoundsClick} className="bg-white text-blue-700 text-lg px-8 py-3 rounded-full transition duration-300 ease-in-out transform hover:scale-105 hover:bg-gray-100">
                             Discover Compounds
-                        </Link>
+                        </button>
                     </div>
                 </div>
             </section>
@@ -85,7 +109,7 @@ const HomePage: React.FC = () => {
                                 Catalog and manage detailed information about various species, including taxonomy,
                                 characteristics, and ecological data.
                             </p>
-                            <Link to="/species" className="text-blue-600 hover:text-blue-800 font-medium">Learn More &rarr;</Link>
+                            <button onClick={handleExploreSpeciesClick} className="text-blue-600 hover:text-blue-800 font-medium">Learn More &rarr;</button>
                         </div>
 
                         {/* Compound Discovery */}
@@ -95,7 +119,7 @@ const HomePage: React.FC = () => {
                                 Explore and analyze chemical compounds associated with different species,
                                 facilitating drug discovery and natural product research.
                             </p>
-                            <Link to="/compounds" className="text-blue-600 hover:text-blue-800 font-medium">Learn More &rarr;</Link>
+                            <button onClick={handleDiscoverCompoundsClick} className="text-blue-600 hover:text-blue-800 font-medium">Learn More &rarr;</button>
                         </div>
 
                         {/* Geographic Insights */}
@@ -124,9 +148,9 @@ const HomePage: React.FC = () => {
             {/* About the Project Section */}
             <section className="bg-blue-600 text-white py-16">
                 <div className="container mx-auto px-4 text-center max-w-4xl">
-                    <h2 className="heading-lg mb-6">About the NCCT Project</h2>
+                    <h2 className="heading-lg mb-6">About the NC2T Project</h2>
                     <p className="text-lg mb-8 opacity-90">
-                        The National Center for Chemical and Tropical Conservation (NCCT) project aims to create a centralized
+                        The National Compound Curation Tool (NC2T) project aims to create a centralized
                         database and analytical tools for researchers, conservationists, and policymakers. By integrating
                         diverse data points, we strive to foster a deeper understanding of natural resources and
                         support sustainable development initiatives.

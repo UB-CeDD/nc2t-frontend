@@ -9,7 +9,7 @@ interface HomeLayoutProps {
 const MainLayout: React.FC<HomeLayoutProps> = ({children}) => {
     return (
         <div className="min-h-screen flex flex-col">
-            <header className="bg-blue-600 text-white p-4">
+            <header className="bg-transparent">
                 <Navbar/>
             </header>
             <main className="flex-grow p-4">
