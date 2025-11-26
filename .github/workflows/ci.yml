@@ -52,10 +52,10 @@ jobs:
           echo "tag=staging" >> $GITHUB_OUTPUT
         fi
 
-     - name: Build and push image
-       run: |
-         docker build -f frontend/Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/ncct_project-frontend:${{ steps.image_tag.outputs.tag }} frontend/
-         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/ncct_project-frontend:${{ steps.image_tag.outputs.tag }}
+    - name: Build and push image
+      run: |
+        docker build -f frontend/Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/ncct_project-frontend:${{ steps.image_tag.outputs.tag }} frontend/
+        docker push ${{ secrets.DOCKER_HUB_USERNAME }}/ncct_project-frontend:${{ steps.image_tag.outputs.tag }}
 
   deploy-staging:
     runs-on: ubuntu-latest

@@ -14,6 +14,9 @@ import SpeciesDetailsPage from './pages/dashboard/SpeciesDetailsPage';
 import ErrorBoundary from '@/components/commons/ErrorBoundary';
 import AdminPage from './pages/dashboard/admin/AdminPage';
 import AddSpeciesPage from './pages/dashboard/AddSpeciesPage';
+import AboutPage from './pages/AboutPage';
+import ServicesPage from './pages/ServicesPage';
+import ContactPage from './pages/ContactPage';
 
 const App: React.FC = () => {
     return (
@@ -21,6 +24,9 @@ const App: React.FC = () => {
             <Routes>
                 <Route path="/" element={<HomePage />} />
                 <Route path="/login" element={<LoginPage />} />
+                <Route path="/about" element={<AboutPage />} />
+                <Route path="/services" element={<ServicesPage />} />
+                <Route path="/contact" element={<ContactPage />} />
 
                 {/* Admin Layout for dashboard routes */}
                 <Route

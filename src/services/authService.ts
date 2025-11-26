@@ -27,8 +27,10 @@ export const validateRefreshToken = async (refreshToken: string) => {
 
 export const logout = async () => {
     console.log('Logout function called.');
+    const user = JSON.parse(localStorage.getItem('current_user') || 'null');
     try {
         await api.post(`/logout/`, {
+            user_id: user?.id,
             refresh: localStorage.getItem('refresh_token')
         });
     } catch (error) {
@@ -40,5 +42,6 @@ export const logout = async () => {
         localStorage.removeItem('current_user');
         localStorage.removeItem('isAuthenticated');
         console.log('localStorage cleared.');
+        window.location.href = '/login';
     }
 };

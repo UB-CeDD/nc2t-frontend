@@ -6,9 +6,7 @@ import { notify } from "@/components/commons/NotificationContext";
 import { setLoading, unsetLoading } from "@/store/actions/loadingActions";
 
 const api = axios.create({
-  baseURL: import.meta.env.DEV
-    ? "/api"
-    : "https://nc2t-backend.tabiidris.me/api",
+  baseURL: "http://localhost:8000/api",
   headers: {
     "Content-Type": "application/json",
   },
