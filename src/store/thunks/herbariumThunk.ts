@@ -20,8 +20,9 @@ import {
 } from '../actions/herbariumActions';
 
 import { Herbarium } from '@/helpers/types';
+import { AppDispatch } from '../../store/store'; // Import AppDispatch
 
-export const fetchHerbariumsThunk = (queryParams: Record<string, string> = {}) => async (dispatch: any) => {
+export const fetchHerbariumsThunk = (queryParams: Record<string, string> = {}) => async (dispatch: AppDispatch) => {
     dispatch(fetchHerbariumsRequest());
     try {
         const herbariums = await listHerbariums(queryParams);
@@ -31,7 +32,7 @@ export const fetchHerbariumsThunk = (queryParams: Record<string, string> = {}) =
     }
 };
 
-export const createHerbariumThunk = (herbariumData: Herbarium) => async (dispatch: any) => {
+export const createHerbariumThunk = (herbariumData: Herbarium) => async (dispatch: AppDispatch) => {
     try {
         const newHerbarium = await createHerbarium(herbariumData);
         dispatch(createHerbariumSuccess(newHerbarium));
@@ -40,7 +41,7 @@ export const createHerbariumThunk = (herbariumData: Herbarium) => async (dispatc
     }
 };
 
-export const retrieveHerbariumThunk = (id: string) => async (dispatch: any) => {
+export const retrieveHerbariumThunk = (id: string) => async (dispatch: AppDispatch) => {
     try {
         const herbarium = await retrieveHerbarium(id);
         dispatch(retrieveHerbariumSuccess(herbarium));
@@ -49,7 +50,7 @@ export const retrieveHerbariumThunk = (id: string) => async (dispatch: any) => {
     }
 };
 
-export const updateHerbariumThunk = (id: string, herbariumData: Partial<Herbarium>) => async (dispatch: any) => {
+export const updateHerbariumThunk = (id: string, herbariumData: Partial<Herbarium>) => async (dispatch: AppDispatch) => {
     try {
         const updatedHerbarium = await updateHerbarium(id, herbariumData);
         dispatch(updateHerbariumSuccess(updatedHerbarium));
@@ -58,7 +59,7 @@ export const updateHerbariumThunk = (id: string, herbariumData: Partial<Herbariu
     }
 };
 
-export const deleteHerbariumThunk = (id: string) => async (dispatch: any) => {
+export const deleteHerbariumThunk = (id: string) => async (dispatch: AppDispatch) => {
     try {
         await deleteHerbarium(id);
         dispatch(deleteHerbariumSuccess(id));

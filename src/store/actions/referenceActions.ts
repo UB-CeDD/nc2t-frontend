@@ -14,6 +14,7 @@ export const UPDATE_REFERENCE_SUCCESS = 'UPDATE_REFERENCE_SUCCESS';
 export const UPDATE_REFERENCE_FAILURE = 'UPDATE_REFERENCE_FAILURE';
 export const DELETE_REFERENCE_SUCCESS = 'DELETE_REFERENCE_SUCCESS';
 export const DELETE_REFERENCE_FAILURE = 'DELETE_REFERENCE_FAILURE';
+export const SET_REFERENCE_COUNT = 'SET_REFERENCE_COUNT'; // New action type
 
 // Action Creators
 export const fetchReferencesRequest = () => ({
@@ -76,4 +77,9 @@ export const deleteReferenceSuccess = (id: string) => ({
 export const deleteReferenceFailure = (error: string) => ({
     type: DELETE_REFERENCE_FAILURE,
     payload: error,
+});
+
+export const setReferenceCount = (count: number) => ({ // New action creator
+    type: SET_REFERENCE_COUNT,
+    payload: count,
 });

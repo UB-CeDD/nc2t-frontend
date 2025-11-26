@@ -13,17 +13,19 @@ import {
   UPDATE_COMPOUND_FAILURE,
   DELETE_COMPOUND_SUCCESS,
   DELETE_COMPOUND_FAILURE,
+  SET_COMPOUND_COUNT, // Import new action type
 } from "../actions/compoundActions";
 
 const initialState = {
-  compounds: [],
+  compounds: [] as Compound[],
   loading: false,
   error: null,
+  totalCompoundCount: 0, // New state property for total compound count
 };
 
 interface Action {
   type: string;
-  payload?: Compound[] | Compound | string;
+  payload?: Compound[] | Compound | string | number;
 }
 
 const compoundReducer = (state = initialState, action: Action) => {
@@ -36,24 +38,25 @@ const compoundReducer = (state = initialState, action: Action) => {
       return {
         ...state,
         loading: false,
-        compounds: action.payload,
+        compounds: action.payload as Compound[],
         error: null,
       };
     case FETCH_COMPOUNDS_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return { ...state, loading: false, error: action.payload as string };
     case CREATE_COMPOUND_SUCCESS:
       return {
         ...state,
         loading: false,
-        compounds: [...state.compounds, action.payload],
+        compounds: [...state.compounds, action.payload as Compound],
         error: null,
+        totalCompoundCount: state.totalCompoundCount + 1, // Increment count on successful creation
       };
     case CREATE_COMPOUND_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return { ...state, loading: false, error: action.payload as string };
     case RETRIEVE_COMPOUND_SUCCESS:
       return { ...state, error: null }; // Handle as needed
     case RETRIEVE_COMPOUND_FAILURE:
-      return { ...state, error: action.payload };
+      return { ...state, error: action.payload as string };
     case UPDATE_COMPOUND_SUCCESS:
       return {
         ...state,
@@ -66,7 +69,7 @@ const compoundReducer = (state = initialState, action: Action) => {
         error: null,
       };
     case UPDATE_COMPOUND_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return { ...state, loading: false, error: action.payload as string };
     case DELETE_COMPOUND_SUCCESS:
       return {
         ...state,
@@ -74,9 +77,12 @@ const compoundReducer = (state = initialState, action: Action) => {
           (compound) => compound.id !== action.payload,
         ),
         error: null,
+        totalCompoundCount: state.totalCompoundCount - 1, // Decrement count on successful deletion
       };
     case DELETE_COMPOUND_FAILURE:
-      return { ...state, error: action.payload };
+      return { ...state, error: action.payload as string };
+    case SET_COMPOUND_COUNT: // Handle new action to set total count
+      return { ...state, totalCompoundCount: action.payload as number };
     default:
       return state;
   }

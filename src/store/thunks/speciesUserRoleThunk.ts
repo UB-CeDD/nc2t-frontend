@@ -15,8 +15,9 @@ import {
     removeSpeciesUserSuccess,
     removeSpeciesUserFailure,
 } from '../actions/speciesUserRoleActions';
+import { AppDispatch } from '../../store/store'; // Import AppDispatch
 
-export const fetchSpeciesUsersThunk = (speciesId: string) => async (dispatch: any) => {
+export const fetchSpeciesUsersThunk = (speciesId: string) => async (dispatch: AppDispatch) => {
     dispatch(fetchSpeciesUsersRequest());
     try {
         const speciesUsers = await listSpeciesUsers(speciesId);
@@ -26,7 +27,7 @@ export const fetchSpeciesUsersThunk = (speciesId: string) => async (dispatch: an
     }
 };
 
-export const addSpeciesUserThunk = (speciesId: string, userId: number, role: any) => async (dispatch: any) => {
+export const addSpeciesUserThunk = (speciesId: string, userId: number, role: any) => async (dispatch: AppDispatch) => {
     try {
         const newSpeciesUser = await addSpeciesUser(speciesId, userId, role);
         dispatch(addSpeciesUserSuccess(newSpeciesUser));
@@ -35,7 +36,7 @@ export const addSpeciesUserThunk = (speciesId: string, userId: number, role: any
     }
 };
 
-export const updateSpeciesUserRoleThunk = (speciesId: string, userId: number, role: any) => async (dispatch: any) => {
+export const updateSpeciesUserRoleThunk = (speciesId: string, userId: number, role: any) => async (dispatch: AppDispatch) => {
     try {
         const updatedSpeciesUser = await updateSpeciesUserRole(speciesId, userId, role);
         dispatch(updateSpeciesUserRoleSuccess(updatedSpeciesUser));
@@ -44,7 +45,7 @@ export const updateSpeciesUserRoleThunk = (speciesId: string, userId: number, ro
     }
 };
 
-export const removeSpeciesUserThunk = (speciesId: string, userId: number) => async (dispatch: any) => {
+export const removeSpeciesUserThunk = (speciesId: string, userId: number) => async (dispatch: AppDispatch) => {
     try {
         await removeSpeciesUser(speciesId, userId);
         dispatch(removeSpeciesUserSuccess(userId));

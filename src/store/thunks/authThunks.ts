@@ -1,11 +1,9 @@
 import { loginRequest, loginSuccess, loginFailure, logoutSuccess } from '../actions/authActions';
-import { ThunkAction } from 'redux-thunk';
-import { AnyAction } from 'redux';
 import * as authService from '../../services/authService';
-import { RootState } from '../store';
+import { AppDispatch } from '../../store/store'; // Import AppDispatch
 
-export const login = (username: string, password: string): ThunkAction<void, RootState, unknown, AnyAction> => {
-    return async (dispatch) => {
+export const login = (username: string, password: string) => {
+    return async (dispatch: AppDispatch) => {
         dispatch(loginRequest());
         try {
             const response = await authService.login(username, password);
@@ -20,8 +18,8 @@ export const login = (username: string, password: string): ThunkAction<void, Roo
     };
 };
 
-export const validateToken = (): ThunkAction<void, RootState, unknown, AnyAction> => {
-    return async (dispatch) => {
+export const validateToken = () => {
+    return async (dispatch: AppDispatch) => {
         try {
             const refreshToken = localStorage.getItem('refresh_token');
             if (refreshToken) {
@@ -37,8 +35,8 @@ export const validateToken = (): ThunkAction<void, RootState, unknown, AnyAction
     };
 };
 
-export const logout = (): ThunkAction<void, RootState, unknown, AnyAction> => {
-    return async (dispatch) => {
+export const logout = () => {
+    return async (dispatch: AppDispatch) => {
         try {
             await authService.logout();
             dispatch(logoutSuccess());

@@ -8,12 +8,13 @@ import {
     createReferenceFailure,
     updateReferenceRequest,
     updateReferenceSuccess,
-    updateReferenceFailure
+    updateReferenceFailure,
+    setReferenceCount, // Import new action creator
 } from '../actions/referenceActions';
 import { Reference } from '@/helpers/types';
+import { AppDispatch } from '../../store/store'; // Import AppDispatch
 
-
-export const fetchReferencesThunk = () => async (dispatch: any) => {
+export const fetchReferencesThunk = () => async (dispatch: AppDispatch) => {
     dispatch(fetchReferencesRequest());
     try {
         const references = await listReferences();
@@ -23,7 +24,17 @@ export const fetchReferencesThunk = () => async (dispatch: any) => {
     }
 };
 
-export const createReferenceThunk = (referenceData: Reference, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: any) => {
+export const fetchTotalReferenceCount = () => async (dispatch: AppDispatch) => {
+    dispatch(fetchReferencesRequest()); // Use the existing request action for loading state
+    try {
+        const references = await listReferences(); // Fetch all references
+        dispatch(setReferenceCount(references.length)); // Dispatch the count
+    } catch (error: any) {
+        dispatch(fetchReferencesFailure(error.message || 'Failed to fetch reference count.'));
+    }
+};
+
+export const createReferenceThunk = (referenceData: Reference, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: AppDispatch) => {
     dispatch(createReferenceRequest());
     try {
         const newReference = await createReference(referenceData);
@@ -37,7 +48,7 @@ export const createReferenceThunk = (referenceData: Reference, addNotification: 
     }
 };
 
-export const updateReferenceThunk = (id: string, referenceData: Partial<Reference>, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: any) => {
+export const updateReferenceThunk = (id: string, referenceData: Partial<Reference>, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: AppDispatch) => {
     dispatch(updateReferenceRequest());
     try {
         const updatedReference = await updateReference(id, referenceData);

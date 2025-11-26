@@ -22,14 +22,15 @@ import {
     searchSpeciesRequest,
     searchSpeciesFailure,
     searchSpeciesSuccess,
+    setSpeciesCount, // Import new action creator
 } from '../actions/speciesActions';
 
 import { Species } from '@/helpers/types';
 import { searchReferences } from '@/services/referenceService';
 
-import { Dispatch } from 'redux';
+import { AppDispatch } from '../../store/store'; // Import AppDispatch
 
-export const fetchSpecies = (queryParams: Record<string, string> = {}) => async (dispatch: Dispatch) => {
+export const fetchSpecies = (queryParams: Record<string, string> = {}) => async (dispatch: AppDispatch) => {
     dispatch(fetchSpeciesRequest());
     try {
         const species = await listSpecies(queryParams);
@@ -39,7 +40,17 @@ export const fetchSpecies = (queryParams: Record<string, string> = {}) => async 
     }
 };
 
-export const createSpeciesThunk = (speciesData: Species, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch) => {
+export const fetchTotalSpeciesCount = () => async (dispatch: AppDispatch) => {
+    dispatch(fetchSpeciesRequest()); // Use the existing request action for loading state
+    try {
+        const species = await listSpecies(); // Fetch all species
+        dispatch(setSpeciesCount(species.length)); // Dispatch the count
+    } catch (error: unknown) {
+        dispatch(fetchSpeciesFailure((error as Error).message || 'Failed to fetch species count.'));
+    }
+};
+
+export const createSpeciesThunk = (speciesData: Species, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: AppDispatch) => {
     dispatch(createSpeciesRequest());
     try {
         const response = await createSpecies(speciesData);
@@ -52,7 +63,7 @@ export const createSpeciesThunk = (speciesData: Species, addNotification: (messa
     }
 };
 
-export const retrieveSingleSpeciesThunk = (id: string, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: Dispatch) => {
+export const retrieveSingleSpeciesThunk = (id: string, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: AppDispatch) => {
     try {
         const specie = await retrieveSingleSpecies(id);
         dispatch(retrieveSpeciesSuccess(specie));
@@ -64,7 +75,7 @@ export const retrieveSingleSpeciesThunk = (id: string, addNotification: (message
 };
 
 
-export const updateSpeciesThunk = (id: string, speciesData: Species, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: Dispatch) => {
+export const updateSpeciesThunk = (id: string, speciesData: Species, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: AppDispatch) => {
     dispatch(updateSpeciesRequest());
     try {
         const updatedSpecies = await updateSpecies(id, speciesData);
@@ -76,7 +87,7 @@ export const updateSpeciesThunk = (id: string, speciesData: Species, addNotifica
     }
 };
 
-export const deleteSpeciesThunk = (id: string, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch) => {
+export const deleteSpeciesThunk = (id: string, addNotification: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: AppDispatch) => {
     try {
         await deleteSpecies(id);
         dispatch(deleteSpeciesSuccess(id));
@@ -87,7 +98,7 @@ export const deleteSpeciesThunk = (id: string, addNotification: (message: string
     }
 };
 
-export const searchSpeciesByReference = (query: string) => async (dispatch: any) => {
+export const searchSpeciesByReference = (query: string) => async (dispatch: AppDispatch) => {
     dispatch(searchSpeciesRequest());
     try {
         const searchSpecies = await searchReferences(query);

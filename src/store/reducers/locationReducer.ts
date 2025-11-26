@@ -13,17 +13,19 @@ import {
   UPDATE_LOCATION_FAILURE,
   DELETE_LOCATION_SUCCESS,
   DELETE_LOCATION_FAILURE,
+  SET_LOCATION_COUNT, // Import new action type
 } from "../actions/locationActions";
 
 const initialState = {
-  locations: [],
+  locations: [] as Location[],
   loading: false,
   error: null,
+  totalLocationCount: 0, // New state property for total location count
 };
 
 interface Action {
   type: string;
-  payload?: Location[] | Location | string;
+  payload?: Location[] | Location | string | number;
 }
 
 const locationReducer = (state = initialState, action: Action) => {
@@ -36,24 +38,25 @@ const locationReducer = (state = initialState, action: Action) => {
       return {
         ...state,
         loading: false,
-        locations: action.payload,
+        locations: action.payload as Location[],
         error: null,
       };
     case FETCH_LOCATIONS_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return { ...state, loading: false, error: action.payload as string };
     case CREATE_LOCATION_SUCCESS:
       return {
         ...state,
         loading: false,
-        locations: [...state.locations, action.payload],
+        locations: [...state.locations, action.payload as Location],
         error: null,
+        totalLocationCount: state.totalLocationCount + 1, // Increment count on successful creation
       };
     case CREATE_LOCATION_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return { ...state, loading: false, error: action.payload as string };
     case RETRIEVE_LOCATION_SUCCESS:
       return { ...state, error: null }; // Handle as needed
     case RETRIEVE_LOCATION_FAILURE:
-      return { ...state, error: action.payload };
+      return { ...state, error: action.payload as string };
     case UPDATE_LOCATION_SUCCESS:
       return {
         ...state,
@@ -66,7 +69,7 @@ const locationReducer = (state = initialState, action: Action) => {
         error: null,
       };
     case UPDATE_LOCATION_FAILURE:
-      return { ...state, loading: false, error: action.payload };
+      return { ...state, loading: false, error: action.payload as string };
     case DELETE_LOCATION_SUCCESS:
       return {
         ...state,
@@ -74,9 +77,12 @@ const locationReducer = (state = initialState, action: Action) => {
           (location) => location.id !== action.payload,
         ),
         error: null,
+        totalLocationCount: state.totalLocationCount - 1, // Decrement count on successful deletion
       };
     case DELETE_LOCATION_FAILURE:
-      return { ...state, error: action.payload };
+      return { ...state, error: action.payload as string };
+    case SET_LOCATION_COUNT: // Handle new action to set total count
+      return { ...state, totalLocationCount: action.payload as number };
     default:
       return state;
   }

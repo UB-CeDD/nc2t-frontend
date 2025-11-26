@@ -13,18 +13,20 @@ import {
   UPDATE_REFERENCE_FAILURE,
   DELETE_REFERENCE_SUCCESS,
   DELETE_REFERENCE_FAILURE,
+  SET_REFERENCE_COUNT, // Import new action type
 } from "../actions/referenceActions";
 
 const initialState = {
-  references: [],
+  references: [] as Reference[],
   searchResults: [],
   loading: false,
   error: null,
+  totalReferenceCount: 0, // New state property for total reference count
 };
 
 interface Action {
   type: string;
-  payload?: Reference[] | Reference | string;
+  payload?: Reference[] | Reference | string | number;
 }
 
 const referenceReducer = (state = initialState, action: Action) => {
@@ -37,7 +39,7 @@ const referenceReducer = (state = initialState, action: Action) => {
       return {
         ...state,
         loading: false,
-        references: action.payload,
+        references: action.payload as Reference[],
         error: null,
       };
     case FETCH_REFERENCES_FAILURE:
@@ -46,8 +48,9 @@ const referenceReducer = (state = initialState, action: Action) => {
       return {
         ...state,
         loading: false,
-        references: [...state.references, action.payload],
+        references: [...state.references, action.payload as Reference],
         error: null,
+        totalReferenceCount: state.totalReferenceCount + 1, // Increment count on successful creation
       };
     case CREATE_REFERENCE_FAILURE:
       return { ...state, loading: false, error: action.payload as string };
@@ -75,9 +78,12 @@ const referenceReducer = (state = initialState, action: Action) => {
           (reference) => reference.id !== action.payload,
         ),
         error: null,
+        totalReferenceCount: state.totalReferenceCount - 1, // Decrement count on successful deletion
       };
     case DELETE_REFERENCE_FAILURE:
       return { ...state, error: action.payload as string };
+    case SET_REFERENCE_COUNT: // Handle new action to set total count
+      return { ...state, totalReferenceCount: action.payload as number };
     default:
       return state;
   }

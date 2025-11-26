@@ -18,6 +18,7 @@ import {
   SEARCH_SPECIES_FAILURE,
   SET_SPECIES_FOR_EDIT,
   CLEAR_CURRENT_SPECIES,
+  SET_SPECIES_COUNT, // Import new action type
 } from "../actions/speciesActions";
 
 const initialState = {
@@ -26,6 +27,7 @@ const initialState = {
   searchResults: null,
   loading: false,
   error: null,
+  totalSpeciesCount: 0, // New state property for total species count
 };
 
 interface Action {
@@ -51,6 +53,7 @@ const speciesReducer = (state = initialState, action: Action) => {
         loading: false,
         species: [...state.species, action.payload],
         error: null,
+        totalSpeciesCount: state.totalSpeciesCount + 1, // Increment count on successful creation
       };
     case CREATE_SPECIES_FAILURE:
       return { ...state, loading: false, error: action.payload as string };
@@ -80,13 +83,12 @@ const speciesReducer = (state = initialState, action: Action) => {
         };
       }
       return state;
-    case UPDATE_SPECIES_FAILURE:
-      return { ...state, loading: false, error: action.payload as string };
     case DELETE_SPECIES_SUCCESS:
       return {
         ...state,
         species: state.species.filter((specie) => specie.id !== action.payload),
         error: null,
+        totalSpeciesCount: state.totalSpeciesCount - 1, // Decrement count on successful deletion
       };
     case DELETE_SPECIES_FAILURE:
       return { ...state, error: action.payload as string };
@@ -112,6 +114,8 @@ const speciesReducer = (state = initialState, action: Action) => {
       };
     case CLEAR_CURRENT_SPECIES:
       return { ...state, currentSpecies: null };
+    case SET_SPECIES_COUNT: // Handle new action to set total count
+      return { ...state, totalSpeciesCount: action.payload as number };
     default:
       return state;
   }

@@ -14,6 +14,7 @@ export const UPDATE_COMPOUND_SUCCESS = 'UPDATE_COMPOUND_SUCCESS';
 export const UPDATE_COMPOUND_FAILURE = 'UPDATE_COMPOUND_FAILURE';
 export const DELETE_COMPOUND_SUCCESS = 'DELETE_COMPOUND_SUCCESS';
 export const DELETE_COMPOUND_FAILURE = 'DELETE_COMPOUND_FAILURE';
+export const SET_COMPOUND_COUNT = 'SET_COMPOUND_COUNT'; // New action type
 
 // Action Creators
 export const fetchCompoundsRequest = () => ({
@@ -76,4 +77,9 @@ export const deleteCompoundSuccess = (id: string) => ({
 export const deleteCompoundFailure = (error: string) => ({
     type: DELETE_COMPOUND_FAILURE,
     payload: error,
+});
+
+export const setCompoundCount = (count: number) => ({ // New action creator
+    type: SET_COMPOUND_COUNT,
+    payload: count,
 });

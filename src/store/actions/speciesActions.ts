@@ -19,6 +19,7 @@ export const SEARCH_SPECIES_SUCCESS = 'SEARCH_SPECIES_SUCCESS';
 export const SEARCH_SPECIES_FAILURE = 'SEARCH_SPECIES_FAILURE';
 export const SET_SPECIES_FOR_EDIT = 'SET_SPECIES_FOR_EDIT';
 export const CLEAR_CURRENT_SPECIES = 'CLEAR_CURRENT_SPECIES';
+export const SET_SPECIES_COUNT = 'SET_SPECIES_COUNT'; // New action type
 
 // Action Creators
 export const fetchSpeciesRequest = () => ({
@@ -108,4 +109,9 @@ export const setSpeciesForEdit = (species: Species) => ({
 
 export const clearCurrentSpecies = () => ({
     type: CLEAR_CURRENT_SPECIES,
+});
+
+export const setSpeciesCount = (count: number) => ({ // New action creator
+    type: SET_SPECIES_COUNT,
+    payload: count,
 });

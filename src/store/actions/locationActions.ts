@@ -14,6 +14,7 @@ export const UPDATE_LOCATION_SUCCESS = 'UPDATE_LOCATION_SUCCESS';
 export const UPDATE_LOCATION_FAILURE = 'UPDATE_LOCATION_FAILURE';
 export const DELETE_LOCATION_SUCCESS = 'DELETE_LOCATION_SUCCESS';
 export const DELETE_LOCATION_FAILURE = 'DELETE_LOCATION_FAILURE';
+export const SET_LOCATION_COUNT = 'SET_LOCATION_COUNT'; // New action type
 
 // Action Creators
 export const fetchLocationsRequest = () => ({
@@ -76,4 +77,9 @@ export const deleteLocationSuccess = (id: string) => ({
 export const deleteLocationFailure = (error: string) => ({
     type: DELETE_LOCATION_FAILURE,
     payload: error,
+});
+
+export const setLocationCount = (count: number) => ({ // New action creator
+    type: SET_LOCATION_COUNT,
+    payload: count,
 });
