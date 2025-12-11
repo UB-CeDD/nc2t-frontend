@@ -5,8 +5,11 @@ import { logout } from "@/store/thunks/authThunks";
 import { notify } from "@/components/commons/NotificationContext";
 import { setLoading, unsetLoading } from "@/store/actions/loadingActions";
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.API_URL || "https://nc2t-backend.tabiidris.me/api"; // Prefer VITE_API_URL for Vite; fallback to API_URL if present
+
+
 const api = axios.create({
-  baseURL: "http://localhost:8000/api",
+  baseURL: API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
   },

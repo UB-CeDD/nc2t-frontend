@@ -24,7 +24,7 @@ const SpeciesPage: React.FC = () => {
     }, [currentSpecies]);
 
     const handleEditSpecies = (species: Species | SearchedSpecies | Reference) => {
-        navigate('/dashboard/add-species', { state: { specie: species } });
+        navigate('/dashboard/species/add', { state: { specie: species } });
     };
 
     return (

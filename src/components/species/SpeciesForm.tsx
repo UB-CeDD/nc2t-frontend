@@ -479,7 +479,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
                             <div className="mt-0 border border-gray-300 rounded-lg p-2 max-h-40 overflow-y-auto">
                                 {availableReferences.map(reference => (
                                     <div key={reference.id} className="flex justify-between items-center p-1 hover:bg-gray-100 cursor-pointer" onClick={() => handleSelectExistingReference(reference)}>
-                                        <span>{reference.title} ({reference.author}{reference.year ? `, ${reference.year}` : ''})</span>
+                                        <span>{reference.title} ({reference.doi ? reference.doi : ''})</span>
                                     </div>
                                 ))}
                             </div>
@@ -520,7 +520,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
                             <div className="mt-2 border border-gray-300 rounded-lg p-2 max-h-40 overflow-y-auto">
                                 {availableCompounds.map(compound => (
                                     <div key={compound.id} className="flex justify-between items-center p-1 hover:bg-gray-100 cursor-pointer" onClick={() => handleSelectExistingCompound(compound)}>
-                                        <span>{compound.smiles} ({compound.compound_class})</span>
+                                        <span>{compound.name}</span>
                                     </div>
                                 ))}
                             </div>
