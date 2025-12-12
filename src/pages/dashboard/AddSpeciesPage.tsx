@@ -14,7 +14,7 @@ const AddSpeciesPage: React.FC = () => {
 
     return (
         <AdminLayout>
-           <SpeciesForm initialData={initialData} onFormClose={handleFormClose} />
+           <SpeciesForm initialData={initialData} onFormClose={handleFormClose} onCancel={handleFormClose} />
         </AdminLayout>
     );
 };

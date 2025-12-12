@@ -25,46 +25,6 @@ const Sidebar: React.FC = () => {
                         Admin Dashboard
                     </NavLink>
                 </li>
-                {user && user.role.toLowerCase() === 'admin' && (
-                    <li>
-                        <NavLink
-                            to="#"
-                            // className={({ isActive }) =>
-                            //     isActive
-                            //         ? 'bg-white text-sky-500 p-2 rounded block'
-                            //         : 'text-white p-2 block hover:bg-gray-700 hover:text-sky-400'
-                            // }
-                        >
-                            Users
-                        </NavLink>
-                        <ul className="border-l border-gray-700 pl-4 pt-2 mb-2">
-                            <li>
-                                <NavLink
-                                    to="/admin/users"
-                                    className={({ isActive }) =>
-                                        isActive
-                                            ? 'bg-gray-800 pl-2 text-sky-500 rounded block'
-                                            : 'text-white pl-2 block hover:bg-gray-700 hover:text-sky-400'
-                                    }
-                                >
-                                    List All
-                                </NavLink>
-                            </li>
-                            <li>
-                                <NavLink
-                                    to="/admin/users/add"
-                                    className={({ isActive }) =>
-                                        isActive
-                                            ? 'bg-gray-800 pl-2 text-sky-500 rounded block'
-                                            : 'text-white pl-2 block hover:bg-gray-700 hover:text-sky-400'
-                                    }
-                                >
-                                    Add New
-                                </NavLink>
-                            </li>
-                        </ul>
-                    </li>
-                )}
                 <li>
                         <NavLink
                             to="#"
@@ -219,6 +179,46 @@ const Sidebar: React.FC = () => {
                             </li> */}
                         </ul>
                 </li>
+                 {user && user.role.toLowerCase() === 'admin' && (
+                    <li>
+                        <NavLink
+                            to="#"
+                            // className={({ isActive }) =>
+                            //     isActive
+                            //         ? 'bg-white text-sky-500 p-2 rounded block'
+                            //         : 'text-white p-2 block hover:bg-gray-700 hover:text-sky-400'
+                            // }
+                        >
+                            Users
+                        </NavLink>
+                        <ul className="border-l border-gray-700 pl-4 pt-2 mb-2">
+                            <li>
+                                <NavLink
+                                    to="/admin/users"
+                                    className={({ isActive }) =>
+                                        isActive
+                                            ? 'bg-gray-800 pl-2 text-sky-500 rounded block'
+                                            : 'text-white pl-2 block hover:bg-gray-700 hover:text-sky-400'
+                                    }
+                                >
+                                    List All
+                                </NavLink>
+                            </li>
+                            <li>
+                                <NavLink
+                                    to="/admin/users/add"
+                                    className={({ isActive }) =>
+                                        isActive
+                                            ? 'bg-gray-800 pl-2 text-sky-500 rounded block'
+                                            : 'text-white pl-2 block hover:bg-gray-700 hover:text-sky-400'
+                                    }
+                                >
+                                    Add New
+                                </NavLink>
+                            </li>
+                        </ul>
+                    </li>
+                )}
             </ul>
             <div className="text-sm text-gray-400 mt-4">&copy; 2025 UBCeDD</div>
         </div>

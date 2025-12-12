@@ -46,7 +46,7 @@ const CompoundPage: React.FC = () => {
                 </div>
                 <div>
                     {view === 'list' && <CompoundList onEditCompound={handleEditCompound} />}
-                    {view === 'form' && <CompoundForm compound={editingCompound} onClose={handleCloseForm} />}
+                    {view === 'form' && <CompoundForm compound={editingCompound} onCancel={handleCloseForm} />}
                 </div>
             </div>
         </AdminLayout>

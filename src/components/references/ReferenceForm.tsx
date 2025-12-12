@@ -36,7 +36,7 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            if (reference?.id) {
+            if (reference?.id) {                
                 await dispatch(updateReferenceThunk(reference.id, formData, addNotification));
             } else {
                 const newReference = await dispatch(createReferenceThunk(formData, addNotification));

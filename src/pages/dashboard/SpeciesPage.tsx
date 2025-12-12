@@ -34,7 +34,7 @@ const SpeciesPage: React.FC = () => {
                     <h1 className="text-2xl font-bold mb-4">{t('species.dashboard')}</h1>
                     <button
                         className={'px-4 py-2 bg-blue-500 text-white'}
-                        onClick={() => { navigate('/dashboard/add-species'); }}
+                        onClick={() => { navigate('/dashboard/species/add'); }}
                     >
                         {t('species.add')}
                     </button>

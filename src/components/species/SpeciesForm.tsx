@@ -158,6 +158,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
             const allCompounds = await listCompounds(inputValue ? { q: inputValue } : {});
             const filtered = allCompounds.filter(compound =>
                 compound.smiles.toLowerCase().includes(inputValue.toLowerCase()) ||
+                compound.name.toLowerCase().includes(inputValue.toLowerCase()) ||
                 compound.compound_class.toLowerCase().includes(inputValue.toLowerCase()) ||
                 compound.subclass.toLowerCase().includes(inputValue.toLowerCase())
             );
@@ -528,7 +529,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
                         <div className="mt-2">
                             {selectedCompounds.map(compound => (
                                 <span key={compound.id} className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800 mr-2 mb-2">
-                                    {compound.smiles}
+                                    {compound.name}
                                     <button type="button" onClick={() => handleRemoveSelectedCompound(compound.id)} className="flex-shrink-0 ml-1.5 inline-flex text-blue-400 hover:text-blue-500 focus:outline-none focus:text-blue-500">
                                         <svg className="h-2 w-2" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
@@ -655,16 +656,16 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
 
             {/* ... (modals) ... */}
             <Modal show={showReferenceModal} onClose={() => setShowReferenceModal(false)}>
-                <ReferenceForm onReferenceCreated={handleReferenceCreated} />
+                <ReferenceForm onReferenceCreated={handleReferenceCreated} onCancel={()=>setShowReferenceModal(false)} />
             </Modal>
             <Modal show={showCompoundModal} onClose={() => setShowCompoundModal(false)}>
-                <CompoundForm onCompoundCreated={handleCompoundCreated} />
+                <CompoundForm onCompoundCreated={handleCompoundCreated} onCancel={()=>setShowCompoundModal(false)} />
             </Modal>
             <Modal show={showSiteModal} onClose={() => setShowSiteModal(false)}>
-                        <LocationForm onLocationCreated={handleSiteCreated} />
+                <LocationForm onLocationCreated={handleSiteCreated} onCancel={()=>setShowSiteModal(false)}  />
             </Modal>
             <Modal show={showHerbariumModal} onClose={() => setShowHerbariumModal(false)}>
-                <LocationForm onLocationCreated={handleHerbariumCreated} />
+                <LocationForm onLocationCreated={handleHerbariumCreated}  onCancel={()=>setShowHerbariumModal(false)}/>
             </Modal>
         </div>
     );
