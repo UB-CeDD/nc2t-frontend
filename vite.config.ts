@@ -27,7 +27,7 @@ export default defineConfig({
   define: {
     "process.env": {},
   },
-  base: "./",
+  base: "/",
   resolve: {
     alias: [
       { find: "@store", replacement: "/src/store" },
