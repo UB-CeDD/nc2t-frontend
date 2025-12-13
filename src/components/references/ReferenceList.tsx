@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchReferencesThunk } from '@store/thunks/referenceThunk';
+import { fetchReferencesThunk, deleteReferenceThunk } from '@store/thunks/referenceThunk';
 import { Reference } from '@/helpers/types';
 import { useTranslation } from "react-i18next";
 import Spinner from '../commons/Spinner';
 import Table from '../commons/Table';
-// import { FaEdit, FaTrash } from 'react-icons/fa';
+import DeleteConfirmationModal from '@components/commons/DeleteConfirmationModal';
+import { useNotification } from '@/components/commons/NotificationContext';
 
 interface ReferenceListProps {
     references?: Reference[];
@@ -15,11 +16,15 @@ interface ReferenceListProps {
 const ReferenceList: React.FC<ReferenceListProps> = ({ references: propReferences, onEditReference }) => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
+    const { addNotification } = useNotification();
     const { references, error, loading } = useSelector((state) => state.getReferences);
 
     const [searchText, setSearchText] = useState('');
     const [authorFilter, setAuthorFilter] = useState('');
     const [dateFilter, setDateFilter] = useState('');
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [referenceForDelete, setReferenceForDelete] = useState<Reference | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     useEffect(() => {
         if (!propReferences) {
@@ -58,8 +63,23 @@ const ReferenceList: React.FC<ReferenceListProps> = ({ references: propReference
     };
 
     const handleDelete = (row: Reference) => {
-        alert(`Delete: ${row}`);
-        // Add your delete logic here
+        setReferenceForDelete(row);
+        setShowDeleteModal(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!referenceForDelete) return;
+        
+        setIsDeleting(true);
+        try {
+            await dispatch(deleteReferenceThunk(referenceForDelete.id.toString(), addNotification));
+            setShowDeleteModal(false);
+            setReferenceForDelete(null);
+        } catch (error) {
+            console.error('Error deleting reference:', error);
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     if (error && !propReferences) {
@@ -99,6 +119,18 @@ const ReferenceList: React.FC<ReferenceListProps> = ({ references: propReference
                     <Table data={filteredReferences} columns={columns} renderActions={renderActions} />
                 )}
             </div>
+
+            <DeleteConfirmationModal
+                show={showDeleteModal}
+                onClose={() => {
+                    setShowDeleteModal(false);
+                    setReferenceForDelete(null);
+                }}
+                onConfirm={handleConfirmDelete}
+                itemName={referenceForDelete?.title || ''}
+                moduleName={t('reference.module')}
+                isLoading={isDeleting}
+            />
         </div>
     );
 };

@@ -5,7 +5,9 @@ import Table from "@components/commons/Table";
 import { Location } from "@/helpers/types.ts";
 import { useTranslation } from "react-i18next";
 import { useDispatch } from "react-redux";
-import { fetchLocationsThunk } from "@store/thunks/locationThunk.ts";
+import { fetchLocationsThunk, deleteLocationThunk } from "@store/thunks/locationThunk.ts";
+import DeleteConfirmationModal from '@components/commons/DeleteConfirmationModal';
+import { useNotification } from '@/components/commons/NotificationContext';
 
 interface LocationListProps {
     locations?: Location[];
@@ -15,10 +17,14 @@ interface LocationListProps {
 const LocationList: React.FC<LocationListProps> = ({ locations: propLocations, onEditLocation }) => {
     const dispatch = useDispatch();
     const { t } = useTranslation();
+    const { addNotification } = useNotification();
     const { locations, error, loading } = useSelector((state) => state.getLocations);
 
     const [searchText, setSearchText] = useState('');
     const [dateFilter, setDateFilter] = useState('');
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [locationForDelete, setLocationForDelete] = useState<Location | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const columns = [
         { key: 'name', label: t('location.name') },
@@ -40,8 +46,23 @@ const LocationList: React.FC<LocationListProps> = ({ locations: propLocations, o
     };
 
     const handleDelete = (row: Location) => {
-        alert(`Delete:, ${row}`);
-        // Add your delete logic here
+        setLocationForDelete(row);
+        setShowDeleteModal(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!locationForDelete) return;
+        
+        setIsDeleting(true);
+        try {
+            await dispatch(deleteLocationThunk(locationForDelete.id.toString(), addNotification));
+            setShowDeleteModal(false);
+            setLocationForDelete(null);
+        } catch (error) {
+            console.error('Error deleting location:', error);
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     useEffect(() => {
@@ -89,6 +110,18 @@ const LocationList: React.FC<LocationListProps> = ({ locations: propLocations, o
                     <Table data={displayLocations} columns={columns} renderActions={renderActions} />
                 )}
             </div>
+
+            <DeleteConfirmationModal
+                show={showDeleteModal}
+                onClose={() => {
+                    setShowDeleteModal(false);
+                    setLocationForDelete(null);
+                }}
+                onConfirm={handleConfirmDelete}
+                itemName={locationForDelete?.name || ''}
+                moduleName={t('location.module')}
+                isLoading={isDeleting}
+            />
         </div>
     );
 };

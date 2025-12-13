@@ -1,4 +1,4 @@
-import { listReferences, createReference, updateReference } from '@/services/referenceService.ts';
+import { listReferences, createReference, updateReference, deleteReference } from '@/services/referenceService.ts';
 import {
     fetchReferencesRequest,
     fetchReferencesSuccess,
@@ -9,6 +9,8 @@ import {
     updateReferenceRequest,
     updateReferenceSuccess,
     updateReferenceFailure,
+    deleteReferenceSuccess,
+    deleteReferenceFailure,
     setReferenceCount, // Import new action creator
 } from '../actions/referenceActions';
 import { Reference } from '@/helpers/types';
@@ -58,6 +60,26 @@ export const updateReferenceThunk = (id: string, referenceData: Partial<Referenc
     } catch (error: any) {
         dispatch(updateReferenceFailure(error.message));
         addNotification(error.message, 'error');
+        throw error;
+    }
+};
+
+export const deleteReferenceThunk = (id: string, addNotification?: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: AppDispatch) => {
+    try {
+        await deleteReference(id);
+        dispatch(deleteReferenceSuccess(id));
+        if (addNotification) {
+            addNotification('Reference deleted successfully!', 'success');
+        }
+        // Refetch the references list to reflect the deleted data
+        dispatch(fetchReferencesThunk());
+        return id;
+    } catch (error: any) {
+        const errorMessage = error.message || 'Failed to delete reference.';
+        dispatch(deleteReferenceFailure(errorMessage));
+        if (addNotification) {
+            addNotification(errorMessage, 'error');
+        }
         throw error;
     }
 };

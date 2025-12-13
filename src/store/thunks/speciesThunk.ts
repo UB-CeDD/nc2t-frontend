@@ -81,6 +81,8 @@ export const updateSpeciesThunk = (id: string, speciesData: Species, addNotifica
         const updatedSpecies = await updateSpecies(id, speciesData);
         dispatch(updateSpeciesSuccess(updatedSpecies));
         addNotification('Species updated successfully!', 'success');
+        // Refetch the species list to reflect the updated data
+        dispatch(fetchSpecies());
     } catch (error: any) {
         dispatch(updateSpeciesFailure(error.message || 'Failed to update species.'));
         addNotification(error.message || 'Failed to update species.', 'error');

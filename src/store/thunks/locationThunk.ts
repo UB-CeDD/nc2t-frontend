@@ -82,13 +82,22 @@ export const updateLocationThunk = ( id: string, locationData: Location ) => asy
     }
 };
 
-export const deleteLocationThunk = (id: string) => async (dispatch: AppDispatch) => {
+export const deleteLocationThunk = (id: string, addNotification?: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: AppDispatch) => {
     try {
         await deleteLocation(id);
         dispatch(deleteLocationSuccess(id));
+        if (addNotification) {
+            addNotification('Location deleted successfully!', 'success');
+        }
+        // Refetch the locations list to reflect the deleted data
+        dispatch(fetchLocationsThunk());
         return id;
-    } catch (error) {
-        dispatch(deleteLocationFailure((error as Error).message));
+    } catch (error: any) {
+        const errorMessage = (error as Error).message || 'Failed to delete location.';
+        dispatch(deleteLocationFailure(errorMessage));
+        if (addNotification) {
+            addNotification(errorMessage, 'error');
+        }
         throw error;
     }
 };

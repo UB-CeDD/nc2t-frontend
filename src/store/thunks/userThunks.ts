@@ -64,11 +64,21 @@ export const fetchUserThunk = (id: string) => async (dispatch: AppDispatch) => {
     }
 };
 
-export const deleteUserThunk = (id: string) => async (dispatch: AppDispatch) => {
+export const deleteUserThunk = (id: string, addNotification?: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: AppDispatch) => {
     try {
         await deleteUser(id);
         dispatch(deleteUserAction(id));
+        if (addNotification) {
+            addNotification('User deleted successfully!', 'success');
+        }
+        // Refetch the users list to reflect the deleted data
+        dispatch(fetchUsersThunk());
+        return id;
     } catch (error: any) {
+        const errorMessage = error.message || 'Failed to delete user.';
         console.error('Failed to delete user:', error);
+        if (addNotification) {
+            addNotification(errorMessage, 'error');
+        }
     }
 };

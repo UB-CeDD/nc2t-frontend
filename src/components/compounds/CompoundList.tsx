@@ -1,11 +1,13 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchCompounds } from '@store/thunks/compoundThunk.ts';
+import { fetchCompounds, deleteCompoundThunk } from '@store/thunks/compoundThunk.ts';
 import { RootState } from '@store/store';
 import { Compound } from "@/helpers/types.ts";
 import { useTranslation } from "react-i18next";
 import Table from '@components/commons/Table';
 import Loader from '@components/commons/Loader';
+import DeleteConfirmationModal from '@components/commons/DeleteConfirmationModal';
+import { useNotification } from '@/components/commons/NotificationContext';
 
 interface CompoundListProps {
     compounds?: Compound[];
@@ -15,7 +17,11 @@ interface CompoundListProps {
 const CompoundList: React.FC<CompoundListProps> = ({ compounds: propCompounds, onEditCompound }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
+    const { addNotification } = useNotification();
     const { compounds, loading, error } = useSelector((state: RootState) => state.getCompounds);
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [compoundForDelete, setCompoundForDelete] = useState<Compound | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const columns = [
             { key: 'name', label: t('compound.form_fields.name') },
@@ -28,6 +34,26 @@ const CompoundList: React.FC<CompoundListProps> = ({ compounds: propCompounds, o
             const handleEdit = (row: Compound) => {
                onEditCompound(row);
             };
+
+        const handleDelete = (row: Compound) => {
+            setCompoundForDelete(row);
+            setShowDeleteModal(true);
+        };
+
+        const handleConfirmDelete = async () => {
+            if (!compoundForDelete) return;
+            
+            setIsDeleting(true);
+            try {
+                await dispatch(deleteCompoundThunk(compoundForDelete.id.toString(), addNotification));
+                setShowDeleteModal(false);
+                setCompoundForDelete(null);
+            } catch (error) {
+                console.error('Error deleting compound:', error);
+            } finally {
+                setIsDeleting(false);
+            }
+        };
 
         const renderActions = (row: Compound) => (
             <div className="flex justify-center items-center gap-2">
@@ -56,6 +82,18 @@ const CompoundList: React.FC<CompoundListProps> = ({ compounds: propCompounds, o
                 <h1 className="text-2xl flex justify-center font-bold mb-8">{t('compound.all')}</h1>
                 <Table columns={columns} renderActions={renderActions} data={displayCompounds} />
             </div>
+
+            <DeleteConfirmationModal
+                show={showDeleteModal}
+                onClose={() => {
+                    setShowDeleteModal(false);
+                    setCompoundForDelete(null);
+                }}
+                onConfirm={handleConfirmDelete}
+                itemName={compoundForDelete?.name || ''}
+                moduleName={t('compound.module')}
+                isLoading={isDeleting}
+            />
         </div>
     );
 };

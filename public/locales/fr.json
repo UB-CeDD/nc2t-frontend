@@ -6,5 +6,30 @@
     "password": "Mot de passe",
     "logout": "Déconnexion",
     "welcome": "Bienvenue, {{username}}!"
+  },
+  "species": {
+    "module": "Gestion des espèces"
+  },
+  "compound": {
+    "module": "Gestion des composés"
+  },
+  "reference": {
+    "module": "Gestion des références"
+  },
+  "location": {
+    "module": "Gestion des emplacements"
+  },
+  "user": {
+    "module": "Gestion des utilisateurs"
+  },
+  "delete": {
+    "confirm_title": "Confirmation de suppression",
+    "confirm_message": "Êtes-vous sûr de vouloir supprimer cet élément ? Cette action ne peut pas être annulée.",
+    "item": "Élément",
+    "module": "Module",
+    "warning": "⚠️ Cette action est permanente et ne peut pas être inversée.",
+    "cancel": "Annuler",
+    "confirm": "Supprimer",
+    "deleting": "Suppression en cours..."
   }
 }

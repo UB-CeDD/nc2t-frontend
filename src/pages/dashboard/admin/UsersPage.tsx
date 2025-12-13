@@ -33,7 +33,7 @@ const UsersPage: React.FC = () => {
                 <div className="flex flex-row items-center justify-between w-full mb-4">
                     <h1 className="text-2xl font-bold">{t('user.user')}</h1>
                     <button className="px-4 py-2 bg-blue-500 text-white rounded"
-                            onClick={() => navigate('/admin/users/add')}>
+                            onClick={() => navigate('/admin/users/add')}> {t('user.add')}
                     </button>
                 </div>
             

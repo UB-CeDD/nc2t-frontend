@@ -2,10 +2,12 @@ import React, { useEffect, useState } from 'react';
 import Table from '../commons/Table';
 import { useTranslation } from "react-i18next";
 import { useDispatch, useSelector } from 'react-redux';
-import { fetchUsersThunk } from '@store/thunks/userThunks';
+import { fetchUsersThunk, deleteUserThunk } from '@store/thunks/userThunks';
 import { UserModel } from '@/helpers/types';
 import { useNavigate } from 'react-router-dom';
 import { RootState } from '@store/store';
+import DeleteConfirmationModal from '@components/commons/DeleteConfirmationModal';
+import { useNotification } from '@/components/commons/NotificationContext';
 
 interface UserListProps {
     onEditUser: (user: UserModel) => void; // Add this prop
@@ -15,8 +17,12 @@ const UserList: React.FC<UserListProps> = ({ onEditUser }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const { addNotification } = useNotification();
     const { users } = useSelector((state: RootState) => state.getUsers);
     const [searchText, setSearchText] = useState('');
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
+    const [userForDelete, setUserForDelete] = useState<UserModel | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
 
     const filteredUsers = users.filter((user) => {
         return (
@@ -33,6 +39,26 @@ const UserList: React.FC<UserListProps> = ({ onEditUser }) => {
     
     const handleView = (row: UserModel) => {
         navigate(`/admin/users/${row.id}`);
+    };
+
+    const handleDelete = (row: UserModel) => {
+        setUserForDelete(row);
+        setShowDeleteModal(true);
+    };
+
+    const handleConfirmDelete = async () => {
+        if (!userForDelete) return;
+        
+        setIsDeleting(true);
+        try {
+            await dispatch(deleteUserThunk(userForDelete.id.toString(), addNotification));
+            setShowDeleteModal(false);
+            setUserForDelete(null);
+        } catch (error) {
+            console.error('Error deleting user:', error);
+        } finally {
+            setIsDeleting(false);
+        }
     };
 
     const renderActions = (row: UserModel) => (
@@ -63,6 +89,18 @@ const UserList: React.FC<UserListProps> = ({ onEditUser }) => {
                 </div>
                 <Table data={filteredUsers} columns={columns} renderActions={renderActions} />
             </div>
+
+            <DeleteConfirmationModal
+                show={showDeleteModal}
+                onClose={() => {
+                    setShowDeleteModal(false);
+                    setUserForDelete(null);
+                }}
+                onConfirm={handleConfirmDelete}
+                itemName={userForDelete?.username || ''}
+                moduleName={t('user.module')}
+                isLoading={isDeleting}
+            />
         </div>
     );
 };

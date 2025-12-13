@@ -36,57 +36,67 @@ const processQueue = (error: unknown, token: string | null = null) => {
 
 api.interceptors.request.use(
   (config) => {
+    // Skip authentication for login and register endpoints
     if (config.url === "/login/" || config.url === "/register/") {
       return config;
     }
+    
     store.dispatch(setLoading());
     const token = localStorage.getItem("access_token");
     const expiresIn = localStorage.getItem("expires_in"); // should be a timestamp (seconds)
 
-    if (token) {
-      const currentTime = Math.floor(Date.now() / 1000); // seconds
-      if (expiresIn && Number(expiresIn) < currentTime) {
-        // Token is expired, attempt to refresh
-        const refreshToken = localStorage.getItem("refresh_token");
-        if (refreshToken) {
-          if (!isRefreshing) {
-            isRefreshing = true;
-            validateRefreshToken(refreshToken)
-              .then((response) => {
-                const newAccessToken = response.access;
-                const newExpiresIn = response.expires_in;
-                localStorage.setItem("access_token", newAccessToken);
-                localStorage.setItem("expires_in", newExpiresIn);
-                isRefreshing = false;
-                processQueue(null, newAccessToken);
-              })
-              .catch((err) => {
-                isRefreshing = false;
-                processQueue(err, null);
-                store.dispatch(logout());
-                notify("Session expired. Please log in again.", "error");
-                window.location.href = "/login";
-              });
-          }
-          return new Promise((resolve, reject) => {
-            failedQueue.push({ resolve, reject });
-          })
-            .then((token) => {
-              config.headers["Authorization"] = `Bearer ${token}`;
-              return config;
+    if (!token) {
+      // No token available, user needs to log in
+      store.dispatch(logout());
+      notify("Please log in to continue.", "error");
+      window.location.href = "/login";
+      return Promise.reject(new Error("No access token found."));
+    }
+
+    const currentTime = Math.floor(Date.now() / 1000); // seconds
+    if (expiresIn && Number(expiresIn) < currentTime) {
+      // Token is expired, attempt to refresh
+      const refreshToken = localStorage.getItem("refresh_token");
+      if (refreshToken) {
+        if (!isRefreshing) {
+          isRefreshing = true;
+          validateRefreshToken(refreshToken)
+            .then((response) => {
+              const newAccessToken = response.access;
+              const newExpiresIn = response.expires_in;
+              localStorage.setItem("access_token", newAccessToken);
+              localStorage.setItem("expires_in", newExpiresIn);
+              isRefreshing = false;
+              processQueue(null, newAccessToken);
             })
             .catch((err) => {
-              return Promise.reject(err);
+              isRefreshing = false;
+              processQueue(err, null);
+              store.dispatch(logout());
+              notify("Session expired. Please log in again.", "error");
+              window.location.href = "/login";
             });
-        } else {
-          store.dispatch(logout());
-          notify("Session expired. Please log in again.", "error");
-          window.location.href = "/login";
-          return Promise.reject(new Error("Refresh token not found."));
         }
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            config.headers["Authorization"] = `Bearer ${token}`;
+            return config;
+          })
+          .catch((err) => {
+            return Promise.reject(err);
+          });
+      } else {
+        store.dispatch(logout());
+        notify("Session expired. Please log in again.", "error");
+        window.location.href = "/login";
+        return Promise.reject(new Error("Refresh token not found."));
       }
-      config.headers["Authorization"] = `Bearer ${token}`;
     }
+    
+    // Token is valid, add it to the request
+    config.headers["Authorization"] = `Bearer ${token}`;
     return config;
   },
   (error) => {

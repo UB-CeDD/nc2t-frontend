@@ -85,13 +85,20 @@ export const updateCompoundThunk = (id: string, compoundData: { compound_class?:
     }
 };
 
-export const deleteCompoundThunk = (id: string) => async (dispatch: AppDispatch) => {
+export const deleteCompoundThunk = (id: string, addNotification?: (message: string, type: 'success' | 'warning' | 'error') => void) => async (dispatch: AppDispatch) => {
     try {
         await deleteCompound(id);
         dispatch(deleteCompoundSuccess(id));
+        if (addNotification) {
+            addNotification('Compound deleted successfully!', 'success');
+        }
         return id;
-    } catch (error) {
-        dispatch(deleteCompoundFailure('Failed to delete compound.'));
+    } catch (error: any) {
+        const errorMessage = error.message || 'Failed to delete compound.';
+        dispatch(deleteCompoundFailure(errorMessage));
+        if (addNotification) {
+            addNotification(errorMessage, 'error');
+        }
         throw error;
     }
 };

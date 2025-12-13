@@ -41,6 +41,7 @@
   },
   "location": {
     "location": "Location",
+    "module": "Location Management",
     "all": "Locations",
     "add": "Add Location",
     "edit": "Edit Location",
@@ -86,6 +87,7 @@
   },
   "compound": {
     "compound": "Compound",
+    "module": "Compound Management",
     "all": "Compounds",
     "search": "Search Compounds",
     "search_placeholder": "Search by name, class, or formula",
@@ -138,6 +140,7 @@
   },
   "reference": {
     "reference": "References" ,
+    "module": "Reference Management",
     "all": "All References",
     "search": "Search References",
     "search_placeholder": "Search by title, author, or year",
@@ -166,6 +169,7 @@
   },
   "user": {
     "user": "User Management",
+    "module": "User Management",
     "all": "All Users",
     "details": "User Details",
     "profile": "User Profile",
@@ -227,6 +231,7 @@
   },
   "species": {
     "species": "Species",
+    "module": "Species Management",
     "all": "All Species",
     "dashboard": "Species Dashboard",
     "search": "Search Species",
@@ -279,6 +284,16 @@
       "site": "Collection Site",
       "herbarium": "Herbarium"
     }
+  },
+  "delete": {
+    "confirm_title": "Delete Confirmation",
+    "confirm_message": "Are you sure you want to delete this item? This action cannot be undone.",
+    "item": "Item",
+    "module": "Module",
+    "warning": "⚠️ This action is permanent and cannot be reversed.",
+    "cancel": "Cancel",
+    "confirm": "Delete",
+    "deleting": "Deleting..."
   }
 }
 
