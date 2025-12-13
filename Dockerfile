@@ -1,5 +1,5 @@
-# Use a Node.js image for development
-FROM node:22-alpine
+# Stage 1: Build the application
+FROM node:22-alpine AS builder
 
 # Set the working directory
 WORKDIR /app
@@ -7,14 +7,26 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 COPY package*.json ./
 
+# Set npm registry to help with potential network issues
+RUN npm config set registry https://registry.npmjs.org/
+
 # Install dependencies
 RUN npm ci
 
 # Copy the rest of the application code
 COPY . .
 
-# Expose the port the development server runs on
-EXPOSE 3000
+# Build the application
+RUN npm run build
 
-# The command to start the development server
-CMD ["npm", "run", "dev"]
+# Stage 2: Serve the application with Nginx
+FROM nginx:alpine AS staging
+
+# Copy the built application from the builder stage
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Expose port 80 for Nginx
+EXPOSE 80
+
+# Command to start Nginx
+CMD ["nginx", "-g", "daemon off;"]

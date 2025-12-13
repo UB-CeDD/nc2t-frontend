@@ -1,19 +1,15 @@
 version: '3.8'
 
 services:
-  frontend:
+  nc2t-app:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: nc2t-frontend-dev
+    container_name: nc2t-app
     ports:
-      - "3000:3000"
+      - "3000:80" # Map host port 3000 to container port 80
     environment:
-      - NODE_ENV=development
-    volumes:
-      - .:/app
-      - /app/node_modules
-    command: npm run dev
+      - NODE_ENV=production # Set NODE_ENV to production
     restart: unless-stopped
     networks:
       - nc2t-network
