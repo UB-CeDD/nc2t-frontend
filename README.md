@@ -26,3 +26,11 @@ docker build -t ncct-frontend .
 ```
 
 This will create a Docker image with the built application served by Nginx.
+
+### Nginx Configuration
+
+The Nginx configuration is located in the `nginx.conf` file. It is a simple configuration that serves the application on port 80.
+
+### Vite Configuration
+
+The Vite configuration is located in the `vite.config.js` file. It is a simple configuration that sets the base path to `/`.

@@ -38,4 +38,11 @@ export default defineConfig({
       { find: "@services", replacement: "/src/services" },
     ],
   },
+  css: {
+    preprocessorOptions: {
+      css: {
+        additionalData: '@import "leaflet/dist/leaflet.css";', // Ensure Leaflet CSS is included
+      },
+    },
+  },
 });

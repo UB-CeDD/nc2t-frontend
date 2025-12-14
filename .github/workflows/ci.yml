@@ -54,7 +54,7 @@ jobs:
 
     - name: Build and push image
       run: |
-        docker build -f frontend/Dockerfile -t ${{ secrets.DOCKER_HUB_USERNAME }}/ncct_project-frontend:${{ steps.image_tag.outputs.tag }} frontend/
+        docker build -t ${{ secrets.DOCKER_HUB_USERNAME }}/ncct_project-frontend:${{ steps.image_tag.outputs.tag }} .
         docker push ${{ secrets.DOCKER_HUB_USERNAME }}/ncct_project-frontend:${{ steps.image_tag.outputs.tag }}
 
   deploy-staging:
