@@ -19,6 +19,7 @@ import AddSpeciesPage from './pages/dashboard/AddSpeciesPage';
 import AboutPage from './pages/AboutPage';
 import ServicesPage from './pages/ServicesPage';
 import ContactPage from './pages/ContactPage';
+import AdminProtectedRoute from "@services/AdminProtectedRoute.tsx";
 
 const App: React.FC = () => {
     const dispatch = useDispatch();
@@ -36,25 +37,23 @@ const App: React.FC = () => {
                 <Route path="/services" element={<ServicesPage />} />
                 <Route path="/contact" element={<ContactPage />} />
 
-                {/* Admin Layout for dashboard routes */}
-                <Route
-                    path="/dashboard/*">
-                    <Route path="compounds" element={<CompoundPage />} />
-                    <Route path="references" element={<ReferencePage />} />
-                    <Route path="locations" element={<LocationPage />} />
-                    <Route path="species" element={<SpeciesPage />} />
-                    <Route path="species/:id" element={<SpeciesDetailsPage />} />
-                    <Route path="species/add" element={<AddSpeciesPage />} />
-                    <Route path="species/:id/edit" element={<AddSpeciesPage />} />
+                {/* Protected dashboard routes */}
+                <Route element={<AdminProtectedRoute allowedRoles={['admin', 'user']} />}>
+                    <Route path="/dashboard/compounds" element={<CompoundPage />} />
+                    <Route path="/dashboard/references" element={<ReferencePage />} />
+                    <Route path="/dashboard/locations" element={<LocationPage />} />
+                    <Route path="/dashboard/species" element={<SpeciesPage />} />
+                    <Route path="/dashboard/species/:id" element={<SpeciesDetailsPage />} />
+                    <Route path="/dashboard/species/add" element={<AddSpeciesPage />} />
+                    <Route path="/dashboard/species/:id/edit" element={<AddSpeciesPage />} />
                 </Route>
 
-                {/* Admin Layout for admin routes */}
-                <Route
-                    path="/admin/*">
-                    <Route path="dashboard" element={<AdminPage />} />
-                    <Route path="users" element={<UsersPage />} />
-                    <Route path="users/add" element={<AddEditUser />} />
-                    <Route path="users/:id" element={<UserDetails />} />
+                {/* Protected admin routes */}
+                <Route element={<AdminProtectedRoute allowedRoles={['admin']} />}>
+                    <Route path="/admin/dashboard" element={<AdminPage />} />
+                    <Route path="/admin/users" element={<UsersPage />} />
+                    <Route path="/admin/users/add" element={<AddEditUser />} />
+                    <Route path="/admin/users/:id" element={<UserDetails />} />
                 </Route>
 
                 <Route path="*" element={<NotFoundPage />} />
