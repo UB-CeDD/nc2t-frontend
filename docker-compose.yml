@@ -10,7 +10,6 @@ services:
       - "80:80" # Map host port 80 to container port 80
     environment:
       - NODE_ENV=production # Set NODE_ENV to production
-    command: ["nginx", "-g", "daemon off;"]
     restart: unless-stopped
     networks:
       - nc2t-network
