@@ -3,7 +3,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import {useNavigate} from 'react-router-dom';
 import {useTranslation} from 'react-i18next';
 import AuthLayout from '@components/layouts/AuthLayout';
-import {login, validateToken} from '../../store/thunks/authThunks';
+import {login} from '../../store/thunks/authThunks';
 import {RootState} from '../../store/store';
 import Spinner from '@components/commons/Spinner';
 import '../../i18n';
@@ -17,10 +17,6 @@ const LoginPage: React.FC = () => {
     const dispatch = useDispatch();
     const { isAuthenticated, error, loading, user } = useSelector((state: RootState) => state.auth);
     const { addNotification } = useNotification();
-
-    useEffect(() => {
-        dispatch(validateToken());
-    }, [dispatch]);
 
     useEffect(() => {
         if (isAuthenticated && user) {

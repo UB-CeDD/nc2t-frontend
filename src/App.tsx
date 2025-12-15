@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Routes, Route } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { validateToken } from '@store/thunks/authThunks.ts';
 import HomePage from './pages/HomePage';
 import LoginPage from './pages/auth/LoginPage';
 import NotFoundPage from '@/pages/NotFoundPage';
@@ -19,6 +21,12 @@ import ServicesPage from './pages/ServicesPage';
 import ContactPage from './pages/ContactPage';
 
 const App: React.FC = () => {
+    const dispatch = useDispatch();
+
+    useEffect(() => {
+        dispatch(validateToken());
+    }, [dispatch]);
+
     return (
         <ErrorBoundary>
             <Routes>

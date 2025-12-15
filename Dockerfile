@@ -1,32 +1,39 @@
-# Stage 1: Build the application
-FROM node:22-alpine AS builder
+# =========================
+# Build Stage
+# =========================
+FROM node:20-alpine AS builder
+# NOTE: Node 20 is currently LTS and safer than 22 for production
 
-# Set the working directory
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
-# Set npm registry to help with potential network issues
-RUN npm config set registry https://registry.npmjs.org/
+# Copy dependency manifests first (prevents ENOENT and improves caching)
+COPY package.json package-lock.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm ci --no-audit --no-fund
 
-# Copy the rest of the application code
+# Copy application source
 COPY . .
 
-# Build the application
+# Build Vite app
 RUN npm run build
 
-# Stage 2: Serve the application with Nginx
-FROM nginx:alpine AS staging
 
-# Copy the built application from the builder stage
-COPY --from=builder /app/dist /usr/share/nginx/html
+# =========================
+# Runtime Stage
+# =========================
+FROM nginx:alpine
 
-# Copy the Nginx configuration file
+# Remove default nginx config
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copy custom nginx config
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Command to start Nginx
+# Copy built assets
+COPY --from=builder /app/dist /usr/share/nginx/html
+
+# Expose HTTP port for Nginx Proxy Manager
+EXPOSE 80
+
 CMD ["nginx", "-g", "daemon off;"]
