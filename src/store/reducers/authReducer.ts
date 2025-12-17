@@ -25,7 +25,7 @@ const authReducer = (state = initialState, action) => {
                 ...state,
                 isAuthenticated: true,
                 user: action.payload.user,
-                accessToken: action.payload.accessToken,
+                accessToken: action.payload.access,
                 loading: false,
                 error: null,
             };
@@ -41,7 +41,7 @@ const authReducer = (state = initialState, action) => {
                 user: null,
                 accessToken: null,
                 loading: false,
-                error: action.type === LOGIN_FAILURE ? action.payload : null,
+                error: action.payload,
             };
         case LOGOUT_SUCCESS:
             localStorage.removeItem('current_user');
@@ -54,7 +54,7 @@ const authReducer = (state = initialState, action) => {
                 isAuthenticated: false,
                 user: null,
                 accessToken: null,
-                error: action.type === LOGIN_FAILURE ? action.payload : null,
+                error: null,
             };
         default:
             return state;

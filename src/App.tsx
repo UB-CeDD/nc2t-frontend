@@ -38,7 +38,8 @@ const App: React.FC = () => {
                 <Route path="/contact" element={<ContactPage />} />
 
                 {/* Protected dashboard routes */}
-                <Route element={<AdminProtectedRoute allowedRoles={['admin', 'user']} />}>
+                <Route element={<AdminProtectedRoute />}>
+                    <Route path="/dashboard" element={<AdminPage />} />
                     <Route path="/dashboard/compounds" element={<CompoundPage />} />
                     <Route path="/dashboard/references" element={<ReferencePage />} />
                     <Route path="/dashboard/locations" element={<LocationPage />} />
@@ -50,7 +51,6 @@ const App: React.FC = () => {
 
                 {/* Protected admin routes */}
                 <Route element={<AdminProtectedRoute allowedRoles={['admin']} />}>
-                    <Route path="/admin/dashboard" element={<AdminPage />} />
                     <Route path="/admin/users" element={<UsersPage />} />
                     <Route path="/admin/users/add" element={<AddEditUser />} />
                     <Route path="/admin/users/:id" element={<UserDetails />} />

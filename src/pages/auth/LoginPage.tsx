@@ -20,15 +20,15 @@ const LoginPage: React.FC = () => {
 
     useEffect(() => {
         if (isAuthenticated && user) {
-            navigate('/admin/dashboard');
+            navigate('/dashboard');
         }
     }, [isAuthenticated, user, navigate]);
 
     useEffect(() => {
         if (error) {
-            addNotification(t('login.error'), 'error');
+            addNotification(error, 'error');
         }
-    }, [error, t, addNotification]);
+    }, [error, addNotification]);
 
     const handleLogin = (e: React.FormEvent) => {
         e.preventDefault();

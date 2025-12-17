@@ -1,4 +1,5 @@
 import api from './api';
+import { AxiosError } from 'axios';
 
 export const login = async (username: string, password: string) => {
     try {
@@ -6,8 +7,21 @@ export const login = async (username: string, password: string) => {
 
         const { user, access, refresh } = response.data;
         return { access, refresh, user, status: response.status };
-    } catch {
-        throw new Error('Login failed. Please check your credentials.');
+    } catch (error) {
+        if (error instanceof AxiosError) {
+            if (error.response) {
+                // The request was made and the server responded with a status code
+                // that falls out of the range of 2xx
+                throw new Error(error.response.data.detail || error.response.data.message || 'Login failed. Please check your credentials.');
+            } else if (error.request) {
+                // The request was made but no response was received
+                throw new Error('Network Error: Could not connect to the server. Please try again later.');
+            } else {
+                // Something happened in setting up the request that triggered an Error
+                throw new Error('An unexpected error occurred. Please try again.');
+            }
+        }
+        throw new Error('An unknown error occurred during login.');
     }
 };
 

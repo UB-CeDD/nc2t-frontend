@@ -5,7 +5,7 @@ import { RootState } from '@store/store';
 
 interface AdminProtectedRouteProps {
     redirectTo?: string;
-    allowedRoles: string[];
+    allowedRoles?: string[];
 }
 
 const AdminProtectedRoute: React.FC<AdminProtectedRouteProps> = ({ redirectTo = '/unauthorized', allowedRoles }) => {
@@ -15,8 +15,10 @@ const AdminProtectedRoute: React.FC<AdminProtectedRouteProps> = ({ redirectTo = 
         return <Navigate to="/login" replace />;
     }
 
-    if (!user || !allowedRoles.includes(user.role)) {
-        return <Navigate to={redirectTo} replace />;
+    if (allowedRoles !== undefined) {
+        if (!user || !allowedRoles.includes(user.role)) {
+            return <Navigate to={redirectTo} replace />;
+        }
     }
 
     return <Outlet />;
