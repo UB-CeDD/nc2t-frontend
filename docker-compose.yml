@@ -7,9 +7,14 @@ services:
       dockerfile: Dockerfile
     container_name: nc2t-app
     ports:
-      - "3000:80" # Map host port 80 to container port 80
+      - "8000:8000" # Map host port 8000 to container port 8000 for Vite dev server
     environment:
-      - NODE_ENV=production # Set NODE_ENV to production
+      - NODE_ENV=development # Set NODE_ENV to development
+      - VITE_HMR_SERVER_ORIGIN=http://localhost:8000 # For HMR to work inside docker
+    volumes:
+      - .:/app # Mount the current directory to /app in the container
+      - /app/node_modules # Exclude node_modules from the volume mount
+    command: npm run dev # Run the Vite development server
     restart: unless-stopped
     networks:
       - nc2t-network

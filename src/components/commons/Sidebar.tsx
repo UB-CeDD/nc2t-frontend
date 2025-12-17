@@ -15,7 +15,7 @@ const Sidebar: React.FC = () => {
             <ul className="flex-1">
                 <li>
                     <NavLink
-                        to="/admin/dashboard"
+                        to="/dashboard"
                         className={({ isActive }) =>
                             isActive
                                 ? 'bg-white text-sky-500 pb-2 px-2 rounded block'

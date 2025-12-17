@@ -19,7 +19,7 @@ import AddSpeciesPage from './pages/dashboard/AddSpeciesPage';
 import AboutPage from './pages/AboutPage';
 import ServicesPage from './pages/ServicesPage';
 import ContactPage from './pages/ContactPage';
-import AdminProtectedRoute from "@services/AdminProtectedRoute.tsx";
+import AdminProtectedRoute from "@/services/AdminProtectedRoute.tsx";
 
 const App: React.FC = () => {
     const dispatch = useDispatch();

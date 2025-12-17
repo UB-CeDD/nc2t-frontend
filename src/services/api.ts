@@ -5,7 +5,7 @@ import { logout } from "@/store/thunks/authThunks";
 import { notify } from "@/components/commons/NotificationContext";
 import { setLoading, unsetLoading } from "@/store/actions/loadingActions";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.API_URL || "http://localhost:8000/api"; // Prefer VITE_API_URL for Vite; fallback to API_URL if present
+const API_BASE_URL = import.meta.env.VITE_API_URL || import.meta.env.API_URL || "https://nc2t-backend.tabiidris.me/api"; // Prefer VITE_API_URL for Vite; fallback to API_URL if present
 
 
 const api = axios.create({
@@ -72,8 +72,6 @@ api.interceptors.response.use(
         if (refreshToken) {
           try {
             const response = await validateRefreshToken(refreshToken);
-            console.log("login response", response);
-            
             const newAccessToken = response.access;
             const newExpiresIn = response.expires_in;
             localStorage.setItem("access_token", newAccessToken);
