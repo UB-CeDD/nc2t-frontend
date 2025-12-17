@@ -31,6 +31,7 @@ export const validateToken = () => {
             }
         } catch (error) {
             console.error(error);
+            dispatch(logoutSuccess());
         }
     };
 };

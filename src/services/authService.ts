@@ -42,6 +42,5 @@ export const logout = async () => {
         localStorage.removeItem('current_user');
         localStorage.removeItem('isAuthenticated');
         console.log('localStorage cleared.');
-        window.location.href = '/login';
     }
 };

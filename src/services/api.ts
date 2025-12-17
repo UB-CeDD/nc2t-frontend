@@ -36,67 +36,12 @@ const processQueue = (error: unknown, token: string | null = null) => {
 
 api.interceptors.request.use(
   (config) => {
-    // Skip authentication for login and register endpoints
-    if (config.url === "/login/" || config.url === "/register/") {
-      return config;
-    }
-    
     store.dispatch(setLoading());
     const token = localStorage.getItem("access_token");
-    const expiresIn = localStorage.getItem("expires_in"); // should be a timestamp (seconds)
 
-    if (!token) {
-      // No token available, user needs to log in
-      store.dispatch(logout());
-      notify("Please log in to continue.", "error");
-      window.location.href = "/login";
-      return Promise.reject(new Error("No access token found."));
+    if (token) {
+      config.headers["Authorization"] = `Bearer ${token}`;
     }
-
-    const currentTime = Math.floor(Date.now() / 1000); // seconds
-    if (expiresIn && Number(expiresIn) < currentTime) {
-      // Token is expired, attempt to refresh
-      const refreshToken = localStorage.getItem("refresh_token");
-      if (refreshToken) {
-        if (!isRefreshing) {
-          isRefreshing = true;
-          validateRefreshToken(refreshToken)
-            .then((response) => {
-              const newAccessToken = response.access;
-              const newExpiresIn = response.expires_in;
-              localStorage.setItem("access_token", newAccessToken);
-              localStorage.setItem("expires_in", newExpiresIn);
-              isRefreshing = false;
-              processQueue(null, newAccessToken);
-            })
-            .catch((err) => {
-              isRefreshing = false;
-              processQueue(err, null);
-              store.dispatch(logout());
-              notify("Session expired. Please log in again.", "error");
-              window.location.href = "/login";
-            });
-        }
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            config.headers["Authorization"] = `Bearer ${token}`;
-            return config;
-          })
-          .catch((err) => {
-            return Promise.reject(err);
-          });
-      } else {
-        store.dispatch(logout());
-        notify("Session expired. Please log in again.", "error");
-        window.location.href = "/login";
-        return Promise.reject(new Error("Refresh token not found."));
-      }
-    }
-    
-    // Token is valid, add it to the request
-    config.headers["Authorization"] = `Bearer ${token}`;
     return config;
   },
   (error) => {
@@ -110,7 +55,7 @@ api.interceptors.response.use(
     store.dispatch(unsetLoading());
     return response;
   },
-  (error) => {
+  async (error) => {
     store.dispatch(unsetLoading());
     const originalRequest = error.config;
     if (
@@ -119,56 +64,45 @@ api.interceptors.response.use(
       !originalRequest._retry
     ) {
       originalRequest._retry = true;
+
       if (!isRefreshing) {
         isRefreshing = true;
         const refreshToken = localStorage.getItem("refresh_token");
+
         if (refreshToken) {
-          return new Promise((resolve, reject) => {
-            validateRefreshToken(refreshToken)
-              .then((response) => {
-                const newAccessToken = response.access;
-                const newExpiresIn = response.expires_in;
-                localStorage.setItem("access_token", newAccessToken);
-                localStorage.setItem("expires_in", newExpiresIn);
-                isRefreshing = false;
-                processQueue(null, newAccessToken);
-                originalRequest.headers["Authorization"] =
-                  `Bearer ${newAccessToken}`;
-                resolve(api(originalRequest));
-              })
-              .catch((err) => {
-                isRefreshing = false;
-                processQueue(err, null);
-                store.dispatch(logout());
-                notify("Session expired. Please log in again.", "error");
-                window.location.href = "/login";
-                reject(err);
-              });
-          });
-        } else {
-          store.dispatch(logout());
-          notify("Session expired. Please log in again.", "error");
-          window.location.href = "/login";
-          return Promise.reject(new Error("Refresh token not found."));
-        }
-      } else {
-        isRefreshing = false;
-        return new Promise((resolve, reject) => {
-          failedQueue.push({ resolve, reject });
-        })
-          .then((token) => {
-            originalRequest.headers["Authorization"] = `Bearer ${token}`;
+          try {
+            const response = await validateRefreshToken(refreshToken);
+            const newAccessToken = response.access;
+            const newExpiresIn = response.expires_in;
+            localStorage.setItem("access_token", newAccessToken);
+            localStorage.setItem("expires_in", newExpiresIn);
+
+            isRefreshing = false;
+            processQueue(null, newAccessToken);
+
+            originalRequest.headers["Authorization"] = `Bearer ${newAccessToken}`;
             return api(originalRequest);
-          })
-          .catch((err) => {
+          } catch (err) {
+            isRefreshing = false;
+            processQueue(err, null);
             store.dispatch(logout());
-            notify("Session expired. Please log in again.", "error");
-            window.location.href = "/login";
             return Promise.reject(err);
-          });
+          }
+        }
       }
+
+      return new Promise((resolve, reject) => {
+        failedQueue.push({
+          resolve: (token) => {
+            originalRequest.headers["Authorization"] = `Bearer ${token}`;
+            resolve(api(originalRequest));
+          },
+          reject: (err) => {
+            reject(err);
+          },
+        });
+      });
     }
-    console.log(error.response?.data || error.message);
 
     return Promise.reject(error);
   },

@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: nc2t-app
     ports:
-      - "80:80" # Map host port 80 to container port 80
+      - "3000:80" # Map host port 80 to container port 80
     environment:
       - NODE_ENV=production # Set NODE_ENV to production
     restart: unless-stopped

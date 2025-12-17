@@ -69,7 +69,9 @@ const Navbar: React.FC = () => {
                             )}
                         </> 
                     ) : (
+                        <li>
                         <Link to="/login" className="text-sm text-gray-700 hover:bg-gray-100 dark:hover:bg-gray-600 dark:text-gray-200 dark:hover:text-white">Login</Link>
+                        </li>
                     )}
                     </div>
                     <div className="items-center justify-between hidden w-full md:flex md:w-auto md:order-1" id="navbar-user">
