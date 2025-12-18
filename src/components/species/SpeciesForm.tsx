@@ -75,12 +75,13 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
             name: '',
             references: [],
             compound_codes: [],
+            compounds: [],
             recent_name: '',
             kingdom: '',
             family: '',
-            sites: [],
+            harvest_sites: [],
             collection_date: '',
-            herbariums: [],
+            storage_locations: [],
         };
     };
 
@@ -109,59 +110,107 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
         const initial = getInitialFormData();
         setFormData(initial);
 
-        if (initial.compounds && initial.compounds.length > 0) {
-            if (typeof initial.compounds[0] === 'number') {
+        // Preload selected compounds from detail if present; fallback to IDs
+        if ((initial as any).compounds_detail && (initial as any).compounds_detail.length > 0) {
+            setSelectedCompounds((initial as any).compounds_detail as Compound[]);
+        } else if ((initial as any).compounds && (initial as any).compounds.length > 0) {
+            if (typeof (initial as any).compounds[0] === 'number') {
                 const fetchSelectedCompounds = async () => {
                     const allCompounds = await listCompounds();
-                    const compoundIds = initial.compounds as number[];
+                    const compoundIds = (initial as any).compounds as number[];
                     const fetchedCompounds = allCompounds.filter(c => compoundIds.includes(c.id));
                     setSelectedCompounds(fetchedCompounds);
                 };
                 fetchSelectedCompounds();
+            } else if (typeof (initial as any).compounds[0] === 'string') {
+                const fetchSelectedCompounds = async () => {
+                    const allCompounds = await listCompounds();
+                    const compoundIds = (initial as any).compounds as string[];
+                    const fetchedCompounds = allCompounds.filter(c => compoundIds.includes(String(c.id)));
+                    setSelectedCompounds(fetchedCompounds);
+                };
+                fetchSelectedCompounds();
             } else {
-                setSelectedCompounds(initial.compounds as Compound[]);
+                setSelectedCompounds((initial as any).compounds as Compound[]);
             }
         }
 
-        if (initial.references && initial.references.length > 0) {
-            if (typeof initial.references[0] === 'number') {
+        // Preload selected references from detail if present; fallback to IDs
+        if ((initial as any).references_detail && (initial as any).references_detail.length > 0) {
+            setSelectedReferences((initial as any).references_detail as Reference[]);
+        } else if ((initial as any).references && (initial as any).references.length > 0) {
+            if (typeof (initial as any).references[0] === 'number') {
                 const fetchSelectedReferences = async () => {
                     const allReferences = await listReferences();
-                    const referenceIds = initial.references as number[];
+                    const referenceIds = (initial as any).references as number[];
                     const fetchedReferences = allReferences.filter(r => referenceIds.includes(r.id));
                     setSelectedReferences(fetchedReferences);
                 };
                 fetchSelectedReferences();
+            } else if (typeof (initial as any).references[0] === 'string') {
+                const fetchSelectedReferences = async () => {
+                    const allReferences = await listReferences();
+                    const referenceIds = (initial as any).references as string[];
+                    const fetchedReferences = allReferences.filter(r => referenceIds.includes(String(r.id)));
+                    setSelectedReferences(fetchedReferences);
+                };
+                fetchSelectedReferences();
             } else {
-                setSelectedReferences(initial.references as Reference[]);
+                setSelectedReferences((initial as any).references as Reference[]);
             }
         }
 
-        if (initial.harvest_sites && initial.harvest_sites.length > 0) {
-            if (typeof initial.harvest_sites[0] === 'number') {
+        // Preload selected sites (place of collection) from initial data
+        const initialSitesDetail = (initial as any).harvest_sites_detail;
+        const initialSites = (initial as any).harvest_sites || (initial as any).sites;
+        if (initialSitesDetail && initialSitesDetail.length > 0) {
+            setSelectedSites(initialSitesDetail as Location[]);
+        } else if (initialSites && initialSites.length > 0) {
+            if (typeof initialSites[0] === 'number') {
                 const fetchSelectedSites = async () => {
                     const allLocations = await listLocations();
-                    const siteIds = initial.harvest_sites as number[];
+                    const siteIds = initialSites as number[];
                     const fetchedSites = allLocations.filter(l => siteIds.includes(l.id));
                     setSelectedSites(fetchedSites);
                 };
                 fetchSelectedSites();
+            } else if (typeof initialSites[0] === 'string') {
+                const fetchSelectedSites = async () => {
+                    const allLocations = await listLocations();
+                    const siteIds = initialSites as string[];
+                    const fetchedSites = allLocations.filter(l => siteIds.includes(String(l.id)));
+                    setSelectedSites(fetchedSites);
+                };
+                fetchSelectedSites();
             } else {
-                setSelectedSites(initial.harvest_sites as Location[]);
+                setSelectedSites(initialSites as Location[]);
             }
         }
 
-        if (initial.storage_locations && initial.storage_locations.length > 0) {
-            if (typeof initial.storage_locations[0] === 'number') {
+        // Preload selected herbariums (storage locations) from initial data
+        const initialHerbariaDetail = (initial as any).storage_locations_detail;
+        const initialHerbaria = (initial as any).storage_locations || (initial as any).herbariums;
+        if (initialHerbariaDetail && initialHerbariaDetail.length > 0) {
+            setSelectedStorageLocations(initialHerbariaDetail as Location[]);
+        } else if (initialHerbaria && initialHerbaria.length > 0) {
+            if (typeof initialHerbaria[0] === 'number') {
                 const fetchSelectedStorageLocations = async () => {
                     const allLocations = await listLocations();
-                    const storageLocationIds = initial.storage_locations as number[];
+                    const storageLocationIds = initialHerbaria as number[];
                     const fetchedStorageLocations = allLocations.filter(h => storageLocationIds.includes(h.id));
                     setSelectedStorageLocations(fetchedStorageLocations);
                 };
                 fetchSelectedStorageLocations();
+            } else if (typeof initialHerbaria[0] === 'string') {
+                const fetchSelectedStorageLocations = async () => {
+                    const allLocations = await listLocations();
+                    const storageLocationIds = initialHerbaria as string[];
+                    const fetchedStorageLocations = allLocations.filter(h => storageLocationIds.includes(String(h.id)));
+                    setSelectedStorageLocations(fetchedStorageLocations);
+                };
+                fetchSelectedStorageLocations();
             } else {
-                setSelectedStorageLocations(initial.storage_locations as Location[]);
+                setSelectedStorageLocations(initialHerbaria as Location[]);
             }
         }
 
@@ -209,8 +258,8 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
         setAvailableCompounds([]);
     };
 
-    const handleRemoveSelectedCompound = (compoundId: number) => {
-        setSelectedCompounds(prev => prev.filter(c => c.id !== compoundId));
+    const handleRemoveSelectedCompound = (compoundId: number | string) => {
+        setSelectedCompounds(prev => prev.filter(c => String(c.id) !== String(compoundId)));
     };
 
     const handleSearchReference = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -258,8 +307,8 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
         setAvailableReferences([]);
     };
 
-    const handleRemoveSelectedReference = (referenceId: number) => {
-        setSelectedReferences(prev => prev.filter(r => r.id !== referenceId));
+    const handleRemoveSelectedReference = (referenceId: number | string) => {
+        setSelectedReferences(prev => prev.filter(r => String(r.id) !== String(referenceId)));
     };
 
     const handleSiteInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -303,8 +352,8 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
         setAvailableSites([]);
     };
 
-    const handleRemoveSelectedSite = (siteId: number) => {
-        setSelectedSites(prev => prev.filter(s => s.id !== siteId));
+    const handleRemoveSelectedSite = (siteId: number | string) => {
+        setSelectedSites(prev => prev.filter(s => String(s.id) !== String(siteId)));
     };
 
     // const handleHerbariumInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -348,8 +397,8 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
         setAvailableHerbaria([]);
     };
     
-    const handleRemoveSelectedHerbarium = (herbariumId: number) => {
-        setSelectedStorageLocations(prev => prev.filter(h => h.id !== herbariumId));
+    const handleRemoveSelectedHerbarium = (herbariumId: number | string) => {
+        setSelectedStorageLocations(prev => prev.filter(h => String(h.id) !== String(herbariumId)));
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -362,12 +411,12 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        const finalFormData = {
+        const finalFormData: any = {
             ...formData,
-            compounds: selectedCompounds.map(c => c.id),
-            references: selectedReferences.map(r => r.id),
-            harvest_sites: selectedSites.map(s => s.id),
-            storage_locations: selectedStorageLocations.map(h => h.id),
+            compounds: selectedCompounds.map(c => String(c.id)).filter(Boolean),
+            references: selectedReferences.map(r => String(r.id)).filter(Boolean),
+            harvest_sites: selectedSites.map(s => String(s.id)).filter(Boolean),
+            storage_locations: selectedStorageLocations.map(h => String(h.id)).filter(Boolean),
         };
         try {
             console.log('Submitting form data:', finalFormData);

@@ -32,7 +32,7 @@ export const retrieveSingleSpecies = async (id: string) => {
     }
 };
 
-export const updateSpecies = async (id: string, speciesData: { species_class?: string; name?: string }) => {
+export const updateSpecies = async (id: string, speciesData: Species) => {
     try {
         const response = await api.put(`${API_URL}/${id}/`, speciesData);
         return response.data;

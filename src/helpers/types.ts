@@ -1,6 +1,6 @@
 // Base Django model interface
 interface EntityModel {
-    id?: number;
+    id?: number | string;
 }
 
 export interface UserModel extends EntityModel {
@@ -31,7 +31,7 @@ export interface Compound extends EntityModel {
 
 // Specie model
 export interface Species extends EntityModel {
-    id?: number;
+    id?: number | string;
     name: string;
     recent_name: string;
     kingdom: string;
@@ -41,13 +41,13 @@ export interface Species extends EntityModel {
     administration?: string;
     effects?: string;
     notes?: string;
-    references: number[] | Reference[];
+    references: Array<number | string> | Reference[];
     compound_codes: string[];
-    compounds?: number[] | Compound[];
-    sites?: number[] | Site[];
+    compounds?: Array<number | string> | Compound[];
+    sites?: Array<number | string> | Site[];
     collection_date?: Date | string;
-    storage_locations?: Location[];
-    harvest_sites: Location[];
+    storage_locations?: Array<number | string> | Location[];
+    harvest_sites: Array<number | string> | Location[];
     collection_data?: string[];
 }
 
