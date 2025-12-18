@@ -450,7 +450,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
                             onChange={handleChange}
                         >
                             <option className="placeholder" value="" disabled>Select a part used</option>
-                            {['Whole plant', 'Stem bark', 'Roots', 'Whole Sponge', 'Leaves', 'Whole fungi', 'Whole mushroom', 'Whole corals', 'Twigs'].map((item, index) => (
+                            {['Whole plant', 'Stem bark', 'Roots', 'Whole Sponge', 'Leaves', 'Whole fungi', 'Whole mushroom', "Aerial parts", "Seeds", 'Whole corals', 'Twigs'].map((item, index) => (
                                 <option key={index} value={item}>
                                     {item}
                                 </option>
