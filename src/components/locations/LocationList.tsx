@@ -19,7 +19,7 @@ const LocationList: React.FC<LocationListProps> = ({ locations: propLocations, o
     const { t } = useTranslation();
     const { addNotification } = useNotification();
     const { locations, error, loading } = useSelector((state) => state.getLocations);
-
+    
     const [searchText, setSearchText] = useState('');
     const [dateFilter, setDateFilter] = useState('');
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -30,6 +30,7 @@ const LocationList: React.FC<LocationListProps> = ({ locations: propLocations, o
         { key: 'name', label: t('location.name') },
         { key: 'city_town', label: t('location.city') },
         { key: 'country', label: t('location.country') },
+        { key: 'voucher_specimen_number', label: t('location.form_fields.voucher_specimen_number') },
         { key: 'gps_latitude', label: t('location.gps_latitude') },
         { key: 'gps_longitude', label: t('location.gps_longitude') }
     ];
