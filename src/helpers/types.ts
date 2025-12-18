@@ -83,6 +83,7 @@ export interface Location extends EntityModel {
     zipCode?: string;
     gps_latitude: number;
     gps_longitude: number;
+    voucher_specimen_number?: string;
 }
 
 // Site model
@@ -93,6 +94,7 @@ export interface Site extends EntityModel {
 // Herbarium model
 export interface Herbarium extends EntityModel {
     location: number | Location;
+    voucher_specimen_number: string;
 }
 
 // Filter types

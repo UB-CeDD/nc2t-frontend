@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { createSpeciesThunk, updateSpeciesThunk } from '@store/thunks/speciesThunk';
 import { useNotification } from '../commons/NotificationContext';
@@ -32,14 +32,34 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
     const { loading } = useSelector((state: RootState) => state.getSpecies);
 
     console.log('Initial Data:', initialData);
+        const dateInputRef = useRef<HTMLInputElement>(null);
+
     
+    // Compute today's date in local timezone as YYYY-MM-DD for HTML date input max
+    const todayStr = (() => {
+        const d = new Date();
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    })();
+
+    // Helper to format any Date/string into YYYY-MM-DD for date inputs
+    const formatDateToYYYYMMDD = (value: Date | string): string => {
+        const d = typeof value === 'string' ? new Date(value) : value;
+        const yyyy = d.getFullYear();
+        const mm = String(d.getMonth() + 1).padStart(2, '0');
+        const dd = String(d.getDate()).padStart(2, '0');
+        return `${yyyy}-${mm}-${dd}`;
+    };
+
 
     const getInitialFormData = () => {
         if (initialData) {
             if ('id' in initialData) { // Covers both Species and SearchedSpecies
                 const data = { ...initialData };
-                if (data.collection_date && typeof data.collection_date === 'string') {
-                    data.collection_date = data.collection_date.split('T')[0];
+                if (data.collection_date) {
+                    data.collection_date = formatDateToYYYYMMDD(data.collection_date as Date | string);
                 }
                 return data;
             }
@@ -580,14 +600,32 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
                             ))}
                         </div>
                     </div>
-                    <div className="mb-6">
-                        <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('species.form_fields.collection_date')}</label>
+                    <div
+                        className="mb-6"
+                        onClick={(e) => {
+                            const el = dateInputRef.current;
+                            if (!el) return;
+                            // Avoid re-trigger when clicking directly on input
+                            if (e.target instanceof HTMLInputElement && e.target.type === 'date') return;
+                            if (typeof (el as any).showPicker === 'function') {
+                                (el as any).showPicker();
+                            } else {
+                                el.focus();
+                                el.click();
+                            }
+                        }}
+                        role="button"
+                        tabIndex={0}
+                    >
+                        <label htmlFor="collection_date" className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('species.form_fields.collection_date')}</label>
                         <input
                             id="collection_date"
                             type="date"
                             name="collection_date"
-                            value={formData.collection_date || ''}
+                            ref={dateInputRef}
+                            value={formData.collection_date ? (typeof formData.collection_date === 'string' ? formData.collection_date : formatDateToYYYYMMDD(formData.collection_date)) : ''}
                             onChange={handleChange}
+                            max={todayStr}
                             placeholder={t('species.form_fields.collection_date')}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         />
@@ -665,7 +703,7 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
                 <LocationForm onLocationCreated={handleSiteCreated} onCancel={()=>setShowSiteModal(false)}  />
             </Modal>
             <Modal show={showHerbariumModal} onClose={() => setShowHerbariumModal(false)}>
-                <LocationForm onLocationCreated={handleHerbariumCreated}  onCancel={()=>setShowHerbariumModal(false)}/>
+                <LocationForm onLocationCreated={handleHerbariumCreated}  onCancel={()=>setShowHerbariumModal(false)} isHerbarium={true}/>
             </Modal>
         </div>
     );

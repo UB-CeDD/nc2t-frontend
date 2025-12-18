@@ -14,9 +14,11 @@ interface LocationFormProps {
     onSave?: (location: Location) => void;
     onCancel?: () => void;
     onLocationCreated?: (location: Location) => void;
+    isHerbarium?: boolean;
 }
 
-const LocationForm: React.FC<LocationFormProps> = ({ location, onSave, onCancel, onLocationCreated }) => {
+const LocationForm: React.FC<LocationFormProps> = ({ location, onSave, onCancel, onLocationCreated, isHerbarium }) => {
+    
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const { addNotification } = useNotification();
@@ -24,14 +26,12 @@ const LocationForm: React.FC<LocationFormProps> = ({ location, onSave, onCancel,
     const [formData, setFormData] = useState<Location>({
         id: location?.id || undefined,
         name: location?.name || '',
-        // place: location?.place || '',
         city_town: location?.city_town || '',
-        // region_state: location?.region_state || '',
         country: location?.country || '',
-        // zipCode: location?.zipCode || '',
         continent: location?.continent || '',
         gps_latitude: location?.gps_latitude || 0,
         gps_longitude: location?.gps_longitude || 0,
+        voucher_specimen_number: location?.voucher_specimen_number || '',
     });
 
     const handleCountryChange = (country: string) => {
@@ -62,25 +62,28 @@ const LocationForm: React.FC<LocationFormProps> = ({ location, onSave, onCancel,
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
+            const locationData = { ...formData };
+            if (!isHerbarium) {
+                delete locationData.voucher_specimen_number;
+            }
+
             if (location?.id) {
-                const updatedLocation = await dispatch(updateLocationThunk(location.id, formData));
+                const updatedLocation = await dispatch(updateLocationThunk(location.id, locationData));
                 onSave?.(updatedLocation);
                 addNotification("Location updated successfully", "success");
             } else {
-                const newLocation = await dispatch(createLocationThunk(formData));
+                const newLocation = await dispatch(createLocationThunk(locationData));
                 if (newLocation) {
                     onLocationCreated?.(newLocation);
                     setFormData({
                         id: undefined,
                         name: '',
-                        // place: '',
                         city_town: '',
-                        // region_state: '',
                         country: '',
-                        // zipCode: '',
                         continent: '',
                         gps_latitude: 0,
                         gps_longitude: 0,
+                        voucher_specimen_number: '',
                     });
                 }
                 addNotification("Location created successfully", "success");
@@ -96,7 +99,6 @@ const LocationForm: React.FC<LocationFormProps> = ({ location, onSave, onCancel,
             <div className="bg-white p-8 rounded shadow-md w-full">
                 <h1 className="text-2xl flex justify-center font-bold mb-8">{location?.id ? "Edit Location" : "Add Location"}</h1>
                 <form onSubmit={handleSubmit}>
-                    {/* ... form fields ... */}
                     <div className="grid gap-6 mb-4 md:grid-cols-1">
                         <div>
                             <label
@@ -109,17 +111,6 @@ const LocationForm: React.FC<LocationFormProps> = ({ location, onSave, onCancel,
                                 onChange={handleChange}
                                 required />
                         </div>
-                        {/* <div>
-                            <label
-                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('location.form_fields.address')}</label>
-                            <input type="text" id="location_place"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder={t('location.form_fields.address')}
-                                name="place"
-                                value={formData.place}
-                                onChange={handleChange}
-                                required />
-                        </div> */}
                         <div>
                             <label
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('location.form_fields.city')}</label>
@@ -131,17 +122,6 @@ const LocationForm: React.FC<LocationFormProps> = ({ location, onSave, onCancel,
                                 onChange={handleChange}
                                 required />
                         </div>
-                        {/* <div>
-                            <label
-                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('location.form_fields.state')}</label>
-                            <input type="text" id="location_state"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder={t('location.form_fields.state')} 
-                                name="region_state"
-                                value={formData.region_state}
-                                onChange={handleChange}
-                                required />
-                        </div> */}
                         <div>
                             <label
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('location.form_fields.country')}</label>
@@ -153,17 +133,21 @@ const LocationForm: React.FC<LocationFormProps> = ({ location, onSave, onCancel,
                                 placeholderClass='dark:placeholder-gray-400' 
                             />
                         </div>
-                        {/* <div>
-                            <label
-                                className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('location.form_fields.zip_code')}</label>
-                            <input type="text" id="location_zip"
-                                className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                                placeholder={t('location.form_fields.zip_code')} 
-                                name="zipCode"
-                                value={formData.zipCode}
-                                onChange={handleChange}
-                                required />
-                        </div> */}
+                        {isHerbarium && (
+                            <div>
+                                <label
+                                    className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('location.form_fields.voucher_specimen_number')}</label>
+                                <input
+                                    type="text"
+                                    id="voucher_specimen_number"
+                                    name="voucher_specimen_number"
+                                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                    placeholder={t('location.form_fields.voucher_specimen_number')}
+                                    value={formData.voucher_specimen_number}
+                                    onChange={handleChange}
+                                />
+                            </div>
+                        )}
                         <div className="mb-6">
                             <label
                                 className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('location.form_fields.gps')}</label>

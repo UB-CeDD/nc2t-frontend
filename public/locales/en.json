@@ -82,7 +82,8 @@
       "no_results": "No locations found.",
       "delete_confirmation": "Are you sure you want to delete this location?",
       "delete_confirmation_title": "Delete Location",
-      "delete_confirmation_message": "This action cannot be undone. Please confirm to proceed."
+      "delete_confirmation_message": "This action cannot be undone. Please confirm to proceed.",
+      "voucher_specimen_number": "Voucher Specimen Number"
     }
   },
   "compound": {
