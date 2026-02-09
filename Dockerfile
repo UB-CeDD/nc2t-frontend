@@ -1,8 +1,9 @@
 # =========================
 # Build Stage
 # =========================
-FROM node:20-alpine AS builder
+FROM node:20-slim AS builder
 # NOTE: Node 20 is currently LTS and safer than 22 for production
+# Using slim instead of alpine for better native module support (@swc/core)
 
 WORKDIR /app
 
@@ -22,7 +23,7 @@ RUN npm run build
 # =========================
 # Runtime Stage
 # =========================
-FROM nginx:alpine
+FROM nginx:20-slim
 
 # Remove default nginx config
 RUN rm /etc/nginx/conf.d/default.conf
@@ -34,6 +35,6 @@ COPY nginx.conf /etc/nginx/conf.d/default.conf
 COPY --from=builder /app/dist /usr/share/nginx/html
 
 # Expose HTTP port for Nginx Proxy Manager
-EXPOSE 5173
+EXPOSE 80
 
 CMD ["nginx", "-g", "daemon off;"]

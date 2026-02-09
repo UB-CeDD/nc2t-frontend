@@ -14,11 +14,35 @@ interface ReferenceFormProps {
     onReferenceCreated?: (reference: Reference) => void;
 }
 
+type Author = { first: string; last: string };
+
 const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCancel, onReferenceCreated }) => {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const { addNotification } = useNotification();
     const { loading } = useSelector((state: RootState) => state.getReferences);
+
+    // Helper to parse an existing author string (expected formatted like "Last/F..." separated by ";")
+    const parseAuthorString = (authorStr?: string): Author[] => {
+        if (!authorStr) return [{ first: '', last: '' }];
+        // split on semicolon separators
+        const parts = authorStr.split(';').map(p => p.trim()).filter(Boolean);
+        if (parts.length === 0) return [{ first: '', last: '' }];
+        return parts.map((part) => {
+            // try to split on '/'
+            const [last, firstPart] = part.split('/').map(s => s.trim());
+            if (!firstPart) {
+                // fallback: try splitting by space
+                const words = part.split(' ');
+                const lastFallback = words.length > 1 ? words[words.length - 1] : words[0];
+                const firstFallback = words.length > 1 ? words.slice(0, -1).join(' ') : '';
+                return { first: firstFallback, last: lastFallback } as Author;
+            }
+            // firstPart may be an initial only; we keep it as first (best-effort)
+            return { first: firstPart, last: last } as Author;
+        });
+    };
+
     const [formData, setFormData] = useState<Reference>({
         type: reference?.type || '',
         title: reference?.title || '',
@@ -28,18 +52,49 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
         thesis_level: reference?.thesis_level || '',
     });
 
+    // maintain authors as structured data in the form UI
+    const [authors, setAuthors] = useState<Author[]>(() => parseAuthorString(reference?.author));
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
+    const handleAuthorChange = (index: number, field: keyof Author, value: string) => {
+        const next = [...authors];
+        next[index] = { ...next[index], [field]: value };
+        setAuthors(next);
+    };
+
+    const addAuthor = () => setAuthors(prev => [...prev, { first: '', last: '' }]);
+    const removeAuthor = (index: number) => setAuthors(prev => prev.filter((_, i) => i !== index));
+
+    // Format authors into a single string to send to backend.
+    // Format rule (assumption): For each author produce "LastName/FirstInitial" (if first name present use first character),
+    // join with "; " and if there are more than 3 authors, include only first 3 then append "..." to indicate more authors.
+    const formatAuthorsForSubmit = (authorList: Author[]): string => {
+        const formatted = authorList.map(a => {
+            const firstInitial = a.first ? a.first.trim().charAt(0) : '';
+            const last = a.last ? a.last.trim() : '';
+            return last && firstInitial ? `${last}/${firstInitial}` : last || a.first || '';
+        }).filter(Boolean);
+
+        if (formatted.length > 3) {
+            return formatted.slice(0, 3).join('; ') + '; ...';
+        }
+        return formatted.join('; ');
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         try {
-            if (reference?.id) {                
-                await dispatch(updateReferenceThunk(reference.id, formData, addNotification));
+            // prepare payload: set author string from structured authors
+            const payload = { ...formData, author: formatAuthorsForSubmit(authors) } as Reference;
+
+            if (reference?.id) {
+                await dispatch(updateReferenceThunk(reference.id, payload, addNotification));
             } else {
-                const newReference = await dispatch(createReferenceThunk(formData, addNotification));
+                const newReference = await dispatch(createReferenceThunk(payload, addNotification));
                 if (newReference) {
                     onReferenceCreated?.(newReference);
                     setFormData({
@@ -50,6 +105,7 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
                         year: new Date().getFullYear(),
                         thesis_level: '',
                     });
+                    setAuthors([{ first: '', last: '' }]);
                 }
             }
             if (onSave) onSave();
@@ -92,18 +148,37 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
                         />
                     </div>
+
+                    {/* Multiple authors input */}
                     <div className="mb-6">
                         <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('reference.form_fields.author')}</label>
-                        <input
-                            required
-                            type="text"
-                            name="author"
-                            value={formData.author}
-                            onChange={handleChange}
-                            placeholder={t('reference.form_fields.author')}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                        />
+                        <div className="space-y-2">
+                            {authors.map((a, idx) => (
+                                <div key={idx} className="flex gap-2 items-center">
+                                    <input
+                                        type="text"
+                                        placeholder="First name"
+                                        value={a.first}
+                                        onChange={(e) => handleAuthorChange(idx, 'first', e.target.value)}
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-1/2 p-2.5"
+                                    />
+                                    <input
+                                        type="text"
+                                        placeholder="Last name"
+                                        value={a.last}
+                                        onChange={(e) => handleAuthorChange(idx, 'last', e.target.value)}
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-1/2 p-2.5"
+                                    />
+                                    <button type="button" onClick={() => removeAuthor(idx)} className="text-red-500">Remove</button>
+                                </div>
+                            ))}
+                            <div>
+                                <button type="button" onClick={addAuthor} className="bg-gray-200 px-3 py-1 rounded">Add author</button>
+                                <p className="text-xs text-gray-500 mt-1">Formatting on save: "LastName/FirstInitial" joined by "; ". If more than 3 authors the string will be truncated with "; ..."</p>
+                            </div>
+                        </div>
                     </div>
+
                     {formData.type === 'Thesis' && (
                         <div className="mb-6">
                             <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-dark">{t('reference.form_fields.thesis_level')}</label>

@@ -43,11 +43,21 @@ const ReferenceList: React.FC<ReferenceListProps> = ({ references: propReference
         );
     });
 
+    const renderDoi = (row: Reference) => {
+        const doi = row.doi;
+        if (!doi) return 'N/A';
+        const isUrl = doi.startsWith('http://') || doi.startsWith('https://');
+        const href = isUrl ? doi : `https://doi.org/${encodeURIComponent(doi)}`;
+        return (
+            <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">{doi}</a>
+        );
+    };
+
     const columns = [
         { key: 'type', label: t('reference.form_fields.type') },
         { key: 'title', label: t('reference.form_fields.title') },
         { key: 'author', label: t('reference.form_fields.author') },
-        { key: 'doi', label: t('reference.form_fields.doi') },
+        { key: 'doi', label: t('reference.form_fields.doi'), render: renderDoi },
         { key: 'thesis_level', label: t('reference.form_fields.thesis_level') },
     ];
 

@@ -549,7 +549,17 @@ const SpeciesForm: React.FC<SpeciesFormProps> = ({ initialData, onFormClose, onC
                             <div className="mt-0 border border-gray-300 rounded-lg p-2 max-h-40 overflow-y-auto">
                                 {availableReferences.map(reference => (
                                     <div key={reference.id} className="flex justify-between items-center p-1 hover:bg-gray-100 cursor-pointer" onClick={() => handleSelectExistingReference(reference)}>
-                                        <span>{reference.title} ({reference.doi ? reference.doi : ''})</span>
+                                        <span>
+                                            {reference.title}
+                                            {reference.doi ? (
+                                                <> ({(() => {
+                                                    const doi = reference.doi as string;
+                                                    const isUrl = doi.startsWith('http://') || doi.startsWith('https://');
+                                                    const href = isUrl ? doi : `https://doi.org/${encodeURIComponent(doi)}`;
+                                                    return <a href={href} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">{doi}</a>;
+                                                })()})</>
+                                            ) : null}
+                                        </span>
                                     </div>
                                 ))}
                             </div>

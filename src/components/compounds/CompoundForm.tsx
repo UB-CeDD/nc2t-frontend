@@ -32,7 +32,7 @@ const CompoundForm: React.FC<CompoundProps> = ({ compound, onSave, onCancel, onC
         id: compound?.id, // if EntityModel includes id
     });
 
-    const { loading: pubchemLoading, error: pubchemError, lookupCompound } = usePubChemLookup();
+    const { cid, smiles, loading: pubchemLoading, error: pubchemError, lookupCompound } = usePubChemLookup();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -45,21 +45,28 @@ const CompoundForm: React.FC<CompoundProps> = ({ compound, onSave, onCancel, onC
             return;
         }
 
-        const { cid, smiles } = await lookupCompound(formData.name);        
+        await lookupCompound(formData.name);
+    };
 
-        if (pubchemError) {
-            addNotification(pubchemError, 'error');
-        } else if (cid !== undefined || smiles !== undefined) {
+    // Watch for cid/smiles updates from the hook and update form data
+    React.useEffect(() => {
+        if ((cid !== undefined || smiles !== undefined) && !pubchemLoading) {
             console.log('PubChem data fetched:', { cid, smiles });
             
             setFormData(prevData => ({
                 ...prevData,
-                pubchem_id: cid,
-                smiles: smiles,
+                ...(cid !== undefined && { pubchem_id: cid }),
+                ...(smiles !== undefined && { smiles: smiles }),
             }));
             addNotification(t('compound.notifications.pubchem_data_fetched'), 'success');
         }
-    };
+    }, [cid, smiles, pubchemLoading, addNotification, t]);
+
+    React.useEffect(() => {
+        if (pubchemError && !pubchemLoading) {
+            addNotification(pubchemError, 'error');
+        }
+    }, [pubchemError, pubchemLoading, addNotification]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
