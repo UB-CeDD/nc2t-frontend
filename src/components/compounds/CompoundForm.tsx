@@ -34,33 +34,45 @@ const CompoundForm: React.FC<CompoundProps> = ({ compound, onSave, onCancel, onC
 
     const { cid, smiles, loading: pubchemLoading, error: pubchemError, lookupCompound } = usePubChemLookup();
 
+    // Local flag to keep the lookup button/spinner active until we apply the returned values
+    const [applyingPubchem, setApplyingPubchem] = React.useState(false);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setFormData({ ...formData, [name]: value });
     };
 
     const handlePubChemButtonClick = async () => {
-        if (!formData.name) {
+        const rawName = formData.name || '';
+        const trimmedName = rawName.trim();
+        if (!trimmedName) {
             addNotification(t('compound.notifications.enter_name_for_pubchem'), 'warning');
             return;
         }
 
-        await lookupCompound(formData.name);
-    };
-
-    // Watch for cid/smiles updates from the hook and update form data
-    React.useEffect(() => {
-        if ((cid !== undefined || smiles !== undefined) && !pubchemLoading) {
-            console.log('PubChem data fetched:', { cid, smiles });
-            
+        setApplyingPubchem(true);
+        try {
+            const result = await lookupCompound(trimmedName);
+            // Apply the returned values directly to the form so the UI displays them before stopping the spinner
             setFormData(prevData => ({
                 ...prevData,
-                ...(cid !== undefined && { pubchem_id: cid }),
-                ...(smiles !== undefined && { smiles: smiles }),
+                ...(result.cid !== undefined && { pubchem_id: result.cid }),
+                ...(result.smiles !== undefined && { smiles: result.smiles }),
             }));
-            addNotification(t('compound.notifications.pubchem_data_fetched'), 'success');
+
+            // Only show success notification if we actually received something useful
+            if (result.cid !== undefined || result.smiles !== undefined) {
+                addNotification(t('compound.notifications.pubchem_data_fetched'), 'success');
+            }
+        } catch (err) {
+            // lookupCompound normally handles errors and returns undefineds, but keep a catch just in case
+            console.error('PubChem lookup failed in handler:', err);
+        } finally {
+            // Keep the spinner visible until we've applied the data (we applied it above),
+            // then clear the local applying flag so the button/indicator returns to normal.
+            setApplyingPubchem(false);
         }
-    }, [cid, smiles, pubchemLoading, addNotification, t]);
+    };
 
     React.useEffect(() => {
         if (pubchemError && !pubchemLoading) {
@@ -119,9 +131,9 @@ const CompoundForm: React.FC<CompoundProps> = ({ compound, onSave, onCancel, onC
                                 type="button"
                                 onClick={handlePubChemButtonClick}
                                 className="ml-2 px-4 py-2 bg-green-500 text-white w-50 rounded-lg hover:bg-green-600 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-50"
-                                disabled={pubchemLoading}
+                                disabled={pubchemLoading || applyingPubchem}
                             >
-                                {pubchemLoading ? <Spinner size={5} /> : t('compound.form_fields.lookup_pubchem')}
+                                {(pubchemLoading || applyingPubchem) ? <Spinner size={5} /> : t('compound.form_fields.lookup_pubchem')}
                             </button>
                         </div>
                     </div>
@@ -263,3 +275,4 @@ const CompoundForm: React.FC<CompoundProps> = ({ compound, onSave, onCancel, onC
 };
 
 export default CompoundForm;
+

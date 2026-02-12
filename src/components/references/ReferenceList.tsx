@@ -7,6 +7,7 @@ import Spinner from '../commons/Spinner';
 import Table from '../commons/Table';
 import DeleteConfirmationModal from '@components/commons/DeleteConfirmationModal';
 import { useNotification } from '@/components/commons/NotificationContext';
+import { formatAuthorsForDisplay } from '@/helpers/authors';
 
 interface ReferenceListProps {
     references?: Reference[];
@@ -53,10 +54,14 @@ const ReferenceList: React.FC<ReferenceListProps> = ({ references: propReference
         );
     };
 
+    const renderAuthor = (row: Reference) => {
+        return formatAuthorsForDisplay(row.author);
+    };
+
     const columns = [
         { key: 'type', label: t('reference.form_fields.type') },
         { key: 'title', label: t('reference.form_fields.title') },
-        { key: 'author', label: t('reference.form_fields.author') },
+        { key: 'author', label: t('reference.form_fields.author'), render: renderAuthor },
         { key: 'doi', label: t('reference.form_fields.doi'), render: renderDoi },
         { key: 'thesis_level', label: t('reference.form_fields.thesis_level') },
     ];

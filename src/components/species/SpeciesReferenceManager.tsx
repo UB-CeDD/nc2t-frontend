@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from '@/store/store';
 import { fetchReferencesThunk } from '@/store/thunks/referenceThunk';
 import { Reference } from '@/helpers/types';
+import { formatAuthorsForDisplay } from '@/helpers/authors';
 
 interface SpeciesReferenceManagerProps {
     initialReferences: Reference[];
@@ -61,7 +62,7 @@ const SpeciesReferenceManager: React.FC<SpeciesReferenceManagerProps> = ({ initi
                                 className="mr-2"
                             />
                             <label htmlFor={`reference-${reference.id}`}>
-                                {reference.title} ({reference.author}, {reference.year})
+                                {reference.title} ({formatAuthorsForDisplay(reference.author)}, {reference.year})
                             </label>
                         </div>
                     ))

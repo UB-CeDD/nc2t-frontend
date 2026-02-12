@@ -6,6 +6,7 @@ import { Reference } from '@/helpers/types';
 import { useNotification } from '@/components/commons/NotificationContext';
 import Spinner from '@/components/commons/Spinner';
 import { RootState } from '@/store/store';
+import { serializeFullAuthors } from '@/helpers/authors';
 
 interface ReferenceFormProps {
     reference?: Reference;
@@ -14,7 +15,7 @@ interface ReferenceFormProps {
     onReferenceCreated?: (reference: Reference) => void;
 }
 
-type Author = { first: string; last: string };
+type Author = { first: string; middle: string; last: string };
 
 const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCancel, onReferenceCreated }) => {
     const { t } = useTranslation();
@@ -22,24 +23,32 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
     const { addNotification } = useNotification();
     const { loading } = useSelector((state: RootState) => state.getReferences);
 
-    // Helper to parse an existing author string (expected formatted like "Last/F..." separated by ";")
+    // Helper to parse an existing author string in the serializeFullAuthors format: "Last, First Middle; Last2, First2"
     const parseAuthorString = (authorStr?: string): Author[] => {
-        if (!authorStr) return [{ first: '', last: '' }];
-        // split on semicolon separators
+        if (!authorStr) return [{ first: '', middle: '', last: '' }];
+        // Authors are separated by semicolons in serialized form
         const parts = authorStr.split(';').map(p => p.trim()).filter(Boolean);
-        if (parts.length === 0) return [{ first: '', last: '' }];
-        return parts.map((part) => {
-            // try to split on '/'
-            const [last, firstPart] = part.split('/').map(s => s.trim());
-            if (!firstPart) {
-                // fallback: try splitting by space
-                const words = part.split(' ');
-                const lastFallback = words.length > 1 ? words[words.length - 1] : words[0];
-                const firstFallback = words.length > 1 ? words.slice(0, -1).join(' ') : '';
-                return { first: firstFallback, last: lastFallback } as Author;
+        if (parts.length === 0) return [{ first: '', middle: '', last: '' }];
+        return parts.map(part => {
+            // Expect "Last, First Middle" or a fallback like "First Middle Last"
+            if (part.includes(',')) {
+                const [lastRaw, restRaw] = part.split(',');
+                const last = (lastRaw || '').trim();
+                const rest = (restRaw || '').trim();
+                const restParts = rest.split(' ').filter(Boolean);
+                const first = restParts.length > 0 ? restParts[0] : '';
+                const middle = restParts.length > 1 ? restParts.slice(1).join(' ') : '';
+                return { first, middle, last } as Author;
             }
-            // firstPart may be an initial only; we keep it as first (best-effort)
-            return { first: firstPart, last: last } as Author;
+            // Fallback: split by spaces, last token is last name
+            const words = part.split(' ').filter(Boolean);
+            if (words.length === 1) {
+                return { first: words[0], middle: '', last: '' } as Author;
+            }
+            const lastFallback = words[words.length - 1];
+            const firstFallback = words[0];
+            const middleFallback = words.length > 2 ? words.slice(1, -1).join(' ') : '';
+            return { first: firstFallback, middle: middleFallback, last: lastFallback } as Author;
         });
     };
 
@@ -66,23 +75,13 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
         setAuthors(next);
     };
 
-    const addAuthor = () => setAuthors(prev => [...prev, { first: '', last: '' }]);
+    const addAuthor = () => setAuthors(prev => [...prev, { first: '', middle: '', last: '' }]);
     const removeAuthor = (index: number) => setAuthors(prev => prev.filter((_, i) => i !== index));
 
-    // Format authors into a single string to send to backend.
-    // Format rule (assumption): For each author produce "LastName/FirstInitial" (if first name present use first character),
-    // join with "; " and if there are more than 3 authors, include only first 3 then append "..." to indicate more authors.
+    // When saving, serialize structured authors into full names for backend storage
     const formatAuthorsForSubmit = (authorList: Author[]): string => {
-        const formatted = authorList.map(a => {
-            const firstInitial = a.first ? a.first.trim().charAt(0) : '';
-            const last = a.last ? a.last.trim() : '';
-            return last && firstInitial ? `${last}/${firstInitial}` : last || a.first || '';
-        }).filter(Boolean);
-
-        if (formatted.length > 3) {
-            return formatted.slice(0, 3).join('; ') + '; ...';
-        }
-        return formatted.join('; ');
+        const parts = authorList.map(a => ({ first: a.first, middle: a.middle, last: a.last }));
+        return serializeFullAuthors(parts);
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -105,7 +104,7 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
                         year: new Date().getFullYear(),
                         thesis_level: '',
                     });
-                    setAuthors([{ first: '', last: '' }]);
+                    setAuthors([{ first: '', middle: '', last: '' }]);
                 }
             }
             if (onSave) onSave();
@@ -164,6 +163,13 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
                                     />
                                     <input
                                         type="text"
+                                        placeholder="Middle name"
+                                        value={a.middle}
+                                        onChange={(e) => handleAuthorChange(idx, 'middle', e.target.value)}
+                                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg block w-1/2 p-2.5"
+                                    />
+                                    <input
+                                        type="text"
                                         placeholder="Last name"
                                         value={a.last}
                                         onChange={(e) => handleAuthorChange(idx, 'last', e.target.value)}
@@ -174,7 +180,7 @@ const ReferenceForm: React.FC<ReferenceFormProps> = ({ reference, onSave, onCanc
                             ))}
                             <div>
                                 <button type="button" onClick={addAuthor} className="bg-gray-200 px-3 py-1 rounded">Add author</button>
-                                <p className="text-xs text-gray-500 mt-1">Formatting on save: "LastName/FirstInitial" joined by "; ". If more than 3 authors the string will be truncated with "; ..."</p>
+                                <p className="text-xs text-gray-500 mt-1">Full names are saved to the database ("Last, First Middle; ..."). Displayed in lists/tables as: "Last F.M., NextLast A.B." (last name then initials with dots, authors separated by comma).</p>
                             </div>
                         </div>
                     </div>

@@ -35,8 +35,8 @@ const usePubChemLookup = (): PubChemLookupResult => {
                 // Step 1: Get CID from compound name
                 const cidResponse = await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/${encodeURIComponent(singleName)}/cids/JSON`);
                 const cidData = await cidResponse.json();
-
-                if (cidResponse.ok && cidData.IdentifierList && cidData.IdentifierList.CID && cidData.IdentifierList.CID.length > 0) {
+                console.log(`CID response for "${singleName}":`, cidData);
+                if (cidResponse.ok && cidData && cidData.IdentifierList && Array.isArray(cidData.IdentifierList.CID) && cidData.IdentifierList.CID.length > 0) {
                     fetchedCid = cidData.IdentifierList.CID[0]; // Take the first CID if multiple are found
                     break; // Found a match, exit loop
                 }
@@ -53,12 +53,19 @@ const usePubChemLookup = (): PubChemLookupResult => {
             // Step 2: Get SMILES from CID
             const smilesResponse = await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/${fetchedCid}/property/CanonicalSMILES/JSON`);
             const smilesData = await smilesResponse.json();
-            console.log('PubChem SMILES fetch response:', smilesData);
+            // Safely extract Properties array if present
+            const properties = smilesData && typeof smilesData === 'object' &&
+                smilesData.PropertyTable && Array.isArray(smilesData.PropertyTable.Properties)
+                ? smilesData.PropertyTable.Properties
+                : null;
 
-            if (smilesResponse.ok && smilesData.PropertyTable && smilesData.PropertyTable.Properties && smilesData.PropertyTable.Properties[0] && smilesData.PropertyTable.Properties[0].CanonicalSMILES) {
-                fetchedSmiles = smilesData.PropertyTable.Properties[0].CanonicalSMILES;
-                console.log('Fetched from PubChem:', { cid: fetchedCid, smiles: fetchedSmiles });
+            const firstProp = properties && properties.length > 0 ? properties[0] : null;
+
+            if (smilesResponse.ok && properties.length > 0) {
+                // Found canonical SMILES directly
+                fetchedSmiles = firstProp.ConnectivitySMILES;
             } else {
+                // If CanonicalSMILES is missing or response shape is unexpected, try fetching SDF and convert with OpenBabel
                 try {
                     const OpenBabel = await openBabelPromise;
                     const sdfResponse = await fetch(`https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/${fetchedCid}/SDF`);
@@ -70,9 +77,10 @@ const usePubChemLookup = (): PubChemLookupResult => {
                     conv.ReadString(mol, sdfData);
                     conv.SetOutFormat("smi");
                     fetchedSmiles = conv.WriteString(mol).trim();
-                    console.log('Generated SMILES with Open Babel:', { cid: fetchedCid, smiles: fetchedSmiles });
+
                 } catch (openBabelError) {
-                    console.error('Open Babel generation failed:', openBabelError);
+                    console.error('Open Babel generation failed or SDF fetch failed:', openBabelError);
+                    // If we at least found a CID, return it but indicate SMILES couldn't be generated
                     setError('PubChem SMILES not found, and Open Babel generation failed.');
                     setLoading(false);
                     setCid(fetchedCid);
@@ -81,6 +89,7 @@ const usePubChemLookup = (): PubChemLookupResult => {
                 }
             }
 
+            // Set final results
             setCid(fetchedCid);
             setSmiles(fetchedSmiles);
             setLoading(false);
@@ -100,3 +109,4 @@ const usePubChemLookup = (): PubChemLookupResult => {
 };
 
 export default usePubChemLookup;
+

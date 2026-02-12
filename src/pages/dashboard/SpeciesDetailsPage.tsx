@@ -1,4 +1,3 @@
-
 import React, { useCallback, useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
@@ -18,6 +17,7 @@ import AdminLayout from '@components/layouts/AdminLayout';
 import { useTranslation } from "react-i18next";
 import { AppDispatch } from '@/store/store';
 import Table from '@components/commons/Table';
+import { formatAuthorsForDisplay } from '@/helpers/authors';
 
 
 const SpeciesDetailsPage: React.FC = () => {
@@ -358,7 +358,7 @@ const SpeciesDetailsPage: React.FC = () => {
                                 <div className="p-8 text-left bg-white rounded shadow-md">
                                     <h2 className="text-xl font-bold mb-2">{selectedReference.title}</h2>
                                     <p><b>Type:</b> {selectedReference.type}</p>
-                                    <p><b>Author:</b> {selectedReference.author}</p>
+                                    <p><b>Author:</b> {formatAuthorsForDisplay(selectedReference.author)}</p>
                                     <p><b>DOI:</b> {selectedReference.doi}</p>
                                     <p><b>Thesis Level:</b> {selectedReference.thesis_level}</p>
                                     {/* Add more fields as needed */}

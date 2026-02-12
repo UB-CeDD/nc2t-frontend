@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { retrieveReferenceThunk } from '@store/thunks/referenceThunk';
 import { RootState } from '@store/store';
 import { useTranslation } from "react-i18next";
+import { formatAuthorsForDisplay } from '@/helpers/authors';
 
 interface ReferenceDetailsProps {
     id: string;
@@ -28,7 +29,7 @@ const ReferenceDetails: React.FC<ReferenceDetailsProps> = ({ id }) => {
     return (
         <div>
             <h1>{reference.title}</h1>
-            <p>{t('reference.form_fields.author')}: {reference.author}</p>
+            <p>{t('reference.form_fields.author')}: {formatAuthorsForDisplay(reference.author)}</p>
             <p>Year: {reference.year}</p>
         </div>
     );
